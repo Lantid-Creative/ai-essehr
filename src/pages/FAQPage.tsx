@@ -46,7 +46,7 @@ const faqs = [
   },
 ];
 
-export default function FAQPage() {
+const FAQPage = () => {
   return (
     <div className="min-h-screen bg-background font-body">
       <nav className="sticky top-0 z-50 bg-sidebar border-b border-sidebar-border">
