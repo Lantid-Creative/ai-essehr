@@ -249,6 +249,18 @@ export default function ConsultationPage() {
 
       {selectedPatient && (
         <>
+          {/* ===== PATIENT HEALTH RECORD - Critical Info for Doctor ===== */}
+          <details className="card-ehr overflow-hidden group">
+            <summary className="px-4 py-3 cursor-pointer flex items-center gap-2 hover:bg-muted/30 transition-colors">
+              <FileText className="h-4 w-4 text-primary" />
+              <span className="font-heading font-medium text-sm">Patient Health Record & History</span>
+              <span className="text-xs text-muted-foreground ml-auto">Click to expand</span>
+            </summary>
+            <div className="px-4 pb-4 border-t border-border">
+              <PatientHealthRecord patient={selectedPatient} compact />
+            </div>
+          </details>
+
           {/* Syndromic Alert Banners */}
           {syndromicFlags.map(flag => (
             <div key={flag.disease} className="alert-banner-yellow flex items-center gap-2">
