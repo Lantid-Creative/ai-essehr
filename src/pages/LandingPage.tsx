@@ -435,7 +435,7 @@ export default function LandingPage() {
                 <span className="font-heading font-bold text-sidebar-foreground">AI-ESS EHR</span>
               </div>
               <p className="text-sm text-sidebar-foreground/50 leading-relaxed">
-                Nigeria Governors' Forum — National Health Surveillance System. Built by Lantid Creative LTD.
+                Surveillance-First Electronic Health Records. Built by Lantid Creative LTD.
               </p>
             </div>
             <div>
