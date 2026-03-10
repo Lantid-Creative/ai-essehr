@@ -48,7 +48,7 @@ const features = [
 
 const securityFeatures = [
   { icon: Lock, title: 'End-to-End Encryption', desc: 'All data encrypted in transit (TLS 1.3) and at rest (AES-256). Your patient data never travels unprotected.' },
-  { icon: Server, title: 'Sovereign Data Hosting', desc: 'All health data is hosted on secure infrastructure compliant with Nigeria's NDPR data protection regulations.' },
+  { icon: Server, title: 'Sovereign Data Hosting', desc: 'All health data is hosted on secure infrastructure compliant with Nigeria\'s NDPR data protection regulations.' },
   { icon: Eye, title: 'Role-Based Access', desc: 'Granular permissions ensure only authorized personnel access patient records. Every action is audit-logged.' },
   { icon: FileCheck, title: 'Compliance & Auditing', desc: 'Full audit trails for regulatory compliance. NDPR, IDSR, and WHO digital health standards built in.' },
 ];
