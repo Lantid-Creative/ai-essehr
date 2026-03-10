@@ -29,6 +29,8 @@ import SyncPage from "@/pages/SyncPage";
 import SettingsPage from "@/pages/SettingsPage";
 import AppointmentsPage from "@/pages/AppointmentsPage";
 import AuditLogPage from "@/pages/AuditLogPage";
+import DrugInventoryPage from "@/pages/DrugInventoryPage";
+import BillingPage from "@/pages/BillingPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
