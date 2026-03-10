@@ -9,6 +9,8 @@ import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterFacilityPage from "@/pages/RegisterFacilityPage";
 import RegisterPatientPage from "@/pages/RegisterPatientPage";
+import FAQPage from "@/pages/FAQPage";
+import HelpPage from "@/pages/HelpPage";
 import Dashboard from "@/pages/Dashboard";
 import PatientsPage from "@/pages/PatientsPage";
 import ConsultationPage from "@/pages/ConsultationPage";
@@ -39,6 +41,8 @@ const App = () => (
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register/facility" element={<RegisterFacilityPage />} />
             <Route path="/register/patient" element={<RegisterPatientPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/help" element={<HelpPage />} />
 
             {/* Dashboard routes (wrapped in MainLayout) */}
             <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
