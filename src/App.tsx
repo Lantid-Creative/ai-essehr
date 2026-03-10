@@ -5,6 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import MainLayout from "@/components/layout/MainLayout";
+import LandingPage from "@/pages/LandingPage";
+import LoginPage from "@/pages/LoginPage";
+import RegisterFacilityPage from "@/pages/RegisterFacilityPage";
+import RegisterPatientPage from "@/pages/RegisterPatientPage";
 import Dashboard from "@/pages/Dashboard";
 import PatientsPage from "@/pages/PatientsPage";
 import ConsultationPage from "@/pages/ConsultationPage";
@@ -29,24 +33,29 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <MainLayout>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/patients" element={<PatientsPage />} />
-              <Route path="/consultation" element={<ConsultationPage />} />
-              <Route path="/wards" element={<WardsPage />} />
-              <Route path="/surveillance" element={<SurveillancePage />} />
-              <Route path="/immunization" element={<ImmunizationPage />} />
-              <Route path="/laboratory" element={<LaboratoryPage />} />
-              <Route path="/pharmacy" element={<PharmacyPage />} />
-              <Route path="/mch" element={<MCHPage />} />
-              <Route path="/staff" element={<StaffPage />} />
-              <Route path="/reports" element={<ReportsPage />} />
-              <Route path="/sync" element={<SyncPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </MainLayout>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register/facility" element={<RegisterFacilityPage />} />
+            <Route path="/register/patient" element={<RegisterPatientPage />} />
+
+            {/* Dashboard routes (wrapped in MainLayout) */}
+            <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
+            <Route path="/patients" element={<MainLayout><PatientsPage /></MainLayout>} />
+            <Route path="/consultation" element={<MainLayout><ConsultationPage /></MainLayout>} />
+            <Route path="/wards" element={<MainLayout><WardsPage /></MainLayout>} />
+            <Route path="/surveillance" element={<MainLayout><SurveillancePage /></MainLayout>} />
+            <Route path="/immunization" element={<MainLayout><ImmunizationPage /></MainLayout>} />
+            <Route path="/laboratory" element={<MainLayout><LaboratoryPage /></MainLayout>} />
+            <Route path="/pharmacy" element={<MainLayout><PharmacyPage /></MainLayout>} />
+            <Route path="/mch" element={<MainLayout><MCHPage /></MainLayout>} />
+            <Route path="/staff" element={<MainLayout><StaffPage /></MainLayout>} />
+            <Route path="/reports" element={<MainLayout><ReportsPage /></MainLayout>} />
+            <Route path="/sync" element={<MainLayout><SyncPage /></MainLayout>} />
+            <Route path="/settings" element={<MainLayout><SettingsPage /></MainLayout>} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </AppProvider>
     </TooltipProvider>
