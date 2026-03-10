@@ -6,27 +6,27 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 const faqs = [
   {
     q: 'What is AI-ESS EHR?',
-    a: 'AI-ESS EHR is a surveillance-first Electronic Health Records platform designed for Nigeria\'s Primary Health Care system. It digitizes patient encounters while simultaneously powering real-time disease surveillance across all 36 states and the FCT.',
+    a: 'AI-ESS EHR is a surveillance-first Electronic Health Records platform designed for healthcare facilities. It digitizes patient encounters while simultaneously powering real-time disease surveillance.',
   },
   {
     q: 'Who can use AI-ESS EHR?',
-    a: 'The platform serves three key user groups: Health Facilities (PHCs, clinics, hospitals), Health Agencies (NCDC, State Epidemiologists, LGA Disease Surveillance Officers), and Patients (through a secure patient portal for viewing records and vaccination history).',
+    a: 'The platform serves three key user groups: Health Facilities (clinics, hospitals, health centres), Health Agencies (epidemiologists, surveillance officers), and Patients (through a secure patient portal for viewing records and vaccination history).',
   },
   {
     q: 'How do I register my facility?',
-    a: 'Click "Register Facility" on the homepage or navigate to /register/facility. You\'ll need your facility\'s FHSS Code, State/LGA details, and an admin email. Once submitted, your facility workspace is created and you can begin onboarding staff.',
+    a: 'Click "Register Facility" on the homepage. You\'ll need your facility code, region details, and an admin email. Once submitted, your facility workspace is created and you can begin onboarding staff.',
   },
   {
     q: 'Is the platform free?',
-    a: 'AI-ESS EHR is provided as part of a national health infrastructure initiative. Pricing depends on facility type and state agreements. Contact us for detailed information about your specific case.',
+    a: 'AI-ESS EHR is provided as part of a health infrastructure initiative. Pricing depends on facility type and agreements. Contact us for detailed information about your specific case.',
   },
   {
     q: 'How does offline mode work?',
-    a: 'The platform caches essential data locally, allowing staff to record patient encounters, consultations, and immunizations even without internet connectivity. When connectivity returns, all data syncs automatically to the central server with conflict resolution built in.',
+    a: 'The platform caches essential data locally, allowing staff to record patient encounters, consultations, and immunizations even without internet connectivity. When connectivity returns, all data syncs automatically with conflict resolution built in.',
   },
   {
     q: 'How is patient data protected?',
-    a: 'All data is encrypted in transit (TLS 1.3) and at rest (AES-256). Access is role-based — only authorized personnel at the treating facility can view patient records. Patient identity is verified through NIN, and all access is audit-logged.',
+    a: 'All data is encrypted in transit (TLS 1.3) and at rest (AES-256). Access is role-based — only authorized personnel at the treating facility can view patient records. All access is audit-logged.',
   },
   {
     q: 'What diseases are tracked for surveillance?',
@@ -34,15 +34,15 @@ const faqs = [
   },
   {
     q: 'Can patients access their own records?',
-    a: 'Yes. Patients can register for the Patient Portal using their NIN. Once verified, they can view visit history, lab results, vaccination records, and communicate with their healthcare providers — all from a secure dashboard.',
+    a: 'Yes. Patients can register for the Patient Portal. Once verified, they can view visit history, lab results, vaccination records, and communicate with their healthcare providers — all from a secure dashboard.',
   },
   {
-    q: 'How does the system integrate with NCDC?',
-    a: 'AI-ESS EHR generates IDSR-compatible reports automatically. NCDC and State Epidemiologists have dedicated dashboards showing real-time outbreak alerts, disease trends, and facility-level surveillance data across their jurisdictions.',
+    q: 'How does the surveillance reporting work?',
+    a: 'AI-ESS EHR generates IDSR-compatible reports automatically. Epidemiologists have dedicated dashboards showing real-time outbreak alerts, disease trends, and facility-level surveillance data across their jurisdictions.',
   },
   {
     q: 'What reports can I generate?',
-    a: 'The platform auto-generates HMIS 035B reports, disease trend analyses, facility scorecards, immunization coverage reports, and custom surveillance summaries. All reports can be exported as PDF or CSV.',
+    a: 'The platform auto-generates disease trend analyses, facility scorecards, immunization coverage reports, and custom surveillance summaries. All reports can be exported as PDF or CSV.',
   },
 ];
 

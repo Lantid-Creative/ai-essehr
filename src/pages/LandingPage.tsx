@@ -7,32 +7,32 @@ const features = [
   {
     icon: Stethoscope,
     title: 'Clinical Encounters',
-    desc: 'Syndromic surveillance built into every consultation. Auto-detect Lassa, Cholera, Meningitis, Measles & Diphtheria.',
+    desc: 'Syndromic surveillance built into every consultation. Auto-detect priority diseases like Lassa, Cholera, Meningitis, Measles & Diphtheria.',
   },
   {
     icon: Shield,
     title: 'Disease Surveillance',
-    desc: 'Real-time outbreak alerts, IDSR-compatible reporting, and threshold-based early warning across all 36 states + FCT.',
+    desc: 'Real-time outbreak alerts, IDSR-compatible reporting, and threshold-based early warning across all connected regions.',
   },
   {
     icon: Building2,
     title: 'Multi-Facility Platform',
-    desc: 'Each health facility gets its own workspace. Patient records travel with them across facilities via NIN verification.',
+    desc: 'Each health facility gets its own workspace. Patient records travel with them across facilities via verified identity.',
   },
   {
     icon: BarChart3,
     title: 'Analytics & Reports',
-    desc: 'HMIS 035B auto-generation, disease trend charts, facility scorecards, and national-level dashboards for NCDC.',
+    desc: 'Auto-generated reports, disease trend charts, facility scorecards, and national-level dashboards for health agencies.',
   },
   {
     icon: Users,
     title: 'Staff Management',
-    desc: 'Onboard CHEWs, Nurses, Doctors, and Data Clerks. Track training, certifications, and attendance per facility.',
+    desc: 'Onboard healthcare workers — nurses, doctors, and data clerks. Track training, certifications, and attendance per facility.',
   },
   {
     icon: Globe2,
     title: 'Works Offline',
-    desc: 'Full offline capability for rural PHCs. Data syncs automatically when connectivity returns.',
+    desc: 'Full offline capability for remote facilities. Data syncs automatically when connectivity returns.',
   },
   {
     icon: Zap,
@@ -48,23 +48,23 @@ const features = [
 
 const securityFeatures = [
   { icon: Lock, title: 'End-to-End Encryption', desc: 'All data encrypted in transit (TLS 1.3) and at rest (AES-256). Your patient data never travels unprotected.' },
-  { icon: Server, title: 'Sovereign Data Hosting', desc: 'All health data is hosted on secure infrastructure compliant with Nigeria\'s NDPR data protection regulations.' },
+  { icon: Server, title: 'Secure Data Hosting', desc: 'All health data is hosted on secure, compliant infrastructure meeting international data protection standards.' },
   { icon: Eye, title: 'Role-Based Access', desc: 'Granular permissions ensure only authorized personnel access patient records. Every action is audit-logged.' },
-  { icon: FileCheck, title: 'Compliance & Auditing', desc: 'Full audit trails for regulatory compliance. NDPR, IDSR, and WHO digital health standards built in.' },
+  { icon: FileCheck, title: 'Compliance & Auditing', desc: 'Full audit trails for regulatory compliance. IDSR and WHO digital health standards built in.' },
 ];
 
 const portalCards = [
   {
     icon: Building2,
     title: 'Health Facility',
-    desc: 'Register your Primary Health Care centre, onboard staff, and start recording patient encounters and surveillance data.',
+    desc: 'Register your health facility, onboard staff, and start recording patient encounters and surveillance data.',
     cta: 'Register Facility',
     link: '/register/facility',
   },
   {
     icon: Shield,
     title: 'Health Agency',
-    desc: 'NCDC, State Epidemiologists, and LGA Focal Persons — access surveillance dashboards and outbreak intelligence.',
+    desc: 'Epidemiologists and surveillance officers — access dashboards and outbreak intelligence.',
     cta: 'Agency Login',
     link: '/login',
   },
@@ -78,17 +78,17 @@ const portalCards = [
 ];
 
 const stats = [
-  { value: '774+', label: 'LGAs Covered' },
-  { value: '36 + FCT', label: 'States Connected' },
+  { value: '500+', label: 'Facilities Connected' },
+  { value: '100+', label: 'Regions Covered' },
   { value: '50,000+', label: 'Patients Registered' },
   { value: '5', label: 'Priority Diseases Tracked' },
 ];
 
 const howItWorks = [
-  { step: '01', title: 'Register Your Facility', desc: 'Sign up with your FHSS code, select your state and LGA, and create your admin account in minutes.' },
-  { step: '02', title: 'Onboard Your Team', desc: 'Add CHEWs, nurses, doctors, and data clerks. Assign roles and permissions tailored to your facility.' },
+  { step: '01', title: 'Register Your Facility', desc: 'Sign up with your facility code, select your region, and create your admin account in minutes.' },
+  { step: '02', title: 'Onboard Your Team', desc: 'Add healthcare workers — nurses, doctors, and data clerks. Assign roles and permissions tailored to your facility.' },
   { step: '03', title: 'Start Recording', desc: 'Begin documenting patient encounters, immunizations, and lab results — online or offline.' },
-  { step: '04', title: 'Surveillance Activates', desc: 'The system automatically detects disease patterns, triggers alerts, and sends reports to state and national dashboards.' },
+  { step: '04', title: 'Surveillance Activates', desc: 'The system automatically detects disease patterns, triggers alerts, and sends reports to regional and national dashboards.' },
 ];
 
 export default function LandingPage() {
@@ -157,18 +157,17 @@ export default function LandingPage() {
             <div>
               <div className="inline-flex items-center gap-2 bg-primary/15 text-primary-foreground text-sm font-medium px-4 py-1.5 rounded-full mb-8 border border-primary/20">
                 <Shield className="h-4 w-4" />
-                National Health Surveillance System
+                Surveillance-First EHR Platform
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-sidebar-foreground leading-[1.1] mb-6">
-                Protecting Nigeria's Health,{' '}
+                Smarter Health Records,{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[hsl(153,100%,40%)] to-[hsl(160,80%,55%)]">
-                  One Facility at a Time
+                  Real-Time Surveillance
                 </span>
               </h1>
               <p className="text-lg text-sidebar-foreground/65 mb-10 max-w-xl leading-relaxed">
-                AI-ESS EHR is the surveillance-first electronic health records platform deployed across 
-                Primary Health Care facilities in all 36 Nigerian states and the FCT. Detect outbreaks early. 
-                Save lives faster.
+                AI-ESS EHR is the surveillance-first electronic health records platform built for 
+                health facilities everywhere. Detect outbreaks early. Save lives faster.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/register/facility">
@@ -229,7 +228,7 @@ export default function LandingPage() {
             </h2>
             <p className="text-muted-foreground text-lg">
               AI-ESS EHR connects facilities, health agencies, and patients on a unified platform — 
-              enabling real-time disease surveillance, clinical documentation, and data-driven health policy across Nigeria.
+              enabling real-time disease surveillance, clinical documentation, and data-driven health policy.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -258,11 +257,11 @@ export default function LandingPage() {
           <div className="text-center max-w-3xl mx-auto mb-16">
             <p className="text-primary font-semibold text-sm uppercase tracking-wider mb-3">Capabilities</p>
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-4">
-              Built for Nigeria's Health System
+              Built for Modern Healthcare
             </h2>
             <p className="text-muted-foreground text-lg">
-              Every module is designed around the IDSR framework, Nigeria's disease priorities, 
-              and the realities of Primary Health Care delivery.
+              Every module is designed around the IDSR framework, disease priorities, 
+              and the realities of frontline health care delivery.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -289,7 +288,7 @@ export default function LandingPage() {
             </h2>
             <p className="text-sidebar-foreground/60 text-lg">
               Health data security isn't optional — it's foundational. AI-ESS EHR is built with enterprise-grade 
-              security and full compliance with Nigeria's data protection regulations.
+              security and full compliance with data protection regulations.
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
@@ -344,27 +343,26 @@ export default function LandingPage() {
             <div>
               <p className="text-primary font-semibold text-sm uppercase tracking-wider mb-3">About the Platform</p>
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-6">
-                A Nigeria Governors' Forum Initiative
+                A Surveillance-First EHR
               </h2>
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                AI-ESS EHR is part of the national strategy to strengthen disease surveillance 
-                at the grassroots level. By digitizing health records at Primary Health Care facilities 
-                and connecting them to state and national dashboards, we create an early warning system 
-                that protects all Nigerians.
+                AI-ESS EHR is designed to strengthen disease surveillance at the grassroots level. 
+                By digitizing health records at facilities and connecting them to regional and national 
+                dashboards, we create an early warning system that protects communities.
               </p>
               <p className="text-muted-foreground mb-8 leading-relaxed">
                 Developed by Lantid Creative LTD, the platform leverages artificial intelligence, 
                 offline-first architecture, and the IDSR framework to ensure every facility — 
-                from urban clinics to rural PHCs — contributes to a unified national health picture.
+                from urban clinics to remote health posts — contributes to a unified health picture.
               </p>
               <div className="space-y-3">
                 {[
                   'Syndromic surveillance at point of care',
                   'IDSR-compatible outbreak reporting',
-                  'Works offline in rural areas',
-                  'NIN-verified patient identity',
+                  'Works offline in remote areas',
+                  'Verified patient identity',
                   'Multi-facility patient records',
-                  'NDPR-compliant data handling',
+                  'Compliant data handling',
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
@@ -379,7 +377,7 @@ export default function LandingPage() {
                   <Activity className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-heading font-bold text-sidebar-foreground mb-1">AI-ESS EHR</h3>
-                <p className="text-sidebar-foreground/50 text-sm">National Health Surveillance System</p>
+                <p className="text-sidebar-foreground/50 text-sm">Surveillance-First Health Records</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {[
@@ -406,7 +404,7 @@ export default function LandingPage() {
             Ready to Digitize Your Facility?
           </h2>
           <p className="text-primary-foreground/70 text-lg mb-10 max-w-2xl mx-auto">
-            Join thousands of Primary Health Care facilities across Nigeria already using AI-ESS EHR 
+            Join hundreds of health facilities already using AI-ESS EHR 
             to improve patient outcomes and strengthen disease surveillance.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -437,7 +435,7 @@ export default function LandingPage() {
                 <span className="font-heading font-bold text-sidebar-foreground">AI-ESS EHR</span>
               </div>
               <p className="text-sm text-sidebar-foreground/50 leading-relaxed">
-                Nigeria Governors' Forum — National Health Surveillance System. Built by Lantid Creative LTD.
+                Surveillance-First Electronic Health Records. Built by Lantid Creative LTD.
               </p>
             </div>
             <div>
