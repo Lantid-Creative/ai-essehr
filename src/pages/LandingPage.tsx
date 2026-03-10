@@ -343,27 +343,26 @@ export default function LandingPage() {
             <div>
               <p className="text-primary font-semibold text-sm uppercase tracking-wider mb-3">About the Platform</p>
               <h2 className="text-3xl md:text-4xl font-heading font-bold text-foreground mb-6">
-                A Nigeria Governors' Forum Initiative
+                A Surveillance-First EHR
               </h2>
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                AI-ESS EHR is part of the national strategy to strengthen disease surveillance 
-                at the grassroots level. By digitizing health records at Primary Health Care facilities 
-                and connecting them to state and national dashboards, we create an early warning system 
-                that protects all Nigerians.
+                AI-ESS EHR is designed to strengthen disease surveillance at the grassroots level. 
+                By digitizing health records at facilities and connecting them to regional and national 
+                dashboards, we create an early warning system that protects communities.
               </p>
               <p className="text-muted-foreground mb-8 leading-relaxed">
                 Developed by Lantid Creative LTD, the platform leverages artificial intelligence, 
                 offline-first architecture, and the IDSR framework to ensure every facility — 
-                from urban clinics to rural PHCs — contributes to a unified national health picture.
+                from urban clinics to remote health posts — contributes to a unified health picture.
               </p>
               <div className="space-y-3">
                 {[
                   'Syndromic surveillance at point of care',
                   'IDSR-compatible outbreak reporting',
-                  'Works offline in rural areas',
-                  'NIN-verified patient identity',
+                  'Works offline in remote areas',
+                  'Verified patient identity',
                   'Multi-facility patient records',
-                  'NDPR-compliant data handling',
+                  'Compliant data handling',
                 ].map((item) => (
                   <div key={item} className="flex items-center gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
@@ -378,7 +377,7 @@ export default function LandingPage() {
                   <Activity className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-2xl font-heading font-bold text-sidebar-foreground mb-1">AI-ESS EHR</h3>
-                <p className="text-sidebar-foreground/50 text-sm">National Health Surveillance System</p>
+                <p className="text-sidebar-foreground/50 text-sm">Surveillance-First Health Records</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 {[
