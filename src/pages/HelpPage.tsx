@@ -11,7 +11,7 @@ const helpTopics = [
   { icon: BookOpen, title: 'Surveillance Modules', desc: 'Using IDSR reporting, outbreak alerts, and disease tracking features.' },
 ];
 
-export default function HelpPage() {
+const HelpPage = () => {
   return (
     <div className="min-h-screen bg-background font-body">
       <nav className="sticky top-0 z-50 bg-sidebar border-b border-sidebar-border">
@@ -85,4 +85,6 @@ export default function HelpPage() {
       </footer>
     </div>
   );
-}
+};
+
+export default HelpPage;
