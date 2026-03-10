@@ -288,7 +288,7 @@ export default function LandingPage() {
             </h2>
             <p className="text-sidebar-foreground/60 text-lg">
               Health data security isn't optional — it's foundational. AI-ESS EHR is built with enterprise-grade 
-              security and full compliance with Nigeria's data protection regulations.
+              security and full compliance with data protection regulations.
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
