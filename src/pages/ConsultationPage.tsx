@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import PatientHealthRecord from '@/components/patient/PatientHealthRecord';
+import DrugInteractionAlert, { checkDrugInteractions } from '@/components/consultation/DrugInteractionAlert';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Patient = Tables<'patients'>;
