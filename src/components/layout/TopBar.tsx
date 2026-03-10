@@ -7,6 +7,7 @@ import { useOnlineStatus } from '@/hooks/useOfflineSync';
 export default function TopBar() {
   const { sidebarOpen, setSidebarOpen, profile, roles, signOut } = useAppContext();
   const navigate = useNavigate();
+  const isOnline = useOnlineStatus();
 
   const handleSignOut = async () => {
     await signOut();
