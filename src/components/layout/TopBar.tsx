@@ -34,8 +34,8 @@ export default function TopBar() {
       <div className="flex-1" />
 
       <div className="flex items-center gap-1 text-xs">
-        <Wifi className="h-3.5 w-3.5 text-green-400" />
-        <span className="hidden md:inline text-green-400">Online</span>
+        <Wifi className="h-3.5 w-3.5 text-success" />
+        <span className="hidden md:inline text-success">Online</span>
       </div>
 
       <button className="relative p-1">
