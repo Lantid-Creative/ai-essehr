@@ -1,101 +1,121 @@
 import { useState } from 'react';
-import { patients } from '@/data/mockData';
-import type { Patient } from '@/data/mockData';
-import { Search, UserPlus, CheckCircle, MapPin } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAppContext } from '@/context/AppContext';
+import { Search, UserPlus, Loader2, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
+import type { Tables } from '@/integrations/supabase/types';
+
+type Patient = Tables<'patients'>;
 
 export default function PatientsPage() {
+  const { facilityId, user } = useAppContext();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [showNewForm, setShowNewForm] = useState(false);
-  const [ninLookup, setNinLookup] = useState('');
-  const [ninLoading, setNinLoading] = useState(false);
-  const [ninVerified, setNinVerified] = useState(false);
-  const [activeTab, setActiveTab] = useState('demographics');
 
-  const filtered = patients.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.patientId.toLowerCase().includes(search.toLowerCase()) ||
-    p.nin.includes(search) ||
-    p.phone.includes(search)
-  );
+  // Form state
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [dob, setDob] = useState('');
+  const [gender, setGender] = useState<string>('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [nextOfKinName, setNextOfKinName] = useState('');
+  const [nextOfKinPhone, setNextOfKinPhone] = useState('');
+  const [bloodGroup, setBloodGroup] = useState('');
+  const [genotype, setGenotype] = useState('');
+  const [allergies, setAllergies] = useState('');
 
-  const handleNinLookup = () => {
-    if (!ninLookup || ninLookup.length !== 11) return;
-    setNinLoading(true);
-    setTimeout(() => {
-      setNinLoading(false);
-      setNinVerified(true);
-    }, 1500);
-  };
+  const { data: patients = [], isLoading } = useQuery({
+    queryKey: ['patients', facilityId, search],
+    queryFn: async () => {
+      if (!facilityId) return [];
+      let query = supabase.from('patients').select('*').eq('facility_id', facilityId).order('created_at', { ascending: false });
+      if (search) {
+        query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,patient_code.ilike.%${search}%,phone.ilike.%${search}%`);
+      }
+      const { data } = await query.limit(100);
+      return data || [];
+    },
+    enabled: !!facilityId,
+  });
 
+  const registerMutation = useMutation({
+    mutationFn: async () => {
+      const code = `AIESS/${Date.now().toString(36).toUpperCase()}`;
+      const { error } = await supabase.from('patients').insert({
+        first_name: firstName,
+        last_name: lastName,
+        date_of_birth: dob || null,
+        gender: gender as any || null,
+        phone: phone || null,
+        address: address || null,
+        next_of_kin_name: nextOfKinName || null,
+        next_of_kin_phone: nextOfKinPhone || null,
+        blood_group: bloodGroup || null,
+        genotype: genotype || null,
+        allergies: allergies || null,
+        facility_id: facilityId,
+        registered_by: user?.id,
+        patient_code: code,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: 'Patient registered successfully' });
+      queryClient.invalidateQueries({ queryKey: ['patients'] });
+      setShowNewForm(false);
+      setFirstName(''); setLastName(''); setDob(''); setGender(''); setPhone('');
+      setAddress(''); setNextOfKinName(''); setNextOfKinPhone('');
+      setBloodGroup(''); setGenotype(''); setAllergies('');
+    },
+    onError: (err: any) => {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    },
+  });
+
+  // Patient detail view
   if (selectedPatient) {
     const p = selectedPatient;
-    const tabs = ['Demographics', 'Visit History', 'Vaccinations', 'Lab Results', 'Medications', 'Alerts'];
     return (
       <div className="space-y-4 max-w-4xl">
-        <button onClick={() => setSelectedPatient(null)} className="text-sm text-primary hover:underline">&larr; Back to list</button>
-        {/* Patient Card */}
+        <button onClick={() => setSelectedPatient(null)} className="text-sm text-primary hover:underline flex items-center gap-1">
+          <ArrowLeft className="h-3 w-3" /> Back to list
+        </button>
         <div className="card-ehr p-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <img src={p.avatarUrl} alt={p.name} className="w-20 h-20 rounded-full border-2 border-primary shrink-0" />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-xl font-heading font-medium">{p.name}</h2>
-                {p.ninVerified && <span className="badge-success flex items-center gap-1"><CheckCircle className="h-3 w-3" /> NIN Verified</span>}
-                {p.multiFacility && <span className="badge-accent flex items-center gap-1"><MapPin className="h-3 w-3" /> Multi-Facility</span>}
-              </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                {p.age}y · {p.sex} · NIN: ***-***-{p.nin.slice(-4)} · ID: {p.patientId}
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl font-bold shrink-0">
+              {p.first_name[0]}{p.last_name[0]}
+            </div>
+            <div>
+              <h2 className="text-xl font-heading font-medium">{p.first_name} {p.last_name}</h2>
+              <p className="text-sm text-muted-foreground">
+                {p.gender} · {p.date_of_birth || 'DOB unknown'} · ID: {p.patient_code || '—'}
               </p>
-              <p className="text-xs text-muted-foreground mt-0.5">{p.facilityRegistered} · {p.lgaOfResidence}, {p.stateOfOrigin}</p>
-              <div className="flex gap-4 mt-2 text-xs">
-                <span>Visits: <strong>{p.totalVisits}</strong></span>
-                <span>Last: <strong>{p.lastVisitDate}</strong></span>
-                <span>Alerts: <strong className={p.activeAlerts > 0 ? 'text-destructive' : ''}>{p.activeAlerts}</strong></span>
-              </div>
             </div>
           </div>
         </div>
-
-        {/* Tabs */}
-        <div className="flex gap-1 overflow-x-auto border-b border-border">
-          {tabs.map(t => (
-            <button key={t} onClick={() => setActiveTab(t.toLowerCase().replace(' ',''))}
-              className={`px-3 py-2 text-sm whitespace-nowrap border-b-2 transition-colors ${
-                activeTab === t.toLowerCase().replace(' ','') ? 'border-primary text-primary font-medium' : 'border-transparent text-muted-foreground hover:text-foreground'
-              }`}>
-              {t}
-            </button>
-          ))}
-        </div>
-
         <div className="card-ehr p-4">
-          {activeTab === 'demographics' && (
-            <div className="grid sm:grid-cols-2 gap-4 text-sm">
-              <Field label="Full Name" value={p.name} />
-              <Field label="Date of Birth" value={p.dob} />
-              <Field label="Sex" value={p.sex} />
-              <Field label="Phone" value={p.phone} />
-              <Field label="State of Origin" value={p.stateOfOrigin} />
-              <Field label="LGA of Residence" value={p.lgaOfResidence} />
-              <Field label="Ward" value={p.ward} />
-              <Field label="Village" value={p.village} />
-              <Field label="Occupation" value={p.occupation} />
-              <Field label="Religion" value={p.religion} />
-              <Field label="Next of Kin" value={`${p.nextOfKin} (${p.nextOfKinRelation})`} />
-              <Field label="Next of Kin Phone" value={p.nextOfKinPhone} />
-              <Field label="Allergies" value={p.allergies.length > 0 ? p.allergies.join(', ') : 'None'} />
-              <Field label="Chronic Conditions" value={p.chronicConditions.length > 0 ? p.chronicConditions.join(', ') : 'None'} />
-              <div className="sm:col-span-2">
-                <Field label="Facilities Visited" value={p.facilitiesVisited.join(', ')} />
-              </div>
-            </div>
-          )}
-          {activeTab === 'visithistory' && <p className="text-sm text-muted-foreground">Visit history records displayed here.</p>}
-          {activeTab === 'vaccinations' && <p className="text-sm text-muted-foreground">Vaccination records: {p.vaccinations.join(', ')}</p>}
-          {activeTab === 'labresults' && <p className="text-sm text-muted-foreground">Lab results linked to this patient.</p>}
-          {activeTab === 'medications' && <p className="text-sm text-muted-foreground">Medication history.</p>}
-          {activeTab === 'alerts' && <p className="text-sm text-muted-foreground">{p.activeAlerts} active alerts.</p>}
+          <h3 className="font-heading font-medium text-sm mb-3">Demographics</h3>
+          <div className="grid sm:grid-cols-2 gap-4 text-sm">
+            <Field label="Phone" value={p.phone || '—'} />
+            <Field label="Address" value={p.address || '—'} />
+            <Field label="Blood Group" value={p.blood_group || '—'} />
+            <Field label="Genotype" value={p.genotype || '—'} />
+            <Field label="Allergies" value={p.allergies || 'None'} />
+            <Field label="Next of Kin" value={p.next_of_kin_name || '—'} />
+            <Field label="Next of Kin Phone" value={p.next_of_kin_phone || '—'} />
+            <Field label="Status" value={p.status} />
+          </div>
         </div>
       </div>
     );
@@ -105,116 +125,102 @@ export default function PatientsPage() {
     <div className="space-y-4 max-w-5xl">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h1 className="text-2xl font-heading font-medium">Patient Registry</h1>
-        <button onClick={() => setShowNewForm(!showNewForm)} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded text-sm font-medium hover:bg-primary/90">
+        <Button onClick={() => setShowNewForm(!showNewForm)} className="gap-2">
           <UserPlus className="h-4 w-4" /> Register New Patient
-        </button>
+        </Button>
       </div>
 
       {/* Search */}
       <div className="card-ehr p-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search by name, NIN, phone, or Patient ID..."
+          <Input
+            placeholder="Search by name, phone, or Patient ID..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            className="pl-10"
           />
         </div>
       </div>
 
       {/* New Patient Form */}
       {showNewForm && (
-        <div className="card-ehr p-6 space-y-4">
+        <form onSubmit={e => { e.preventDefault(); registerMutation.mutate(); }} className="card-ehr p-6 space-y-4">
           <h2 className="font-heading font-medium">New Patient Registration</h2>
-          {/* NIN Lookup */}
-          <div>
-            <label className="text-sm font-medium block mb-1">NIN (National Identification Number)</label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                maxLength={11}
-                placeholder="Enter 11-digit NIN"
-                value={ninLookup}
-                onChange={e => { setNinLookup(e.target.value.replace(/\D/g, '')); setNinVerified(false); }}
-                className="flex-1 px-3 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-              <button onClick={handleNinLookup} disabled={ninLoading || ninLookup.length !== 11} className="bg-primary text-primary-foreground px-4 py-2 rounded text-sm font-medium disabled:opacity-50">
-                {ninLoading ? 'Verifying...' : 'Verify NIN'}
-              </button>
-            </div>
-            {ninLoading && <p className="text-xs text-accent mt-1 pulse-gold">Connecting to NIMC database...</p>}
-            {ninVerified && <p className="text-xs text-success mt-1 flex items-center gap-1"><CheckCircle className="h-3 w-3" /> NIN Verified — Fields auto-populated</p>}
-          </div>
-
           <div className="grid sm:grid-cols-2 gap-4">
-            <FormField label="Full Name" defaultValue={ninVerified ? 'Abubakar Sani' : ''} locked={ninVerified} />
-            <FormField label="Date of Birth" defaultValue={ninVerified ? '1990-05-15' : ''} locked={ninVerified} />
-            <FormField label="Sex" defaultValue={ninVerified ? 'Male' : ''} locked={ninVerified} />
-            <FormField label="State of Origin" defaultValue={ninVerified ? 'Kano' : ''} locked={ninVerified} />
-            <FormField label="Phone Number" />
-            <FormField label="LGA of Residence" />
-            <FormField label="Ward" />
-            <FormField label="Village / Community" />
-            <FormField label="Next of Kin Name" />
-            <FormField label="Next of Kin Phone" />
-            <FormField label="Occupation" />
-            <FormField label="Religion (optional)" />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium block mb-1">Photo</label>
-            <div className="flex gap-2">
-              <button className="bg-secondary text-secondary-foreground border border-border px-3 py-2 rounded text-sm hover:bg-muted">📷 Take Photo</button>
-              <button className="bg-secondary text-secondary-foreground border border-border px-3 py-2 rounded text-sm hover:bg-muted">📁 Upload</button>
+            <div><Label>First Name *</Label><Input value={firstName} onChange={e => setFirstName(e.target.value)} required className="mt-1" /></div>
+            <div><Label>Last Name *</Label><Input value={lastName} onChange={e => setLastName(e.target.value)} required className="mt-1" /></div>
+            <div><Label>Date of Birth</Label><Input type="date" value={dob} onChange={e => setDob(e.target.value)} className="mt-1" /></div>
+            <div>
+              <Label>Gender</Label>
+              <Select value={gender} onValueChange={setGender}>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Select" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
+            <div><Label>Phone</Label><Input value={phone} onChange={e => setPhone(e.target.value)} className="mt-1" /></div>
+            <div><Label>Address</Label><Input value={address} onChange={e => setAddress(e.target.value)} className="mt-1" /></div>
+            <div><Label>Blood Group</Label><Input value={bloodGroup} onChange={e => setBloodGroup(e.target.value)} placeholder="e.g. O+" className="mt-1" /></div>
+            <div><Label>Genotype</Label><Input value={genotype} onChange={e => setGenotype(e.target.value)} placeholder="e.g. AA" className="mt-1" /></div>
+            <div><Label>Next of Kin Name</Label><Input value={nextOfKinName} onChange={e => setNextOfKinName(e.target.value)} className="mt-1" /></div>
+            <div><Label>Next of Kin Phone</Label><Input value={nextOfKinPhone} onChange={e => setNextOfKinPhone(e.target.value)} className="mt-1" /></div>
+            <div className="sm:col-span-2"><Label>Allergies</Label><Input value={allergies} onChange={e => setAllergies(e.target.value)} placeholder="Comma-separated" className="mt-1" /></div>
           </div>
-
           <div className="flex gap-2 pt-2">
-            <button className="bg-primary text-primary-foreground px-6 py-2 rounded text-sm font-medium hover:bg-primary/90">Save Patient</button>
-            <button onClick={() => setShowNewForm(false)} className="bg-secondary text-secondary-foreground border border-border px-4 py-2 rounded text-sm hover:bg-muted">Cancel</button>
+            <Button type="submit" disabled={registerMutation.isPending}>
+              {registerMutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : 'Save Patient'}
+            </Button>
+            <Button type="button" variant="outline" onClick={() => setShowNewForm(false)}>Cancel</Button>
           </div>
-        </div>
+        </form>
       )}
 
       {/* Patient List */}
       <div className="card-ehr overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="table-header">
-                <th className="text-left px-4 py-2 font-medium">Patient</th>
-                <th className="text-left px-4 py-2 font-medium hidden sm:table-cell">ID</th>
-                <th className="text-left px-4 py-2 font-medium hidden md:table-cell">Age/Sex</th>
-                <th className="text-left px-4 py-2 font-medium hidden lg:table-cell">LGA</th>
-                <th className="text-left px-4 py-2 font-medium">Last Visit</th>
-                <th className="text-left px-4 py-2 font-medium">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.slice(0, 20).map(p => (
-                <tr key={p.id} className="border-b border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelectedPatient(p)}>
-                  <td className="px-4 py-2">
-                    <div className="flex items-center gap-2">
-                      <img src={p.avatarUrl} alt="" className="w-7 h-7 rounded-full" />
-                      <span className="font-medium">{p.name}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-2 text-muted-foreground hidden sm:table-cell text-xs">{p.patientId}</td>
-                  <td className="px-4 py-2 hidden md:table-cell">{p.age}y / {p.sex.charAt(0)}</td>
-                  <td className="px-4 py-2 hidden lg:table-cell text-muted-foreground">{p.lgaOfResidence}</td>
-                  <td className="px-4 py-2 text-xs">{p.lastVisitDate}</td>
-                  <td className="px-4 py-2">
-                    {p.activeAlerts > 0 ? <span className="badge-danger">Alert</span> :
-                     p.multiFacility ? <span className="badge-accent">Multi-Facility</span> :
-                     <span className="badge-success">Active</span>}
-                  </td>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="table-header">
+                  <th className="text-left px-4 py-2 font-medium">Patient</th>
+                  <th className="text-left px-4 py-2 font-medium hidden sm:table-cell">ID</th>
+                  <th className="text-left px-4 py-2 font-medium hidden md:table-cell">Gender</th>
+                  <th className="text-left px-4 py-2 font-medium hidden lg:table-cell">Phone</th>
+                  <th className="text-left px-4 py-2 font-medium">Status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {patients.map(p => (
+                  <tr key={p.id} className="border-b border-border hover:bg-muted/30 cursor-pointer" onClick={() => setSelectedPatient(p)}>
+                    <td className="px-4 py-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold shrink-0">
+                          {p.first_name[0]}{p.last_name[0]}
+                        </div>
+                        <span className="font-medium">{p.first_name} {p.last_name}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2 text-muted-foreground hidden sm:table-cell text-xs">{p.patient_code || '—'}</td>
+                    <td className="px-4 py-2 hidden md:table-cell capitalize">{p.gender || '—'}</td>
+                    <td className="px-4 py-2 hidden lg:table-cell text-muted-foreground">{p.phone || '—'}</td>
+                    <td className="px-4 py-2">
+                      <span className={p.status === 'active' ? 'badge-success' : 'badge-warning'}>{p.status}</span>
+                    </td>
+                  </tr>
+                ))}
+                {patients.length === 0 && (
+                  <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No patients found. Register your first patient above.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -225,20 +231,6 @@ function Field({ label, value }: { label: string; value: string }) {
     <div>
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="font-medium">{value}</p>
-    </div>
-  );
-}
-
-function FormField({ label, defaultValue = '', locked = false }: { label: string; defaultValue?: string; locked?: boolean }) {
-  return (
-    <div>
-      <label className="text-sm font-medium block mb-1">{label}</label>
-      <input
-        type="text"
-        defaultValue={defaultValue}
-        disabled={locked}
-        className={`w-full px-3 py-2 border border-input rounded text-sm focus:outline-none focus:ring-2 focus:ring-ring ${locked ? 'bg-muted text-muted-foreground' : 'bg-background'}`}
-      />
     </div>
   );
 }
