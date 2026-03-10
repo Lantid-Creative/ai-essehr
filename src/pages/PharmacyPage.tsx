@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAppContext } from '@/context/AppContext';
-import { Loader2, Pill, CheckCircle, Clock, Package } from 'lucide-react';
+import { Loader2, Pill, CheckCircle, Clock, Package, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -11,6 +12,7 @@ export default function PharmacyPage() {
   const { facilityId, user } = useAppContext();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [searchQuery, setSearchQuery] = useState('');
 
   const { data: allEncounters = [], isLoading } = useQuery({
     queryKey: ['pharmacy-all', facilityId],
@@ -20,7 +22,7 @@ export default function PharmacyPage() {
         .select('id, encounter_date, prescriptions, diagnosis, patient_id, dispensed_at, dispensed_by')
         .eq('facility_id', facilityId)
         .order('encounter_date', { ascending: false })
-        .limit(100);
+        .limit(200);
       if (!data) return [];
 
       const withRx = data.filter(e => Array.isArray(e.prescriptions) && (e.prescriptions as any[]).length > 0);
@@ -47,16 +49,36 @@ export default function PharmacyPage() {
         dispensed_by: user?.id,
       } as any).eq('id', encounterId);
       if (error) throw error;
+
+      // Audit log
+      if (user) {
+        const rx = allEncounters.find((e: any) => e.id === encounterId);
+        await supabase.from('audit_logs').insert({
+          user_id: user.id,
+          facility_id: facilityId,
+          action: 'dispense',
+          entity_type: 'prescription',
+          entity_id: encounterId,
+          details: { patient: rx?.patientName, medications: rx?.meds?.length } as any,
+        } as any);
+      }
     },
     onSuccess: () => {
       toast({ title: 'Prescription dispensed' });
       queryClient.invalidateQueries({ queryKey: ['pharmacy-all'] });
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
     },
     onError: (err: any) => toast({ title: 'Error', description: err.message, variant: 'destructive' }),
   });
 
-  const pending = allEncounters.filter((e: any) => !e.dispensed);
-  const dispensed = allEncounters.filter((e: any) => e.dispensed);
+  const filterBySearch = (items: any[]) =>
+    items.filter(e => !searchQuery ||
+      e.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      e.meds.some((m: any) => m.drug?.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
+  const pending = filterBySearch(allEncounters.filter((e: any) => !e.dispensed));
+  const dispensed = filterBySearch(allEncounters.filter((e: any) => e.dispensed));
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -68,14 +90,14 @@ export default function PharmacyPage() {
         <div className="stat-card flex items-center gap-3">
           <Clock className="h-5 w-5 text-warning shrink-0" />
           <div>
-            <p className="text-2xl font-heading font-medium">{pending.length}</p>
+            <p className="text-2xl font-heading font-medium">{allEncounters.filter((e: any) => !e.dispensed).length}</p>
             <p className="text-xs text-muted-foreground">Pending Dispensing</p>
           </div>
         </div>
         <div className="stat-card flex items-center gap-3">
           <CheckCircle className="h-5 w-5 text-success shrink-0" />
           <div>
-            <p className="text-2xl font-heading font-medium">{dispensed.length}</p>
+            <p className="text-2xl font-heading font-medium">{allEncounters.filter((e: any) => e.dispensed).length}</p>
             <p className="text-xs text-muted-foreground">Dispensed</p>
           </div>
         </div>
@@ -86,6 +108,12 @@ export default function PharmacyPage() {
             <p className="text-xs text-muted-foreground">Total Drug Items</p>
           </div>
         </div>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input placeholder="Search by patient or drug name..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-10" />
       </div>
 
       {isLoading ? (
