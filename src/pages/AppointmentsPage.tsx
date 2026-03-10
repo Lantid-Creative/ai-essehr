@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAppContext } from '@/context/AppContext';
-import { CalendarPlus, Loader2, Search, CheckCircle, Clock, XCircle } from 'lucide-react';
+import {
+  CalendarPlus, Loader2, Search, CheckCircle, Clock, XCircle,
+  AlertTriangle, Zap, ArrowUp, ArrowRight, Users
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,7 +18,13 @@ import {
 } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const APPOINTMENT_TYPES = ['consultation', 'follow_up', 'immunization', 'anc', 'lab'];
+const APPOINTMENT_TYPES = ['consultation', 'follow_up', 'immunization', 'anc', 'lab', 'emergency'];
+const TRIAGE_LEVELS = [
+  { value: 'emergency', label: 'Emergency', color: 'bg-destructive text-destructive-foreground', icon: Zap, order: 0 },
+  { value: 'urgent', label: 'Urgent', color: 'bg-amber-500 text-white', icon: AlertTriangle, order: 1 },
+  { value: 'priority', label: 'Priority', color: 'bg-blue-500 text-white', icon: ArrowUp, order: 2 },
+  { value: 'routine', label: 'Routine', color: 'bg-muted text-muted-foreground', icon: ArrowRight, order: 3 },
+];
 
 export default function AppointmentsPage() {
   const { facilityId, user } = useAppContext();
@@ -28,6 +37,7 @@ export default function AppointmentsPage() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [time, setTime] = useState('09:00');
   const [type, setType] = useState('consultation');
+  const [triage, setTriage] = useState('routine');
   const [notes, setNotes] = useState('');
 
   const today = new Date().toISOString().split('T')[0];
@@ -93,6 +103,8 @@ export default function AppointmentsPage() {
   const createMutation = useMutation({
     mutationFn: async () => {
       if (!selectedPatientId) throw new Error('Select a patient');
+      // Generate queue number for today
+      const todayCount = appointments.filter((a: any) => a.appointment_date === date).length;
       const { error } = await supabase.from('appointments').insert({
         patient_id: selectedPatientId,
         facility_id: facilityId,
@@ -100,6 +112,8 @@ export default function AppointmentsPage() {
         appointment_date: date,
         appointment_time: time,
         appointment_type: type,
+        triage_priority: triage,
+        queue_number: todayCount + 1,
         notes: notes || null,
       } as any);
       if (error) throw error;
@@ -115,7 +129,9 @@ export default function AppointmentsPage() {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from('appointments').update({ status } as any).eq('id', id);
+      const update: any = { status };
+      if (status === 'checked_in') update.checked_in_at = new Date().toISOString();
+      const { error } = await supabase.from('appointments').update(update as any).eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -127,16 +143,27 @@ export default function AppointmentsPage() {
   const resetForm = () => {
     setPatientSearch(''); setSelectedPatientId(null); setSelectedPatientName('');
     setDate(new Date().toISOString().split('T')[0]); setTime('09:00');
-    setType('consultation'); setNotes('');
+    setType('consultation'); setTriage('routine'); setNotes('');
   };
 
-  const todayAppts = appointments.filter((a: any) => a.appointment_date === today);
+  // Sort today's queue by triage priority, then time
+  const triageOrder: Record<string, number> = { emergency: 0, urgent: 1, priority: 2, routine: 3 };
+  const todayAppts = appointments
+    .filter((a: any) => a.appointment_date === today)
+    .sort((a: any, b: any) => {
+      const ta = triageOrder[a.triage_priority || 'routine'] ?? 3;
+      const tb = triageOrder[b.triage_priority || 'routine'] ?? 3;
+      if (ta !== tb) return ta - tb;
+      return (a.appointment_time || '').localeCompare(b.appointment_time || '');
+    });
   const upcoming = appointments.filter((a: any) => a.appointment_date > today);
+  const checkedIn = todayAppts.filter((a: any) => a.status === 'checked_in');
+  const waiting = todayAppts.filter((a: any) => a.status === 'scheduled');
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-6xl">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h1 className="text-2xl font-heading font-medium">Appointments & Queue</h1>
+        <h1 className="text-2xl font-heading font-medium">Queue & Appointments</h1>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button className="gap-2"><CalendarPlus className="h-4 w-4" /> New Appointment</Button>
@@ -185,16 +212,29 @@ export default function AppointmentsPage() {
                   <Input type="time" value={time} onChange={e => setTime(e.target.value)} className="mt-1" required />
                 </div>
               </div>
-              <div>
-                <Label>Type</Label>
-                <Select value={type} onValueChange={setType}>
-                  <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {APPOINTMENT_TYPES.map(t => (
-                      <SelectItem key={t} value={t}>{t.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>Type</Label>
+                  <Select value={type} onValueChange={setType}>
+                    <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {APPOINTMENT_TYPES.map(t => (
+                        <SelectItem key={t} value={t}>{t.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Triage Priority</Label>
+                  <Select value={triage} onValueChange={setTriage}>
+                    <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {TRIAGE_LEVELS.map(t => (
+                        <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div>
                 <Label>Notes</Label>
@@ -208,24 +248,56 @@ export default function AppointmentsPage() {
         </Dialog>
       </div>
 
+      {/* Queue Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="stat-card flex items-center gap-3">
+          <Users className="h-5 w-5 text-primary shrink-0" />
+          <div>
+            <p className="text-2xl font-heading font-medium">{todayAppts.length}</p>
+            <p className="text-xs text-muted-foreground">Today's Queue</p>
+          </div>
+        </div>
+        <div className="stat-card flex items-center gap-3">
+          <Clock className="h-5 w-5 text-amber-600 shrink-0" />
+          <div>
+            <p className="text-2xl font-heading font-medium">{waiting.length}</p>
+            <p className="text-xs text-muted-foreground">Waiting</p>
+          </div>
+        </div>
+        <div className="stat-card flex items-center gap-3">
+          <CheckCircle className="h-5 w-5 text-green-600 shrink-0" />
+          <div>
+            <p className="text-2xl font-heading font-medium">{checkedIn.length}</p>
+            <p className="text-xs text-muted-foreground">Checked In</p>
+          </div>
+        </div>
+        <div className="stat-card flex items-center gap-3">
+          <Zap className="h-5 w-5 text-destructive shrink-0" />
+          <div>
+            <p className="text-2xl font-heading font-medium">{todayAppts.filter((a: any) => (a.triage_priority === 'emergency' || a.triage_priority === 'urgent') && a.status !== 'completed').length}</p>
+            <p className="text-xs text-muted-foreground">Urgent/Emergency</p>
+          </div>
+        </div>
+      </div>
+
       {isLoading ? (
         <div className="flex items-center justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
       ) : (
-        <Tabs defaultValue="today">
+        <Tabs defaultValue="queue">
           <TabsList>
-            <TabsTrigger value="today" className="gap-1"><Clock className="h-3 w-3" /> Today ({todayAppts.length})</TabsTrigger>
+            <TabsTrigger value="queue" className="gap-1"><Users className="h-3 w-3" /> Today's Queue ({todayAppts.length})</TabsTrigger>
             <TabsTrigger value="upcoming" className="gap-1"><CalendarPlus className="h-3 w-3" /> Upcoming ({upcoming.length})</TabsTrigger>
             <TabsTrigger value="past" className="gap-1">Past ({pastAppointments.length})</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="today" className="mt-4">
-            <AppointmentList items={todayAppts} onUpdateStatus={(id, s) => updateStatusMutation.mutate({ id, status: s })} showActions />
+          <TabsContent value="queue" className="mt-4">
+            <QueueList items={todayAppts} onUpdateStatus={(id, s) => updateStatusMutation.mutate({ id, status: s })} />
           </TabsContent>
           <TabsContent value="upcoming" className="mt-4">
-            <AppointmentList items={upcoming} onUpdateStatus={(id, s) => updateStatusMutation.mutate({ id, status: s })} showActions />
+            <QueueList items={upcoming} onUpdateStatus={(id, s) => updateStatusMutation.mutate({ id, status: s })} />
           </TabsContent>
           <TabsContent value="past" className="mt-4">
-            <AppointmentList items={pastAppointments} showActions={false} />
+            <QueueList items={pastAppointments} />
           </TabsContent>
         </Tabs>
       )}
@@ -233,21 +305,24 @@ export default function AppointmentsPage() {
   );
 }
 
-function AppointmentList({ items, onUpdateStatus, showActions = true }: {
-  items: any[];
-  onUpdateStatus?: (id: string, status: string) => void;
-  showActions?: boolean;
-}) {
+function QueueList({ items, onUpdateStatus }: { items: any[]; onUpdateStatus?: (id: string, status: string) => void }) {
   if (items.length === 0) {
     return <div className="card-ehr p-8 text-center text-muted-foreground text-sm">No appointments found.</div>;
   }
 
   const statusColors: Record<string, string> = {
-    scheduled: 'badge-accent',
-    checked_in: 'badge-warning',
-    completed: 'badge-success',
-    cancelled: 'badge-danger',
-    no_show: 'badge-danger',
+    scheduled: 'text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground',
+    checked_in: 'text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800',
+    completed: 'text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800',
+    cancelled: 'text-xs px-2 py-0.5 rounded-full bg-destructive/10 text-destructive',
+    no_show: 'text-xs px-2 py-0.5 rounded-full bg-destructive/10 text-destructive',
+  };
+
+  const triageColors: Record<string, string> = {
+    emergency: 'text-xs px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground font-semibold',
+    urgent: 'text-xs px-2 py-0.5 rounded-full bg-amber-500 text-white font-medium',
+    priority: 'text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-800',
+    routine: 'text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground',
   };
 
   return (
@@ -256,40 +331,53 @@ function AppointmentList({ items, onUpdateStatus, showActions = true }: {
         <table className="w-full text-sm">
           <thead>
             <tr className="table-header">
+              <th className="text-center px-3 py-2 font-medium w-12">#</th>
+              <th className="text-left px-4 py-2 font-medium">Priority</th>
               <th className="text-left px-4 py-2 font-medium">Time</th>
               <th className="text-left px-4 py-2 font-medium">Patient</th>
-              <th className="text-left px-4 py-2 font-medium">Type</th>
+              <th className="text-left px-4 py-2 font-medium hidden sm:table-cell">Type</th>
               <th className="text-left px-4 py-2 font-medium">Status</th>
-              {showActions && <th className="text-left px-4 py-2 font-medium">Actions</th>}
+              {onUpdateStatus && <th className="text-left px-4 py-2 font-medium">Actions</th>}
             </tr>
           </thead>
           <tbody>
-            {items.map((a: any) => (
-              <tr key={a.id} className="border-b border-border hover:bg-muted/30">
+            {items.map((a: any, idx: number) => (
+              <tr key={a.id} className={`border-b border-border hover:bg-muted/30 ${
+                a.triage_priority === 'emergency' ? 'bg-destructive/5' :
+                a.triage_priority === 'urgent' ? 'bg-amber-50' : ''
+              }`}>
+                <td className="px-3 py-2 text-center font-mono text-xs text-muted-foreground">
+                  {a.queue_number || idx + 1}
+                </td>
+                <td className="px-4 py-2">
+                  <span className={triageColors[a.triage_priority || 'routine']}>
+                    {(a.triage_priority || 'routine').charAt(0).toUpperCase() + (a.triage_priority || 'routine').slice(1)}
+                  </span>
+                </td>
                 <td className="px-4 py-2">
                   <p className="font-medium">{a.appointment_time?.slice(0, 5)}</p>
                   <p className="text-xs text-muted-foreground">{a.appointment_date}</p>
                 </td>
                 <td className="px-4 py-2 font-medium">{a.patient.first_name} {a.patient.last_name}</td>
-                <td className="px-4 py-2 capitalize">{a.appointment_type?.replace('_', ' ')}</td>
+                <td className="px-4 py-2 capitalize hidden sm:table-cell">{a.appointment_type?.replace('_', ' ')}</td>
                 <td className="px-4 py-2">
-                  <span className={statusColors[a.status] || 'badge-accent'}>{a.status?.replace('_', ' ')}</span>
+                  <span className={statusColors[a.status] || statusColors.scheduled}>{a.status?.replace('_', ' ')}</span>
                 </td>
-                {showActions && (
+                {onUpdateStatus && (
                   <td className="px-4 py-2">
                     <div className="flex gap-1">
-                      {a.status === 'scheduled' && onUpdateStatus && (
+                      {a.status === 'scheduled' && (
                         <>
                           <button onClick={() => onUpdateStatus(a.id, 'checked_in')} className="text-xs text-primary hover:underline flex items-center gap-0.5">
                             <CheckCircle className="h-3 w-3" /> Check In
                           </button>
-                          <button onClick={() => onUpdateStatus(a.id, 'cancelled')} className="text-xs text-destructive hover:underline flex items-center gap-0.5 ml-2">
-                            <XCircle className="h-3 w-3" /> Cancel
+                          <button onClick={() => onUpdateStatus(a.id, 'no_show')} className="text-xs text-destructive hover:underline flex items-center gap-0.5 ml-2">
+                            <XCircle className="h-3 w-3" /> No Show
                           </button>
                         </>
                       )}
-                      {a.status === 'checked_in' && onUpdateStatus && (
-                        <button onClick={() => onUpdateStatus(a.id, 'completed')} className="text-xs text-success hover:underline flex items-center gap-0.5">
+                      {a.status === 'checked_in' && (
+                        <button onClick={() => onUpdateStatus(a.id, 'completed')} className="text-xs text-green-700 hover:underline flex items-center gap-0.5">
                           <CheckCircle className="h-3 w-3" /> Complete
                         </button>
                       )}
