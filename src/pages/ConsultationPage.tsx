@@ -106,6 +106,26 @@ export default function ConsultationPage() {
     );
   }, [selectedSymptoms]);
 
+  // Drug interaction checker
+  const drugWarnings = useMemo(() => {
+    if (!selectedPatient) return [];
+    const newDrugs = prescriptions.map(p => p.drug).filter(d => d.trim());
+    if (newDrugs.length === 0) return [];
+
+    // Get existing undispensed medications from past encounters
+    const existingMeds = pastEncounters
+      .filter(e => !e.dispensed_at && Array.isArray(e.prescriptions))
+      .flatMap(e => (e.prescriptions as any[]).map((rx: any) => rx.drug))
+      .filter(Boolean);
+
+    // Get patient allergies
+    const allergies = selectedPatient.allergies
+      ? selectedPatient.allergies.split(',').map(a => a.trim()).filter(Boolean)
+      : [];
+
+    return checkDrugInteractions(newDrugs, existingMeds, allergies);
+  }, [prescriptions, selectedPatient, pastEncounters]);
+
   const toggleSymptom = (s: string) => {
     setSelectedSymptoms(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
   };
