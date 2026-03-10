@@ -506,6 +506,66 @@ export type Database = {
           },
         ]
       }
+      ward_beds: {
+        Row: {
+          admission_date: string | null
+          bed_number: string
+          created_at: string
+          discharge_date: string | null
+          facility_id: string
+          id: string
+          isolation_flag: boolean
+          notes: string | null
+          patient_id: string | null
+          status: string
+          updated_at: string
+          ward_name: string
+        }
+        Insert: {
+          admission_date?: string | null
+          bed_number: string
+          created_at?: string
+          discharge_date?: string | null
+          facility_id: string
+          id?: string
+          isolation_flag?: boolean
+          notes?: string | null
+          patient_id?: string | null
+          status?: string
+          updated_at?: string
+          ward_name: string
+        }
+        Update: {
+          admission_date?: string | null
+          bed_number?: string
+          created_at?: string
+          discharge_date?: string | null
+          facility_id?: string
+          id?: string
+          isolation_flag?: boolean
+          notes?: string | null
+          patient_id?: string | null
+          status?: string
+          updated_at?: string
+          ward_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ward_beds_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ward_beds_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
