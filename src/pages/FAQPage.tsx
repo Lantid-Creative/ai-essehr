@@ -90,4 +90,6 @@ const FAQPage = () => {
       </footer>
     </div>
   );
-}
+};
+
+export default FAQPage;

@@ -85,4 +85,6 @@ const HelpPage = () => {
       </footer>
     </div>
   );
-}
+};
+
+export default HelpPage;
