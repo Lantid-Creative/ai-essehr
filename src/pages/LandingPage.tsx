@@ -404,7 +404,7 @@ export default function LandingPage() {
             Ready to Digitize Your Facility?
           </h2>
           <p className="text-primary-foreground/70 text-lg mb-10 max-w-2xl mx-auto">
-            Join thousands of Primary Health Care facilities across Nigeria already using AI-ESS EHR 
+            Join hundreds of health facilities already using AI-ESS EHR 
             to improve patient outcomes and strengthen disease surveillance.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
