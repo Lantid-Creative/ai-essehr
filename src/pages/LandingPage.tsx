@@ -157,18 +157,17 @@ export default function LandingPage() {
             <div>
               <div className="inline-flex items-center gap-2 bg-primary/15 text-primary-foreground text-sm font-medium px-4 py-1.5 rounded-full mb-8 border border-primary/20">
                 <Shield className="h-4 w-4" />
-                National Health Surveillance System
+                Surveillance-First EHR Platform
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-sidebar-foreground leading-[1.1] mb-6">
-                Protecting Nigeria's Health,{' '}
+                Smarter Health Records,{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[hsl(153,100%,40%)] to-[hsl(160,80%,55%)]">
-                  One Facility at a Time
+                  Real-Time Surveillance
                 </span>
               </h1>
               <p className="text-lg text-sidebar-foreground/65 mb-10 max-w-xl leading-relaxed">
-                AI-ESS EHR is the surveillance-first electronic health records platform deployed across 
-                Primary Health Care facilities in all 36 Nigerian states and the FCT. Detect outbreaks early. 
-                Save lives faster.
+                AI-ESS EHR is the surveillance-first electronic health records platform built for 
+                health facilities everywhere. Detect outbreaks early. Save lives faster.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/register/facility">
