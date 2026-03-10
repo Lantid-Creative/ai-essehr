@@ -41,6 +41,8 @@ const App = () => (
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register/facility" element={<RegisterFacilityPage />} />
             <Route path="/register/patient" element={<RegisterPatientPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/help" element={<HelpPage />} />
 
             {/* Dashboard routes (wrapped in MainLayout) */}
             <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
