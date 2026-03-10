@@ -2,7 +2,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAppContext, AppRole } from '@/context/AppContext';
 import {
   LayoutDashboard, UserPlus, Stethoscope, BedDouble, Shield, Syringe,
-  FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity
+  FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity,
+  CalendarPlus, ClipboardList
 } from 'lucide-react';
 
 interface NavItem {
