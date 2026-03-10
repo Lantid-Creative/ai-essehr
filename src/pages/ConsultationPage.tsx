@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import PatientHealthRecord from '@/components/patient/PatientHealthRecord';
+import DrugInteractionAlert, { checkDrugInteractions } from '@/components/consultation/DrugInteractionAlert';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Patient = Tables<'patients'>;
@@ -104,6 +105,26 @@ export default function ConsultationPage() {
       rule.requiredSymptoms.every(s => selectedSymptoms.includes(s))
     );
   }, [selectedSymptoms]);
+
+  // Drug interaction checker
+  const drugWarnings = useMemo(() => {
+    if (!selectedPatient) return [];
+    const newDrugs = prescriptions.map(p => p.drug).filter(d => d.trim());
+    if (newDrugs.length === 0) return [];
+
+    // Get existing undispensed medications from past encounters
+    const existingMeds = pastEncounters
+      .filter(e => !e.dispensed_at && Array.isArray(e.prescriptions))
+      .flatMap(e => (e.prescriptions as any[]).map((rx: any) => rx.drug))
+      .filter(Boolean);
+
+    // Get patient allergies
+    const allergies = selectedPatient.allergies
+      ? selectedPatient.allergies.split(',').map(a => a.trim()).filter(Boolean)
+      : [];
+
+    return checkDrugInteractions(newDrugs, existingMeds, allergies);
+  }, [prescriptions, selectedPatient, pastEncounters]);
 
   const toggleSymptom = (s: string) => {
     setSelectedSymptoms(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
@@ -412,6 +433,9 @@ export default function ConsultationPage() {
               </div>
             )}
           </div>
+
+          {/* Drug Interaction Warnings */}
+          <DrugInteractionAlert warnings={drugWarnings} />
 
           {/* Lab Orders */}
           <div className="card-ehr p-4">
