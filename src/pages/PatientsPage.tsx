@@ -324,12 +324,3 @@ function PatientDetail({ patient: p, onBack, facilityId, userId }: { patient: Pa
     </div>
   );
 }
-
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="font-medium">{value}</p>
-    </div>
-  );
-}
