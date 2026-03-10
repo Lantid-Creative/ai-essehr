@@ -29,6 +29,8 @@ import SyncPage from "@/pages/SyncPage";
 import SettingsPage from "@/pages/SettingsPage";
 import AppointmentsPage from "@/pages/AppointmentsPage";
 import AuditLogPage from "@/pages/AuditLogPage";
+import DrugInventoryPage from "@/pages/DrugInventoryPage";
+import BillingPage from "@/pages/BillingPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -71,6 +73,8 @@ const App = () => (
             <Route path="/reports" element={<ProtectedPage><ReportsPage /></ProtectedPage>} />
             <Route path="/appointments" element={<ProtectedPage><AppointmentsPage /></ProtectedPage>} />
             <Route path="/audit" element={<ProtectedPage><AuditLogPage /></ProtectedPage>} />
+            <Route path="/inventory" element={<ProtectedPage><DrugInventoryPage /></ProtectedPage>} />
+            <Route path="/billing" element={<ProtectedPage><BillingPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />

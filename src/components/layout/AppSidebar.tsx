@@ -3,7 +3,7 @@ import { useAppContext, AppRole } from '@/context/AppContext';
 import {
   LayoutDashboard, UserPlus, Stethoscope, BedDouble, Shield, Syringe,
   FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity,
-  CalendarPlus, ClipboardList
+  CalendarPlus, ClipboardList, Package, Receipt
 } from 'lucide-react';
 
 interface NavItem {
@@ -23,6 +23,8 @@ const allNavItems: NavItem[] = [
   { label: 'Immunization', path: '/immunization', icon: Syringe, roles: ['facility_admin', 'nurse', 'chew'] },
   { label: 'Laboratory', path: '/laboratory', icon: FlaskConical, roles: ['facility_admin', 'doctor', 'lab_tech'] },
   { label: 'Pharmacy', path: '/pharmacy', icon: Pill, roles: ['facility_admin', 'doctor', 'pharmacist'] },
+  { label: 'Drug Inventory', path: '/inventory', icon: Package, roles: ['facility_admin', 'pharmacist'] },
+  { label: 'Billing', path: '/billing', icon: Receipt, roles: ['facility_admin', 'doctor', 'nurse', 'data_clerk'] },
   { label: 'MCH', path: '/mch', icon: Baby, roles: ['facility_admin', 'nurse', 'chew'] },
   { label: 'Staff', path: '/staff', icon: Users, roles: ['facility_admin', 'super_admin'] },
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
