@@ -7,32 +7,32 @@ const features = [
   {
     icon: Stethoscope,
     title: 'Clinical Encounters',
-    desc: 'Syndromic surveillance built into every consultation. Auto-detect Lassa, Cholera, Meningitis, Measles & Diphtheria.',
+    desc: 'Syndromic surveillance built into every consultation. Auto-detect priority diseases like Lassa, Cholera, Meningitis, Measles & Diphtheria.',
   },
   {
     icon: Shield,
     title: 'Disease Surveillance',
-    desc: 'Real-time outbreak alerts, IDSR-compatible reporting, and threshold-based early warning across all 36 states + FCT.',
+    desc: 'Real-time outbreak alerts, IDSR-compatible reporting, and threshold-based early warning across all connected regions.',
   },
   {
     icon: Building2,
     title: 'Multi-Facility Platform',
-    desc: 'Each health facility gets its own workspace. Patient records travel with them across facilities via NIN verification.',
+    desc: 'Each health facility gets its own workspace. Patient records travel with them across facilities via verified identity.',
   },
   {
     icon: BarChart3,
     title: 'Analytics & Reports',
-    desc: 'HMIS 035B auto-generation, disease trend charts, facility scorecards, and national-level dashboards for NCDC.',
+    desc: 'Auto-generated reports, disease trend charts, facility scorecards, and national-level dashboards for health agencies.',
   },
   {
     icon: Users,
     title: 'Staff Management',
-    desc: 'Onboard CHEWs, Nurses, Doctors, and Data Clerks. Track training, certifications, and attendance per facility.',
+    desc: 'Onboard healthcare workers — nurses, doctors, and data clerks. Track training, certifications, and attendance per facility.',
   },
   {
     icon: Globe2,
     title: 'Works Offline',
-    desc: 'Full offline capability for rural PHCs. Data syncs automatically when connectivity returns.',
+    desc: 'Full offline capability for remote facilities. Data syncs automatically when connectivity returns.',
   },
   {
     icon: Zap,
@@ -48,23 +48,23 @@ const features = [
 
 const securityFeatures = [
   { icon: Lock, title: 'End-to-End Encryption', desc: 'All data encrypted in transit (TLS 1.3) and at rest (AES-256). Your patient data never travels unprotected.' },
-  { icon: Server, title: 'Sovereign Data Hosting', desc: 'All health data is hosted on secure infrastructure compliant with Nigeria\'s NDPR data protection regulations.' },
+  { icon: Server, title: 'Secure Data Hosting', desc: 'All health data is hosted on secure, compliant infrastructure meeting international data protection standards.' },
   { icon: Eye, title: 'Role-Based Access', desc: 'Granular permissions ensure only authorized personnel access patient records. Every action is audit-logged.' },
-  { icon: FileCheck, title: 'Compliance & Auditing', desc: 'Full audit trails for regulatory compliance. NDPR, IDSR, and WHO digital health standards built in.' },
+  { icon: FileCheck, title: 'Compliance & Auditing', desc: 'Full audit trails for regulatory compliance. IDSR and WHO digital health standards built in.' },
 ];
 
 const portalCards = [
   {
     icon: Building2,
     title: 'Health Facility',
-    desc: 'Register your Primary Health Care centre, onboard staff, and start recording patient encounters and surveillance data.',
+    desc: 'Register your health facility, onboard staff, and start recording patient encounters and surveillance data.',
     cta: 'Register Facility',
     link: '/register/facility',
   },
   {
     icon: Shield,
     title: 'Health Agency',
-    desc: 'NCDC, State Epidemiologists, and LGA Focal Persons — access surveillance dashboards and outbreak intelligence.',
+    desc: 'Epidemiologists and surveillance officers — access dashboards and outbreak intelligence.',
     cta: 'Agency Login',
     link: '/login',
   },
@@ -78,17 +78,17 @@ const portalCards = [
 ];
 
 const stats = [
-  { value: '774+', label: 'LGAs Covered' },
-  { value: '36 + FCT', label: 'States Connected' },
+  { value: '500+', label: 'Facilities Connected' },
+  { value: '100+', label: 'Regions Covered' },
   { value: '50,000+', label: 'Patients Registered' },
   { value: '5', label: 'Priority Diseases Tracked' },
 ];
 
 const howItWorks = [
-  { step: '01', title: 'Register Your Facility', desc: 'Sign up with your FHSS code, select your state and LGA, and create your admin account in minutes.' },
-  { step: '02', title: 'Onboard Your Team', desc: 'Add CHEWs, nurses, doctors, and data clerks. Assign roles and permissions tailored to your facility.' },
+  { step: '01', title: 'Register Your Facility', desc: 'Sign up with your facility code, select your region, and create your admin account in minutes.' },
+  { step: '02', title: 'Onboard Your Team', desc: 'Add healthcare workers — nurses, doctors, and data clerks. Assign roles and permissions tailored to your facility.' },
   { step: '03', title: 'Start Recording', desc: 'Begin documenting patient encounters, immunizations, and lab results — online or offline.' },
-  { step: '04', title: 'Surveillance Activates', desc: 'The system automatically detects disease patterns, triggers alerts, and sends reports to state and national dashboards.' },
+  { step: '04', title: 'Surveillance Activates', desc: 'The system automatically detects disease patterns, triggers alerts, and sends reports to regional and national dashboards.' },
 ];
 
 export default function LandingPage() {
