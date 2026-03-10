@@ -14,6 +14,104 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          appointment_type: string
+          created_at: string
+          facility_id: string
+          id: string
+          notes: string | null
+          patient_id: string
+          scheduled_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          appointment_type?: string
+          created_at?: string
+          facility_id: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          scheduled_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          appointment_type?: string
+          created_at?: string
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          scheduled_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          facility_id: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          facility_id?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          facility_id?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       encounters: {
         Row: {
           chief_complaint: string | null
@@ -21,6 +119,8 @@ export type Database = {
           created_at: string
           diagnosis: string | null
           diagnosis_codes: Json | null
+          dispensed_at: string | null
+          dispensed_by: string | null
           encounter_date: string
           encounter_type: Database["public"]["Enums"]["encounter_type"]
           examination_notes: string | null
@@ -42,6 +142,8 @@ export type Database = {
           created_at?: string
           diagnosis?: string | null
           diagnosis_codes?: Json | null
+          dispensed_at?: string | null
+          dispensed_by?: string | null
           encounter_date?: string
           encounter_type?: Database["public"]["Enums"]["encounter_type"]
           examination_notes?: string | null
@@ -63,6 +165,8 @@ export type Database = {
           created_at?: string
           diagnosis?: string | null
           diagnosis_codes?: Json | null
+          dispensed_at?: string | null
+          dispensed_by?: string | null
           encounter_date?: string
           encounter_type?: Database["public"]["Enums"]["encounter_type"]
           examination_notes?: string | null
