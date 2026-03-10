@@ -1,8 +1,8 @@
-import { Bell, Menu, Wifi, WifiOff, LogOut, Loader2 } from 'lucide-react';
+import { Menu, Wifi, WifiOff, LogOut } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 import { useOnlineStatus } from '@/hooks/useOfflineSync';
+import NotificationsDropdown from './NotificationsDropdown';
 
 export default function TopBar() {
   const { sidebarOpen, setSidebarOpen, profile, roles, signOut } = useAppContext();
@@ -49,9 +49,7 @@ export default function TopBar() {
         )}
       </div>
 
-      <button className="relative p-1">
-        <Bell className="h-5 w-5" />
-      </button>
+      <NotificationsDropdown />
 
       <div className="hidden md:flex items-center gap-2">
         <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
