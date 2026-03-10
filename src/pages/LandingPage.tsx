@@ -228,7 +228,7 @@ export default function LandingPage() {
             </h2>
             <p className="text-muted-foreground text-lg">
               AI-ESS EHR connects facilities, health agencies, and patients on a unified platform — 
-              enabling real-time disease surveillance, clinical documentation, and data-driven health policy across Nigeria.
+              enabling real-time disease surveillance, clinical documentation, and data-driven health policy.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
