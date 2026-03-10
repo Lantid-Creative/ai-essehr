@@ -434,6 +434,9 @@ export default function ConsultationPage() {
             )}
           </div>
 
+          {/* Drug Interaction Warnings */}
+          <DrugInteractionAlert warnings={drugWarnings} />
+
           {/* Lab Orders */}
           <div className="card-ehr p-4">
             <h2 className="font-heading font-medium text-sm mb-3">Lab Orders</h2>
