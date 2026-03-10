@@ -75,7 +75,7 @@ export default function AppSidebar() {
 
         {/* Footer */}
         <div className="px-4 py-3 border-t border-sidebar-border text-[11px] text-sidebar-foreground/50">
-          National Health Surveillance System
+          © {new Date().getFullYear()} Lantid Creative LTD
         </div>
       </aside>
     </>

@@ -306,7 +306,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-sidebar-border mt-8 pt-8 text-center text-sm text-sidebar-foreground/40">
-            © {new Date().getFullYear()} AI-ESS EHR — Nigeria Governors' Forum. All rights reserved.
+            © {new Date().getFullYear()} Lantid Creative LTD. All rights reserved.
           </div>
         </div>
       </footer>
