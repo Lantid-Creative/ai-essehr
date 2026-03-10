@@ -2,8 +2,10 @@ import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAppContext } from '@/context/AppContext';
-import { AlertTriangle, Search, Loader2 } from 'lucide-react';
+import { AlertTriangle, Search, Loader2, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import type { Tables } from '@/integrations/supabase/types';
 
@@ -28,6 +30,32 @@ const syndromicRules = [
 
 const dispositions = ['Outpatient', 'Admitted', 'Referred', 'Discharged'] as const;
 
+interface Prescription {
+  drug: string;
+  dose: string;
+  frequency: string;
+  duration: string;
+}
+
+interface LabOrder {
+  test_name: string;
+  test_category: string;
+}
+
+const commonDrugs = ['Artemether-Lumefantrine (ACT)', 'Amoxicillin 500mg', 'Paracetamol 500mg', 'Metronidazole 400mg', 'Ciprofloxacin 500mg', 'Omeprazole 20mg', 'ORS', 'Zinc Tablets', 'Ibuprofen 400mg', 'Diclofenac 50mg'];
+const commonTests = [
+  { name: 'RDT Malaria', category: 'Rapid Test' },
+  { name: 'Full Blood Count', category: 'Hematology' },
+  { name: 'Blood Culture', category: 'Microbiology' },
+  { name: 'Urinalysis', category: 'Urinalysis' },
+  { name: 'Stool Microscopy', category: 'Microbiology' },
+  { name: 'Lassa Screening', category: 'Virology' },
+  { name: 'Cholera RDT', category: 'Rapid Test' },
+  { name: 'Liver Function Test', category: 'Biochemistry' },
+  { name: 'Renal Function Test', category: 'Biochemistry' },
+  { name: 'Widal Test', category: 'Serology' },
+];
+
 export default function ConsultationPage() {
   const { facilityId, user } = useAppContext();
   const { toast } = useToast();
@@ -42,8 +70,9 @@ export default function ConsultationPage() {
   const [diagnosis, setDiagnosis] = useState('');
   const [treatment, setTreatment] = useState('');
   const [disposition, setDisposition] = useState<string>('Outpatient');
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
+  const [labOrders, setLabOrders] = useState<LabOrder[]>([]);
 
-  // Search patients from DB
   const { data: searchResults = [] } = useQuery({
     queryKey: ['patient-search', patientSearch, facilityId],
     queryFn: async () => {
@@ -57,15 +86,13 @@ export default function ConsultationPage() {
     enabled: patientSearch.length >= 2 && !selectedPatient,
   });
 
-  // Past encounters for selected patient
   const { data: pastEncounters = [] } = useQuery({
     queryKey: ['encounters', selectedPatient?.id],
     queryFn: async () => {
       if (!selectedPatient) return [];
       const { data } = await supabase.from('encounters').select('*')
         .eq('patient_id', selectedPatient.id)
-        .order('encounter_date', { ascending: false })
-        .limit(10);
+        .order('encounter_date', { ascending: false }).limit(10);
       return data || [];
     },
     enabled: !!selectedPatient,
@@ -81,12 +108,28 @@ export default function ConsultationPage() {
     setSelectedSymptoms(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
   };
 
+  const addPrescription = () => setPrescriptions([...prescriptions, { drug: '', dose: '', frequency: '', duration: '' }]);
+  const removePrescription = (i: number) => setPrescriptions(prescriptions.filter((_, idx) => idx !== i));
+  const updatePrescription = (i: number, field: keyof Prescription, value: string) => {
+    const updated = [...prescriptions];
+    updated[i] = { ...updated[i], [field]: value };
+    setPrescriptions(updated);
+  };
+
+  const addLabOrder = (test: typeof commonTests[0]) => {
+    if (!labOrders.find(l => l.test_name === test.name)) {
+      setLabOrders([...labOrders, { test_name: test.name, test_category: test.category }]);
+    }
+  };
+  const removeLabOrder = (i: number) => setLabOrders(labOrders.filter((_, idx) => idx !== i));
+
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (!selectedPatient) throw new Error('No patient selected');
       const isSyndromic = syndromicFlags.length > 0;
+      const validRx = prescriptions.filter(p => p.drug.trim());
 
-      const { error } = await supabase.from('encounters').insert({
+      const { data: encounter, error } = await supabase.from('encounters').insert({
         patient_id: selectedPatient.id,
         facility_id: facilityId,
         clinician_id: user?.id,
@@ -97,12 +140,26 @@ export default function ConsultationPage() {
         examination_notes: clinicalNotes,
         diagnosis,
         treatment_plan: treatment,
+        prescriptions: validRx.length > 0 ? validRx as any : null,
         is_syndromic_alert: isSyndromic,
         syndromic_flags: syndromicFlags.map(f => f.disease) as any,
-      });
+      }).select('id').single();
       if (error) throw error;
 
-      // If syndromic, auto-create surveillance alert
+      // Create lab orders
+      if (labOrders.length > 0 && encounter) {
+        const labInserts = labOrders.map(l => ({
+          patient_id: selectedPatient.id,
+          facility_id: facilityId,
+          encounter_id: encounter.id,
+          test_name: l.test_name,
+          test_category: l.test_category,
+          ordered_by: user?.id,
+        }));
+        await supabase.from('lab_results').insert(labInserts);
+      }
+
+      // Auto-create surveillance alerts
       if (isSyndromic) {
         for (const flag of syndromicFlags) {
           await supabase.from('surveillance_alerts').insert({
@@ -110,23 +167,28 @@ export default function ConsultationPage() {
             facility_id: facilityId,
             reported_by: user?.id,
             severity: syndromicFlags.length >= 2 ? 'high' : 'medium',
-            description: `Syndromic alert: ${flag.disease} detected during consultation. Patient: ${selectedPatient.first_name} ${selectedPatient.last_name}. Symptoms: ${selectedSymptoms.join(', ')}`,
+            description: `Syndromic alert: ${flag.disease} detected. Patient: ${selectedPatient.first_name} ${selectedPatient.last_name}. Symptoms: ${selectedSymptoms.join(', ')}`,
           });
         }
       }
     },
     onSuccess: () => {
-      toast({ title: syndromicFlags.length > 0 ? 'Consultation saved & alert raised!' : 'Consultation saved' });
+      const msg = syndromicFlags.length > 0
+        ? `Consultation saved & ${syndromicFlags.length} alert(s) raised!`
+        : labOrders.length > 0
+        ? `Consultation saved & ${labOrders.length} lab order(s) created!`
+        : 'Consultation saved';
+      toast({ title: msg });
       queryClient.invalidateQueries({ queryKey: ['encounters'] });
       queryClient.invalidateQueries({ queryKey: ['surveillance'] });
-      // Reset form
+      queryClient.invalidateQueries({ queryKey: ['lab-pending'] });
+      // Reset
       setSelectedPatient(null); setSelectedSymptoms([]); setChiefComplaint('');
       setVitals({ temperature: '', bp: '', pulse: '', respiratoryRate: '', spo2: '', weight: '' });
       setClinicalNotes(''); setDiagnosis(''); setTreatment(''); setDisposition('Outpatient');
+      setPrescriptions([]); setLabOrders([]);
     },
-    onError: (err: any) => {
-      toast({ title: 'Error saving', description: err.message, variant: 'destructive' });
-    },
+    onError: (err: any) => toast({ title: 'Error saving', description: err.message, variant: 'destructive' }),
   });
 
   return (
@@ -182,7 +244,7 @@ export default function ConsultationPage() {
             </div>
           ))}
 
-          {/* Chief Complaint */}
+          {/* Chief Complaint + Symptoms */}
           <div className="card-ehr p-4 space-y-4">
             <div>
               <label className="text-sm font-medium block mb-1">Chief Complaint</label>
@@ -190,8 +252,6 @@ export default function ConsultationPage() {
                 placeholder="Describe the patient's main complaint..."
                 className="w-full px-3 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
             </div>
-
-            {/* Symptoms Checklist */}
             <div>
               <label className="text-sm font-medium block mb-2">Symptom Checklist</label>
               <div className="space-y-3">
@@ -255,7 +315,7 @@ export default function ConsultationPage() {
             <div>
               <label className="text-sm font-medium block mb-1">Treatment Plan</label>
               <textarea value={treatment} onChange={e => setTreatment(e.target.value)} rows={2}
-                placeholder="Medications, dosage, frequency..."
+                placeholder="General treatment notes..."
                 className="w-full px-3 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
             </div>
             <div>
@@ -273,6 +333,84 @@ export default function ConsultationPage() {
             </div>
           </div>
 
+          {/* Prescriptions */}
+          <div className="card-ehr p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-heading font-medium text-sm">Prescriptions</h2>
+              <Button size="sm" variant="outline" onClick={addPrescription} className="gap-1">
+                <Plus className="h-3 w-3" /> Add Drug
+              </Button>
+            </div>
+            {prescriptions.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No prescriptions added. Click "Add Drug" to prescribe medications.</p>
+            ) : (
+              <div className="space-y-3">
+                {prescriptions.map((rx, i) => (
+                  <div key={i} className="border border-border rounded p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground font-medium">Drug #{i + 1}</span>
+                      <button onClick={() => removePrescription(i)} className="text-destructive hover:text-destructive/80">
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[11px] text-muted-foreground">Drug Name</label>
+                        <input list={`drugs-${i}`} value={rx.drug} onChange={e => updatePrescription(i, 'drug', e.target.value)}
+                          placeholder="Type or select..."
+                          className="w-full px-2 py-1.5 border border-input rounded bg-background text-xs focus:outline-none focus:ring-1 focus:ring-ring" />
+                        <datalist id={`drugs-${i}`}>
+                          {commonDrugs.map(d => <option key={d} value={d} />)}
+                        </datalist>
+                      </div>
+                      <div>
+                        <label className="text-[11px] text-muted-foreground">Dose</label>
+                        <input value={rx.dose} onChange={e => updatePrescription(i, 'dose', e.target.value)}
+                          placeholder="e.g. 500mg"
+                          className="w-full px-2 py-1.5 border border-input rounded bg-background text-xs focus:outline-none focus:ring-1 focus:ring-ring" />
+                      </div>
+                      <div>
+                        <label className="text-[11px] text-muted-foreground">Frequency</label>
+                        <input value={rx.frequency} onChange={e => updatePrescription(i, 'frequency', e.target.value)}
+                          placeholder="e.g. TDS (3x daily)"
+                          className="w-full px-2 py-1.5 border border-input rounded bg-background text-xs focus:outline-none focus:ring-1 focus:ring-ring" />
+                      </div>
+                      <div>
+                        <label className="text-[11px] text-muted-foreground">Duration</label>
+                        <input value={rx.duration} onChange={e => updatePrescription(i, 'duration', e.target.value)}
+                          placeholder="e.g. 5 days"
+                          className="w-full px-2 py-1.5 border border-input rounded bg-background text-xs focus:outline-none focus:ring-1 focus:ring-ring" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Lab Orders */}
+          <div className="card-ehr p-4">
+            <h2 className="font-heading font-medium text-sm mb-3">Lab Orders</h2>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {commonTests.map(t => {
+                const selected = labOrders.find(l => l.test_name === t.name);
+                return (
+                  <button key={t.name} type="button" onClick={() => selected ? removeLabOrder(labOrders.indexOf(selected)) : addLabOrder(t)}
+                    className={`px-3 py-1 rounded-full text-xs border transition-colors ${
+                      selected
+                        ? 'bg-accent text-accent-foreground border-accent'
+                        : 'bg-background text-foreground border-border hover:border-accent/50'
+                    }`}>
+                    {t.name}
+                  </button>
+                );
+              })}
+            </div>
+            {labOrders.length > 0 && (
+              <p className="text-xs text-muted-foreground">{labOrders.length} test(s) will be ordered and appear in the Lab queue.</p>
+            )}
+          </div>
+
           {/* Save */}
           <div className="flex gap-0">
             {syndromicFlags.length > 0 ? (
@@ -280,7 +418,7 @@ export default function ConsultationPage() {
                 <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="flex-1 rounded-r-none">
                   {saveMutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : 'Save & Notify Facility Lead'}
                 </Button>
-                <button className="w-12 bg-accent text-accent-foreground rounded-r flex items-center justify-center pulse-gold text-xs font-bold hover:bg-accent/80" title="IDSR Form">
+                <button className="w-12 bg-accent text-accent-foreground rounded-r flex items-center justify-center text-xs font-bold hover:bg-accent/80" title="IDSR Form">
                   IDSR
                 </button>
               </div>
@@ -300,6 +438,7 @@ export default function ConsultationPage() {
                   <div key={e.id} className="border border-border rounded p-3 text-sm">
                     <div className="flex justify-between">
                       <span className="font-medium">{new Date(e.encounter_date).toLocaleDateString()}</span>
+                      <span className="text-xs text-muted-foreground capitalize">{e.encounter_type}</span>
                       {e.is_syndromic_alert && <span className="badge-warning">⚠ Syndromic</span>}
                     </div>
                     <p className="text-muted-foreground mt-1">{e.chief_complaint}</p>
