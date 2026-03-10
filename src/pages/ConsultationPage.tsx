@@ -2,11 +2,12 @@ import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAppContext } from '@/context/AppContext';
-import { AlertTriangle, Search, Loader2, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, Search, Loader2, Plus, Trash2, FileText, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import PatientHealthRecord from '@/components/patient/PatientHealthRecord';
 import type { Tables } from '@/integrations/supabase/types';
 
 type Patient = Tables<'patients'>;
