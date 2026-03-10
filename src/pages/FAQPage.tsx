@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 const faqs = [
   {
     q: 'What is AI-ESS EHR?',
-    a: 'AI-ESS EHR is a surveillance-first Electronic Health Records platform designed for Nigeria's Primary Health Care system. It digitizes patient encounters while simultaneously powering real-time disease surveillance across all 36 states and the FCT.',
+    a: 'AI-ESS EHR is a surveillance-first Electronic Health Records platform designed for Nigeria\'s Primary Health Care system. It digitizes patient encounters while simultaneously powering real-time disease surveillance across all 36 states and the FCT.',
   },
   {
     q: 'Who can use AI-ESS EHR?',
