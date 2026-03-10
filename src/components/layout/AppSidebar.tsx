@@ -15,6 +15,7 @@ interface NavItem {
 
 const allNavItems: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { label: 'Appointments', path: '/appointments', icon: CalendarPlus, roles: ['facility_admin', 'doctor', 'nurse', 'chew', 'data_clerk'] },
   { label: 'Patients', path: '/patients', icon: UserPlus, roles: ['facility_admin', 'doctor', 'nurse', 'chew', 'data_clerk'] },
   { label: 'Consultation', path: '/consultation', icon: Stethoscope, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Wards', path: '/wards', icon: BedDouble, roles: ['facility_admin', 'doctor', 'nurse'] },
@@ -25,6 +26,7 @@ const allNavItems: NavItem[] = [
   { label: 'MCH', path: '/mch', icon: Baby, roles: ['facility_admin', 'nurse', 'chew'] },
   { label: 'Staff', path: '/staff', icon: Users, roles: ['facility_admin', 'super_admin'] },
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
+  { label: 'Audit Trail', path: '/audit', icon: ClipboardList, roles: ['facility_admin', 'super_admin'] },
   { label: 'Sync', path: '/sync', icon: Wifi },
   { label: 'Settings', path: '/settings', icon: Settings },
 ];
