@@ -45,7 +45,6 @@ export default function StaffPage() {
         .eq('facility_id', facilityId);
       if (!profiles) return [];
 
-      // Fetch roles for each staff member
       const userIds = profiles.map(p => p.id);
       const { data: roles } = await supabase
         .from('user_roles')
@@ -62,30 +61,14 @@ export default function StaffPage() {
 
   const addStaffMutation = useMutation({
     mutationFn: async () => {
-      // Sign up the new user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: fullName } },
+      const { data, error } = await supabase.functions.invoke('create-staff', {
+        body: { email, password, full_name: fullName, role, job_title: jobTitle, facility_id: facilityId },
       });
-      if (authError) throw authError;
-      if (!authData.user) throw new Error('Failed to create user');
-
-      // Update their profile with facility_id and job_title
-      await supabase.from('profiles').update({
-        facility_id: facilityId,
-        job_title: jobTitle || null,
-      }).eq('id', authData.user.id);
-
-      // Assign role
-      await supabase.from('user_roles').insert({
-        user_id: authData.user.id,
-        role: role as any,
-        facility_id: facilityId,
-      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
     },
     onSuccess: () => {
-      toast({ title: 'Staff member added', description: `${fullName} has been invited.` });
+      toast({ title: 'Staff member added', description: `${fullName} has been created successfully.` });
       queryClient.invalidateQueries({ queryKey: ['staff'] });
       setOpen(false);
       setEmail(''); setFullName(''); setPassword(''); setRole('nurse'); setJobTitle('');

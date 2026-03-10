@@ -17,7 +17,7 @@ export default function PharmacyPage() {
     queryFn: async () => {
       if (!facilityId) return [];
       const { data } = await supabase.from('encounters')
-        .select('id, encounter_date, prescriptions, diagnosis, patient_id, treatment_plan, referral_notes')
+        .select('id, encounter_date, prescriptions, diagnosis, patient_id, dispensed_at, dispensed_by')
         .eq('facility_id', facilityId)
         .order('encounter_date', { ascending: false })
         .limit(100);
@@ -34,8 +34,7 @@ export default function PharmacyPage() {
         ...e,
         patientName: patientMap[e.patient_id] || 'Unknown',
         meds: e.prescriptions as any[],
-        // Check if dispensed (using referral_notes as a simple flag)
-        dispensed: e.referral_notes === '__dispensed__',
+        dispensed: !!e.dispensed_at,
       }));
     },
     enabled: !!facilityId,
@@ -43,10 +42,10 @@ export default function PharmacyPage() {
 
   const dispenseMutation = useMutation({
     mutationFn: async (encounterId: string) => {
-      // Mark as dispensed using referral_notes field as flag
       const { error } = await supabase.from('encounters').update({
-        referral_notes: '__dispensed__',
-      }).eq('id', encounterId);
+        dispensed_at: new Date().toISOString(),
+        dispensed_by: user?.id,
+      } as any).eq('id', encounterId);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -65,7 +64,6 @@ export default function PharmacyPage() {
         <h1 className="text-2xl font-heading font-medium">Pharmacy & Dispensing</h1>
       </div>
 
-      {/* Summary */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         <div className="stat-card flex items-center gap-3">
           <Clock className="h-5 w-5 text-warning shrink-0" />
@@ -78,7 +76,7 @@ export default function PharmacyPage() {
           <CheckCircle className="h-5 w-5 text-success shrink-0" />
           <div>
             <p className="text-2xl font-heading font-medium">{dispensed.length}</p>
-            <p className="text-xs text-muted-foreground">Dispensed Today</p>
+            <p className="text-xs text-muted-foreground">Dispensed</p>
           </div>
         </div>
         <div className="stat-card flex items-center gap-3">
