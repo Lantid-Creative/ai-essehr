@@ -171,6 +171,18 @@ export default function ConsultationPage() {
           });
         }
       }
+
+      // Audit log
+      if (encounter) {
+        await supabase.from('audit_logs').insert({
+          user_id: user!.id,
+          facility_id: facilityId,
+          action: 'create',
+          entity_type: 'encounter',
+          entity_id: encounter.id,
+          details: { patient: `${selectedPatient.first_name} ${selectedPatient.last_name}`, diagnosis, syndromic: isSyndromic } as any,
+        } as any);
+      }
     },
     onSuccess: () => {
       const msg = syndromicFlags.length > 0
