@@ -4,9 +4,9 @@ import EpidemiologistDashboard from '@/components/dashboard/EpidemiologistDashbo
 import NCDCDashboard from '@/components/dashboard/NCDCDashboard';
 
 export default function Dashboard() {
-  const { currentRole } = useAppContext();
+  const { roles } = useAppContext();
 
-  if (currentRole === 'State Epidemiologist') return <EpidemiologistDashboard />;
-  if (currentRole === 'NCDC Officer') return <NCDCDashboard />;
+  if (roles.includes('epidemiologist') || roles.includes('dsno')) return <EpidemiologistDashboard />;
+  if (roles.includes('super_admin')) return <NCDCDashboard />;
   return <FacilityDashboard />;
 }

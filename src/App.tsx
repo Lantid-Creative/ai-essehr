@@ -5,8 +5,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import MainLayout from "@/components/layout/MainLayout";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import RegisterFacilityPage from "@/pages/RegisterFacilityPage";
 import RegisterPatientPage from "@/pages/RegisterPatientPage";
 import FAQPage from "@/pages/FAQPage";
@@ -28,6 +31,12 @@ import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const ProtectedPage = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute>
+    <MainLayout>{children}</MainLayout>
+  </ProtectedRoute>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -39,25 +48,27 @@ const App = () => (
             {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/register/facility" element={<RegisterFacilityPage />} />
             <Route path="/register/patient" element={<RegisterPatientPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/help" element={<HelpPage />} />
 
-            {/* Dashboard routes (wrapped in MainLayout) */}
-            <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
-            <Route path="/patients" element={<MainLayout><PatientsPage /></MainLayout>} />
-            <Route path="/consultation" element={<MainLayout><ConsultationPage /></MainLayout>} />
-            <Route path="/wards" element={<MainLayout><WardsPage /></MainLayout>} />
-            <Route path="/surveillance" element={<MainLayout><SurveillancePage /></MainLayout>} />
-            <Route path="/immunization" element={<MainLayout><ImmunizationPage /></MainLayout>} />
-            <Route path="/laboratory" element={<MainLayout><LaboratoryPage /></MainLayout>} />
-            <Route path="/pharmacy" element={<MainLayout><PharmacyPage /></MainLayout>} />
-            <Route path="/mch" element={<MainLayout><MCHPage /></MainLayout>} />
-            <Route path="/staff" element={<MainLayout><StaffPage /></MainLayout>} />
-            <Route path="/reports" element={<MainLayout><ReportsPage /></MainLayout>} />
-            <Route path="/sync" element={<MainLayout><SyncPage /></MainLayout>} />
-            <Route path="/settings" element={<MainLayout><SettingsPage /></MainLayout>} />
+            {/* Protected dashboard routes */}
+            <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
+            <Route path="/patients" element={<ProtectedPage><PatientsPage /></ProtectedPage>} />
+            <Route path="/consultation" element={<ProtectedPage><ConsultationPage /></ProtectedPage>} />
+            <Route path="/wards" element={<ProtectedPage><WardsPage /></ProtectedPage>} />
+            <Route path="/surveillance" element={<ProtectedPage><SurveillancePage /></ProtectedPage>} />
+            <Route path="/immunization" element={<ProtectedPage><ImmunizationPage /></ProtectedPage>} />
+            <Route path="/laboratory" element={<ProtectedPage><LaboratoryPage /></ProtectedPage>} />
+            <Route path="/pharmacy" element={<ProtectedPage><PharmacyPage /></ProtectedPage>} />
+            <Route path="/mch" element={<ProtectedPage><MCHPage /></ProtectedPage>} />
+            <Route path="/staff" element={<ProtectedPage><StaffPage /></ProtectedPage>} />
+            <Route path="/reports" element={<ProtectedPage><ReportsPage /></ProtectedPage>} />
+            <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
+            <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
