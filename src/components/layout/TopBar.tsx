@@ -11,24 +11,19 @@ export default function TopBar() {
   const user = staffUsers[0];
 
   return (
-    <header className="h-16 bg-topbar text-topbar-foreground flex items-center px-4 gap-4 shrink-0">
-      {/* Hamburger */}
-      {!sidebarOpen && (
-        <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-1">
-          <Menu className="h-5 w-5" />
-        </button>
-      )}
-      <button onClick={() => setSidebarOpen(!sidebarOpen)} className="hidden lg:block p-1">
+    <header className="h-16 bg-topbar text-topbar-foreground flex items-center px-4 gap-3 shrink-0">
+      {/* Hamburger (mobile only) */}
+      <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-1">
         <Menu className="h-5 w-5" />
       </button>
 
       {/* Facility info */}
-      <div className="hidden sm:block flex-1 min-w-0">
+      <div className="hidden sm:block min-w-0">
         <p className="text-sm font-heading font-medium truncate">Tudun Wada PHC</p>
-        <p className="text-[11px] text-topbar-foreground/70">Kano Municipal LGA, Kano State</p>
+        <p className="text-[11px] text-topbar-foreground/70 truncate">Kano Municipal LGA, Kano State</p>
       </div>
 
-      <div className="flex-1 sm:hidden" />
+      <div className="flex-1" />
 
       {/* Role switcher */}
       <select
