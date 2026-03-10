@@ -1,7 +1,8 @@
-import { Bell, Menu, Wifi, LogOut } from 'lucide-react';
+import { Bell, Menu, Wifi, WifiOff, LogOut, Loader2 } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useOnlineStatus } from '@/hooks/useOfflineSync';
 
 export default function TopBar() {
   const { sidebarOpen, setSidebarOpen, profile, roles, signOut } = useAppContext();
