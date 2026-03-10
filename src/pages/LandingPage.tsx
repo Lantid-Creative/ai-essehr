@@ -171,13 +171,13 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/register/facility">
-                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-base px-8 h-13 shadow-lg shadow-primary/25">
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold text-base px-10 h-14 shadow-lg shadow-primary/25">
                     Register Your Facility
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button size="lg" variant="outline" className="border-sidebar-foreground/20 text-sidebar-foreground hover:bg-sidebar-accent h-13 text-base px-8">
+                  <Button size="lg" className="bg-white text-sidebar font-semibold text-base px-10 h-14 hover:bg-white/90">
                     Sign In to Dashboard
                   </Button>
                 </Link>
