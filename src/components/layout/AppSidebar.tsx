@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 const allNavItems = [
-  { label: 'Dashboard', path: '/', icon: LayoutDashboard, roles: 'all' },
+  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, roles: 'all' },
   { label: 'Patients', path: '/patients', icon: UserPlus, roles: 'all' },
   { label: 'Consultation', path: '/consultation', icon: Stethoscope, roles: 'clinical' },
   { label: 'Wards', path: '/wards', icon: BedDouble, roles: 'clinical' },
