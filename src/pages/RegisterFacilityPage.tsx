@@ -1,39 +1,127 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Activity, Building2, ArrowLeft } from 'lucide-react';
+import { Activity, Building2, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
-const states = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','FCT','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara'];
-const facilityTypes = ['Primary Health Care', 'General Hospital', 'Cottage Hospital', 'Comprehensive Health Centre', 'Health Post'];
+const facilityTypes = [
+  { value: 'primary', label: 'Primary Health Care' },
+  { value: 'secondary', label: 'General Hospital' },
+  { value: 'tertiary', label: 'Teaching Hospital' },
+  { value: 'clinic', label: 'Clinic' },
+  { value: 'hospital', label: 'Hospital' },
+];
 
 export default function RegisterFacilityPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [facilityName, setFacilityName] = useState('');
+  const [facilityType, setFacilityType] = useState('');
+  const [region, setRegion] = useState('');
+  const [district, setDistrict] = useState('');
+  const [address, setAddress] = useState('');
+  const [facilityPhone, setFacilityPhone] = useState('');
+  const [facilityEmail, setFacilityEmail] = useState('');
+
+  const [adminName, setAdminName] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPhone, setAdminPhone] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      toast({ title: 'Facility Registered!', description: 'Your facility has been registered. You can now log in and onboard your staff.' });
+
+    try {
+      // 1. Sign up the admin user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: adminEmail,
+        password: adminPassword,
+        options: {
+          emailRedirectTo: window.location.origin,
+          data: { full_name: adminName },
+        },
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error('Failed to create account');
+
+      // 2. Create the facility
+      const { data: facility, error: facilityError } = await supabase
+        .from('facilities')
+        .insert({
+          name: facilityName,
+          facility_type: facilityType as any,
+          region,
+          district,
+          address,
+          phone: facilityPhone,
+          email: facilityEmail,
+          status: 'active' as any,
+        })
+        .select()
+        .single();
+
+      if (facilityError) throw facilityError;
+
+      // 3. Update the profile with the facility_id
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          facility_id: facility.id,
+          full_name: adminName,
+          phone: adminPhone,
+        })
+        .eq('id', authData.user.id);
+
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+      }
+
+      // 4. Assign facility_admin role
+      const { error: roleError } = await supabase
+        .from('user_roles')
+        .insert({
+          user_id: authData.user.id,
+          role: 'facility_admin' as any,
+          facility_id: facility.id,
+        });
+
+      if (roleError) {
+        console.error('Role assignment error:', roleError);
+      }
+
+      toast({
+        title: 'Facility Registered!',
+        description: 'Please check your email to verify your account, then sign in.',
+      });
       navigate('/login');
-    }, 1500);
+    } catch (error: any) {
+      toast({
+        title: 'Registration failed',
+        description: error.message || 'Something went wrong',
+        variant: 'destructive',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
       <nav className="bg-sidebar border-b border-sidebar-border">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 gap-3">
-          <Activity className="h-6 w-6 text-accent" />
+          <Activity className="h-6 w-6 text-primary" />
           <span className="font-heading font-bold text-sidebar-foreground">AI-ESS EHR</span>
           <span className="text-sidebar-foreground/40 text-sm ml-auto">
-            <Link to="/" className="hover:text-accent flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Home</Link>
+            <Link to="/" className="hover:text-primary-foreground flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Home</Link>
           </span>
         </div>
       </nav>
@@ -45,59 +133,48 @@ export default function RegisterFacilityPage() {
           </div>
           <div>
             <h1 className="text-2xl font-heading font-bold text-foreground">Register Your Facility</h1>
-            <p className="text-muted-foreground text-sm">Join the national health surveillance network</p>
+            <p className="text-muted-foreground text-sm">Join the health surveillance network</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="card-ehr p-8 space-y-6">
+          <h3 className="font-heading font-semibold text-foreground">Facility Information</h3>
+
           <div className="grid md:grid-cols-2 gap-5">
             <div>
               <Label>Facility Name *</Label>
-              <Input placeholder="e.g. Tudun Wada PHC" className="mt-1.5" required />
+              <Input value={facilityName} onChange={(e) => setFacilityName(e.target.value)} placeholder="e.g. Central Health Clinic" className="mt-1.5" required />
             </div>
             <div>
               <Label>Facility Type *</Label>
-              <Select required>
+              <Select value={facilityType} onValueChange={setFacilityType} required>
                 <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select type" /></SelectTrigger>
                 <SelectContent>
-                  {facilityTypes.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  {facilityTypes.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>State *</Label>
-              <Select required>
-                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select state" /></SelectTrigger>
-                <SelectContent>
-                  {states.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <Label>Region *</Label>
+              <Input value={region} onChange={(e) => setRegion(e.target.value)} placeholder="Region / State / Province" className="mt-1.5" required />
             </div>
             <div>
-              <Label>LGA *</Label>
-              <Input placeholder="Local Government Area" className="mt-1.5" required />
+              <Label>District</Label>
+              <Input value={district} onChange={(e) => setDistrict(e.target.value)} placeholder="District / LGA" className="mt-1.5" />
             </div>
             <div>
-              <Label>Ward</Label>
-              <Input placeholder="Ward name" className="mt-1.5" />
+              <Label>Phone</Label>
+              <Input value={facilityPhone} onChange={(e) => setFacilityPhone(e.target.value)} placeholder="+1 234 567 890" className="mt-1.5" />
             </div>
             <div>
-              <Label>Ownership *</Label>
-              <Select required>
-                <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select" /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="public">Public / Government</SelectItem>
-                  <SelectItem value="private">Private</SelectItem>
-                  <SelectItem value="faith">Faith-Based</SelectItem>
-                  <SelectItem value="ngo">NGO</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label>Facility Email</Label>
+              <Input type="email" value={facilityEmail} onChange={(e) => setFacilityEmail(e.target.value)} placeholder="info@facility.com" className="mt-1.5" />
             </div>
           </div>
 
           <div>
-            <Label>Facility Address</Label>
-            <Textarea placeholder="Physical address of the facility" className="mt-1.5" rows={2} />
+            <Label>Address</Label>
+            <Textarea value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Physical address of the facility" className="mt-1.5" rows={2} />
           </div>
 
           <hr className="border-border" />
@@ -106,29 +183,29 @@ export default function RegisterFacilityPage() {
 
           <div className="grid md:grid-cols-2 gap-5">
             <div>
-              <Label>Admin Full Name *</Label>
-              <Input placeholder="e.g. Dr. Amina Yusuf" className="mt-1.5" required />
+              <Label>Full Name *</Label>
+              <Input value={adminName} onChange={(e) => setAdminName(e.target.value)} placeholder="Dr. Jane Smith" className="mt-1.5" required />
             </div>
             <div>
-              <Label>Admin Email *</Label>
-              <Input type="email" placeholder="admin@facility.gov.ng" className="mt-1.5" required />
+              <Label>Email *</Label>
+              <Input type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} placeholder="admin@facility.com" className="mt-1.5" required />
             </div>
             <div>
-              <Label>Phone Number *</Label>
-              <Input type="tel" placeholder="+234 800 000 0000" className="mt-1.5" required />
+              <Label>Phone *</Label>
+              <Input type="tel" value={adminPhone} onChange={(e) => setAdminPhone(e.target.value)} placeholder="+1 234 567 890" className="mt-1.5" required />
             </div>
             <div>
               <Label>Password *</Label>
-              <Input type="password" placeholder="Min 8 characters" className="mt-1.5" required minLength={8} />
+              <Input type="password" value={adminPassword} onChange={(e) => setAdminPassword(e.target.value)} placeholder="Min 6 characters" className="mt-1.5" required minLength={6} />
             </div>
           </div>
 
-          <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 font-semibold" disabled={loading}>
-            {loading ? 'Registering...' : 'Register Facility'}
+          <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={loading}>
+            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Registering...</> : 'Register Facility'}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
-            Already registered? <Link to="/login" className="text-primary hover:underline">Sign in</Link>
+            Already registered? <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link>
           </p>
         </form>
       </div>
