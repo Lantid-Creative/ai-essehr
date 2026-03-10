@@ -1,6 +1,13 @@
 import { useState, useMemo } from 'react';
-import { patients, consultations } from '@/data/mockData';
-import { AlertTriangle, Search } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAppContext } from '@/context/AppContext';
+import { AlertTriangle, Search, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import type { Tables } from '@/integrations/supabase/types';
+
+type Patient = Tables<'patients'>;
 
 const symptomGroups = [
   { category: 'Lassa Screening', symptoms: ['Fever', 'Hemorrhagic symptoms', 'Weakness', 'Muscle pain'] },
@@ -11,7 +18,7 @@ const symptomGroups = [
   { category: 'General', symptoms: ['Cough', 'Vomiting', 'Weakness', 'Weight loss', 'Chest pain', 'Abdominal pain'] },
 ];
 
-const syndromicRules: { disease: string; requiredSymptoms: string[] }[] = [
+const syndromicRules = [
   { disease: 'Lassa Fever', requiredSymptoms: ['Fever', 'Hemorrhagic symptoms'] },
   { disease: 'Cholera', requiredSymptoms: ['Watery diarrhea', 'Dehydration'] },
   { disease: 'Meningitis', requiredSymptoms: ['Stiff neck', 'Headache', 'Fever'] },
@@ -22,25 +29,48 @@ const syndromicRules: { disease: string; requiredSymptoms: string[] }[] = [
 const dispositions = ['Outpatient', 'Admitted', 'Referred', 'Discharged'] as const;
 
 export default function ConsultationPage() {
+  const { facilityId, user } = useAppContext();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
   const [patientSearch, setPatientSearch] = useState('');
-  const [selectedPatientId, setSelectedPatientId] = useState('');
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
-  const [chiefComplaint, setCchiefComplaint] = useState('');
-  const [duration, setDuration] = useState('');
+  const [chiefComplaint, setChiefComplaint] = useState('');
   const [vitals, setVitals] = useState({ temperature: '', bp: '', pulse: '', respiratoryRate: '', spo2: '', weight: '' });
   const [clinicalNotes, setClinicalNotes] = useState('');
   const [diagnosis, setDiagnosis] = useState('');
   const [treatment, setTreatment] = useState('');
   const [disposition, setDisposition] = useState<string>('Outpatient');
-  const [showHistory, setShowHistory] = useState(true);
 
-  const filteredPatients = patients.filter(p =>
-    p.name.toLowerCase().includes(patientSearch.toLowerCase()) || p.patientId.includes(patientSearch)
-  ).slice(0, 5);
+  // Search patients from DB
+  const { data: searchResults = [] } = useQuery({
+    queryKey: ['patient-search', patientSearch, facilityId],
+    queryFn: async () => {
+      if (!patientSearch || patientSearch.length < 2 || !facilityId) return [];
+      const { data } = await supabase.from('patients').select('*')
+        .eq('facility_id', facilityId)
+        .or(`first_name.ilike.%${patientSearch}%,last_name.ilike.%${patientSearch}%,patient_code.ilike.%${patientSearch}%`)
+        .limit(5);
+      return data || [];
+    },
+    enabled: patientSearch.length >= 2 && !selectedPatient,
+  });
 
-  const selectedPatient = patients.find(p => p.id === selectedPatientId);
+  // Past encounters for selected patient
+  const { data: pastEncounters = [] } = useQuery({
+    queryKey: ['encounters', selectedPatient?.id],
+    queryFn: async () => {
+      if (!selectedPatient) return [];
+      const { data } = await supabase.from('encounters').select('*')
+        .eq('patient_id', selectedPatient.id)
+        .order('encounter_date', { ascending: false })
+        .limit(10);
+      return data || [];
+    },
+    enabled: !!selectedPatient,
+  });
 
-  // Syndromic flag detection
   const syndromicFlags = useMemo(() => {
     return syndromicRules.filter(rule =>
       rule.requiredSymptoms.every(s => selectedSymptoms.includes(s))
@@ -51,9 +81,53 @@ export default function ConsultationPage() {
     setSelectedSymptoms(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s]);
   };
 
-  const patientConsultations = selectedPatient
-    ? consultations.filter(c => c.patientId === selectedPatient.id)
-    : [];
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedPatient) throw new Error('No patient selected');
+      const isSyndromic = syndromicFlags.length > 0;
+
+      const { error } = await supabase.from('encounters').insert({
+        patient_id: selectedPatient.id,
+        facility_id: facilityId,
+        clinician_id: user?.id,
+        encounter_type: 'consultation',
+        chief_complaint: chiefComplaint,
+        symptoms: selectedSymptoms as any,
+        vital_signs: vitals as any,
+        examination_notes: clinicalNotes,
+        diagnosis,
+        treatment_plan: treatment,
+        is_syndromic_alert: isSyndromic,
+        syndromic_flags: syndromicFlags.map(f => f.disease) as any,
+      });
+      if (error) throw error;
+
+      // If syndromic, auto-create surveillance alert
+      if (isSyndromic) {
+        for (const flag of syndromicFlags) {
+          await supabase.from('surveillance_alerts').insert({
+            disease_name: flag.disease,
+            facility_id: facilityId,
+            reported_by: user?.id,
+            severity: syndromicFlags.length >= 2 ? 'high' : 'medium',
+            description: `Syndromic alert: ${flag.disease} detected during consultation. Patient: ${selectedPatient.first_name} ${selectedPatient.last_name}. Symptoms: ${selectedSymptoms.join(', ')}`,
+          });
+        }
+      }
+    },
+    onSuccess: () => {
+      toast({ title: syndromicFlags.length > 0 ? 'Consultation saved & alert raised!' : 'Consultation saved' });
+      queryClient.invalidateQueries({ queryKey: ['encounters'] });
+      queryClient.invalidateQueries({ queryKey: ['surveillance'] });
+      // Reset form
+      setSelectedPatient(null); setSelectedSymptoms([]); setChiefComplaint('');
+      setVitals({ temperature: '', bp: '', pulse: '', respiratoryRate: '', spo2: '', weight: '' });
+      setClinicalNotes(''); setDiagnosis(''); setTreatment(''); setDisposition('Outpatient');
+    },
+    onError: (err: any) => {
+      toast({ title: 'Error saving', description: err.message, variant: 'destructive' });
+    },
+  });
 
   return (
     <div className="space-y-4 max-w-3xl">
@@ -64,12 +138,14 @@ export default function ConsultationPage() {
         <label className="text-sm font-medium">Select Patient</label>
         {selectedPatient ? (
           <div className="flex items-center gap-3 bg-muted/50 p-3 rounded">
-            <img src={selectedPatient.avatarUrl} alt="" className="w-10 h-10 rounded-full" />
-            <div className="flex-1">
-              <p className="font-medium text-sm">{selectedPatient.name}</p>
-              <p className="text-xs text-muted-foreground">{selectedPatient.age}y · {selectedPatient.sex} · {selectedPatient.patientId}</p>
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+              {selectedPatient.first_name[0]}{selectedPatient.last_name[0]}
             </div>
-            <button onClick={() => setSelectedPatientId('')} className="text-xs text-primary hover:underline">Change</button>
+            <div className="flex-1">
+              <p className="font-medium text-sm">{selectedPatient.first_name} {selectedPatient.last_name}</p>
+              <p className="text-xs text-muted-foreground">{selectedPatient.gender} · {selectedPatient.patient_code}</p>
+            </div>
+            <button onClick={() => setSelectedPatient(null)} className="text-xs text-primary hover:underline">Change</button>
           </div>
         ) : (
           <>
@@ -78,14 +154,16 @@ export default function ConsultationPage() {
               <input type="text" placeholder="Search patient by name or ID..." value={patientSearch} onChange={e => setPatientSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
-            {patientSearch && (
+            {searchResults.length > 0 && (
               <div className="border border-border rounded divide-y divide-border">
-                {filteredPatients.map(p => (
-                  <button key={p.id} onClick={() => { setSelectedPatientId(p.id); setPatientSearch(''); }}
+                {searchResults.map(p => (
+                  <button key={p.id} onClick={() => { setSelectedPatient(p); setPatientSearch(''); }}
                     className="w-full flex items-center gap-3 px-3 py-2 hover:bg-muted/50 text-left">
-                    <img src={p.avatarUrl} alt="" className="w-7 h-7 rounded-full" />
-                    <span className="text-sm">{p.name}</span>
-                    <span className="text-xs text-muted-foreground ml-auto">{p.patientId}</span>
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
+                      {p.first_name[0]}{p.last_name[0]}
+                    </div>
+                    <span className="text-sm">{p.first_name} {p.last_name}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">{p.patient_code}</span>
                   </button>
                 ))}
               </div>
@@ -108,7 +186,7 @@ export default function ConsultationPage() {
           <div className="card-ehr p-4 space-y-4">
             <div>
               <label className="text-sm font-medium block mb-1">Chief Complaint</label>
-              <textarea value={chiefComplaint} onChange={e => setCchiefComplaint(e.target.value)} rows={2}
+              <textarea value={chiefComplaint} onChange={e => setChiefComplaint(e.target.value)} rows={2}
                 placeholder="Describe the patient's main complaint..."
                 className="w-full px-3 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
             </div>
@@ -122,7 +200,7 @@ export default function ConsultationPage() {
                     <p className="text-xs text-muted-foreground font-medium mb-1">{group.category}</p>
                     <div className="flex flex-wrap gap-2">
                       {group.symptoms.map(s => (
-                        <button key={s} onClick={() => toggleSymptom(s)}
+                        <button key={s} type="button" onClick={() => toggleSymptom(s)}
                           className={`px-3 py-1 rounded-full text-xs border transition-colors ${
                             selectedSymptoms.includes(s)
                               ? 'bg-primary text-primary-foreground border-primary'
@@ -135,12 +213,6 @@ export default function ConsultationPage() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium block mb-1">Duration of Symptoms (days)</label>
-              <input type="number" value={duration} onChange={e => setDuration(e.target.value)} min={1}
-                className="w-32 px-3 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
           </div>
 
@@ -170,7 +242,7 @@ export default function ConsultationPage() {
           {/* Clinical Notes, Diagnosis, Treatment */}
           <div className="card-ehr p-4 space-y-4">
             <div>
-              <label className="text-sm font-medium block mb-1">Clinical Notes / Pidgin OK</label>
+              <label className="text-sm font-medium block mb-1">Clinical Notes</label>
               <textarea value={clinicalNotes} onChange={e => setClinicalNotes(e.target.value)} rows={3}
                 className="w-full px-3 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
             </div>
@@ -190,7 +262,7 @@ export default function ConsultationPage() {
               <label className="text-sm font-medium block mb-1">Disposition</label>
               <div className="flex flex-wrap gap-2">
                 {dispositions.map(d => (
-                  <button key={d} onClick={() => setDisposition(d)}
+                  <button key={d} type="button" onClick={() => setDisposition(d)}
                     className={`px-4 py-1.5 rounded text-sm border transition-colors ${
                       disposition === d ? 'bg-primary text-primary-foreground border-primary' : 'bg-background text-foreground border-border hover:border-primary/50'
                     }`}>
@@ -201,44 +273,40 @@ export default function ConsultationPage() {
             </div>
           </div>
 
-          {/* Save Button - with IDSR split if syndromic flag */}
+          {/* Save */}
           <div className="flex gap-0">
             {syndromicFlags.length > 0 ? (
               <div className="flex w-full max-w-md">
-                <button className="flex-1 bg-primary text-primary-foreground px-6 py-3 rounded-l text-sm font-medium hover:bg-primary/90">
-                  Save & Notify Facility Lead
-                </button>
-                <button className="w-12 bg-accent text-accent-foreground rounded-r flex items-center justify-center pulse-gold text-xs font-bold hover:bg-accent/80" title="View IDSR Form">
+                <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="flex-1 rounded-r-none">
+                  {saveMutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : 'Save & Notify Facility Lead'}
+                </Button>
+                <button className="w-12 bg-accent text-accent-foreground rounded-r flex items-center justify-center pulse-gold text-xs font-bold hover:bg-accent/80" title="IDSR Form">
                   IDSR
                 </button>
               </div>
             ) : (
-              <button className="bg-primary text-primary-foreground px-8 py-3 rounded text-sm font-medium hover:bg-primary/90">
-                Save Consultation
-              </button>
+              <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending}>
+                {saveMutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</> : 'Save Consultation'}
+              </Button>
             )}
           </div>
 
-          {/* Previous Consultations */}
-          {patientConsultations.length > 0 && (
+          {/* Previous Encounters */}
+          {pastEncounters.length > 0 && (
             <div className="card-ehr p-4">
-              <button onClick={() => setShowHistory(!showHistory)} className="font-heading font-medium text-sm w-full text-left">
-                Previous Consultations ({patientConsultations.length}) {showHistory ? '▾' : '▸'}
-              </button>
-              {showHistory && (
-                <div className="mt-3 space-y-3">
-                  {patientConsultations.map(c => (
-                    <div key={c.id} className="border border-border rounded p-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="font-medium">{c.date}</span>
-                        {c.syndromicFlag && <span className="badge-warning">{c.syndromicFlag}</span>}
-                      </div>
-                      <p className="text-muted-foreground mt-1">{c.chiefComplaint}</p>
-                      <p className="mt-1">Dx: {c.provisionalDiagnosis} · Rx: {c.treatment}</p>
+              <h3 className="font-heading font-medium text-sm mb-3">Previous Encounters ({pastEncounters.length})</h3>
+              <div className="space-y-3">
+                {pastEncounters.map(e => (
+                  <div key={e.id} className="border border-border rounded p-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="font-medium">{new Date(e.encounter_date).toLocaleDateString()}</span>
+                      {e.is_syndromic_alert && <span className="badge-warning">⚠ Syndromic</span>}
                     </div>
-                  ))}
-                </div>
-              )}
+                    <p className="text-muted-foreground mt-1">{e.chief_complaint}</p>
+                    {e.diagnosis && <p className="mt-1">Dx: {e.diagnosis}</p>}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </>
