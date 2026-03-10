@@ -1,9 +1,7 @@
 import AppSidebar from './AppSidebar';
 import TopBar from './TopBar';
-import { useAppContext } from '@/context/AppContext';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
-  const { sidebarOpen } = useAppContext();
 
   return (
     <div className="min-h-screen flex bg-background">
