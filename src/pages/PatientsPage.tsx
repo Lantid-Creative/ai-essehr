@@ -45,7 +45,7 @@ export default function PatientsPage() {
         query = query.or(`first_name.ilike.%${search}%,last_name.ilike.%${search}%,patient_code.ilike.%${search}%,phone.ilike.%${search}%`);
       }
       if (statusFilter !== 'all') {
-        query = query.eq('status', statusFilter);
+        query = query.eq('status', statusFilter as any);
       }
       const { data } = await query.limit(100);
       return data || [];
