@@ -415,10 +415,91 @@ export default function ConsultationPage() {
           {/* Clinical Notes, Diagnosis, Treatment */}
           <div className="card-ehr p-4 space-y-4">
             <div>
-              <label className="text-sm font-medium block mb-1">Clinical Notes</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-sm font-medium">Clinical Notes</label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={runNlpScreening}
+                  disabled={nlpLoading || (!clinicalNotes && !chiefComplaint)}
+                  className="gap-1.5 text-xs"
+                >
+                  {nlpLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <BrainCircuit className="h-3 w-3" />}
+                  {nlpLoading ? 'Screening…' : 'AI Screen for Disease Signals'}
+                </Button>
+              </div>
               <textarea value={clinicalNotes} onChange={e => setClinicalNotes(e.target.value)} rows={3}
+                placeholder="Write clinical notes in English or Pidgin — AI will scan for disease signals…"
                 className="w-full px-3 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
             </div>
+
+            {/* AI NLP Results Panel */}
+            {nlpResult && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <BrainCircuit className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-heading font-medium">AI-PEWS NLP Analysis</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">
+                      {nlpResult.source === 'ai_nlp' ? 'AI + Keywords' : 'Keywords Only'}
+                    </span>
+                  </div>
+                  <button onClick={() => setNlpResult(null)} className="text-muted-foreground hover:text-foreground">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+
+                {nlpResult.language_detected && (
+                  <p className="text-xs text-muted-foreground">Language detected: {nlpResult.language_detected}</p>
+                )}
+
+                {nlpResult.detected_signals.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No disease signals detected in the clinical notes.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {nlpResult.detected_signals.map((signal, i) => {
+                      const severityColors: Record<string, string> = {
+                        low: 'bg-muted text-muted-foreground',
+                        moderate: 'bg-accent/20 text-accent-foreground',
+                        high: 'bg-destructive/10 text-destructive',
+                        critical: 'bg-destructive text-destructive-foreground',
+                      };
+                      return (
+                        <div key={i} className="rounded border border-border bg-background p-3 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <ShieldAlert className="h-4 w-4 text-destructive" />
+                            <span className="text-sm font-medium capitalize">{signal.disease.replace('_', ' ')}</span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium capitalize ${severityColors[signal.severity] || severityColors.moderate}`}>
+                              {signal.severity}
+                            </span>
+                            <span className="text-xs text-muted-foreground ml-auto">
+                              Confidence: {signal.confidence}%
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{signal.reasoning}</p>
+                          {signal.matched_symptoms.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {signal.matched_symptoms.map((s, j) => (
+                                <span key={j} className="text-[10px] px-1.5 py-0.5 rounded bg-destructive/10 text-destructive">
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {nlpResult.additional_clinical_signals && (
+                  <p className="text-xs text-muted-foreground border-t border-border pt-2">
+                    <span className="font-medium">Other findings:</span> {nlpResult.additional_clinical_signals}
+                  </p>
+                )}
+              </div>
+            )}
             <div>
               <label className="text-sm font-medium block mb-1">Provisional Diagnosis + ICD-10</label>
               <input type="text" value={diagnosis} onChange={e => setDiagnosis(e.target.value)}
