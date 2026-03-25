@@ -37,12 +37,12 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center p-12">
         <div className="max-w-md text-center">
           <Activity className="h-16 w-16 text-primary mx-auto mb-6" />
-          <h1 className="text-4xl font-heading font-bold text-sidebar-foreground mb-4">AI-ESS EHR</h1>
+          <h1 className="text-4xl font-heading font-bold text-sidebar-foreground mb-4">AI-PEWS Nigeria</h1>
           <p className="text-sidebar-foreground/60 text-lg mb-8">
-            Surveillance-First Electronic Health Records Platform
+            AI-Powered Early Warning System — National Disease Surveillance
           </p>
           <div className="grid grid-cols-2 gap-4 text-left">
-            {['Real-Time Surveillance', 'Offline-Ready', 'Multi-Facility', 'AI-Powered Alerts'].map((t) => (
+            {['717→24hr Detection', 'Offline-First EHR', 'SORMAS & DHIS2 Push', 'AI Syndromic Alerts'].map((t) => (
               <div key={t} className="bg-sidebar-accent/50 rounded-lg p-4">
                 <span className="text-sm font-medium text-sidebar-foreground">{t}</span>
               </div>
@@ -56,7 +56,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md bg-card rounded-xl p-8 shadow-lg">
           <div className="lg:hidden flex items-center gap-2 mb-6 justify-center">
             <Activity className="h-8 w-8 text-primary" />
-            <span className="text-xl font-heading font-bold text-foreground">AI-ESS EHR</span>
+            <span className="text-xl font-heading font-bold text-foreground">AI-PEWS</span>
           </div>
           <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Welcome back</h2>
           <p className="text-muted-foreground text-sm mb-8">Sign in to access your dashboard</p>
