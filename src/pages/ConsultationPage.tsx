@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAppContext } from '@/context/AppContext';
-import { AlertTriangle, Search, Loader2, Plus, Trash2, FileText, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, Search, Loader2, Plus, Trash2, FileText, ShieldAlert, BrainCircuit, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,23 @@ import { useToast } from '@/hooks/use-toast';
 import PatientHealthRecord from '@/components/patient/PatientHealthRecord';
 import DrugInteractionAlert, { checkDrugInteractions } from '@/components/consultation/DrugInteractionAlert';
 import type { Tables } from '@/integrations/supabase/types';
+
+interface NlpSignal {
+  disease: string;
+  confidence: number;
+  matched_symptoms: string[];
+  severity: string;
+  reasoning: string;
+}
+
+interface NlpResult {
+  source?: string;
+  detected_signals: NlpSignal[];
+  language_detected?: string;
+  additional_clinical_signals?: string;
+  keyword_pre_screen?: Record<string, string[]>;
+  error?: string;
+}
 
 type Patient = Tables<'patients'>;
 
@@ -74,6 +91,8 @@ export default function ConsultationPage() {
   const [disposition, setDisposition] = useState<string>('Outpatient');
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [labOrders, setLabOrders] = useState<LabOrder[]>([]);
+  const [nlpResult, setNlpResult] = useState<NlpResult | null>(null);
+  const [nlpLoading, setNlpLoading] = useState(false);
 
   const { data: searchResults = [] } = useQuery({
     queryKey: ['patient-search', patientSearch, facilityId],
@@ -145,10 +164,48 @@ export default function ConsultationPage() {
   };
   const removeLabOrder = (i: number) => setLabOrders(labOrders.filter((_, idx) => idx !== i));
 
+  // Run AI NLP screening
+  const runNlpScreening = async () => {
+    if (!clinicalNotes && !chiefComplaint) return;
+    setNlpLoading(true);
+    setNlpResult(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('syndromic-nlp', {
+        body: {
+          clinical_notes: clinicalNotes,
+          chief_complaint: chiefComplaint,
+          symptoms: selectedSymptoms,
+        },
+      });
+      if (error) throw error;
+      setNlpResult(data as NlpResult);
+    } catch (err: any) {
+      console.error('NLP screening error:', err);
+      toast({ title: 'AI screening failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setNlpLoading(false);
+    }
+  };
+
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (!selectedPatient) throw new Error('No patient selected');
-      const isSyndromic = syndromicFlags.length > 0;
+
+      // Combine rule-based flags with AI NLP signals (confidence >= 50)
+      const nlpDiseases = (nlpResult?.detected_signals || [])
+        .filter(s => s.confidence >= 50)
+        .map(s => {
+          const nameMap: Record<string, string> = {
+            cholera: 'Cholera', lassa_fever: 'Lassa Fever',
+            meningitis: 'Meningitis', measles: 'Measles', diphtheria: 'Diphtheria',
+          };
+          return nameMap[s.disease] || s.disease;
+        });
+      const allFlaggedDiseases = [...new Set([
+        ...syndromicFlags.map(f => f.disease),
+        ...nlpDiseases,
+      ])];
+      const isSyndromic = allFlaggedDiseases.length > 0;
       const validRx = prescriptions.filter(p => p.drug.trim());
 
       const { data: encounter, error } = await supabase.from('encounters').insert({
@@ -164,7 +221,7 @@ export default function ConsultationPage() {
         treatment_plan: treatment,
         prescriptions: validRx.length > 0 ? validRx as any : null,
         is_syndromic_alert: isSyndromic,
-        syndromic_flags: syndromicFlags.map(f => f.disease) as any,
+        syndromic_flags: allFlaggedDiseases as any,
       }).select('id').single();
       if (error) throw error;
 
@@ -181,15 +238,21 @@ export default function ConsultationPage() {
         await supabase.from('lab_results').insert(labInserts);
       }
 
-      // Auto-create surveillance alerts
+      // Auto-create surveillance alerts for all flagged diseases
       if (isSyndromic) {
-        for (const flag of syndromicFlags) {
+        for (const disease of allFlaggedDiseases) {
+          const nlpSignal = (nlpResult?.detected_signals || []).find(
+            s => s.disease === disease.toLowerCase().replace(' ', '_')
+          );
+          const severityMap: Record<string, 'low' | 'medium' | 'high' | 'critical'> = {
+            low: 'low', moderate: 'medium', high: 'high', critical: 'critical',
+          };
           await supabase.from('surveillance_alerts').insert({
-            disease_name: flag.disease,
+            disease_name: disease,
             facility_id: facilityId,
             reported_by: user?.id,
-            severity: syndromicFlags.length >= 2 ? 'high' : 'medium',
-            description: `Syndromic alert: ${flag.disease} detected. Patient: ${selectedPatient.first_name} ${selectedPatient.last_name}. Symptoms: ${selectedSymptoms.join(', ')}`,
+            severity: nlpSignal ? (severityMap[nlpSignal.severity] || 'medium') : (allFlaggedDiseases.length >= 2 ? 'high' : 'medium'),
+            description: `Syndromic alert: ${disease} detected via ${nlpSignal ? 'AI NLP analysis' : 'symptom checklist'}. Patient: ${selectedPatient.first_name} ${selectedPatient.last_name}. ${nlpSignal ? `AI confidence: ${nlpSignal.confidence}%. Reasoning: ${nlpSignal.reasoning}` : `Symptoms: ${selectedSymptoms.join(', ')}`}`,
           });
         }
       }
@@ -202,13 +265,17 @@ export default function ConsultationPage() {
           action: 'create',
           entity_type: 'encounter',
           entity_id: encounter.id,
-          details: { patient: `${selectedPatient.first_name} ${selectedPatient.last_name}`, diagnosis, syndromic: isSyndromic } as any,
+          details: { patient: `${selectedPatient.first_name} ${selectedPatient.last_name}`, diagnosis, syndromic: isSyndromic, nlp_source: nlpResult?.source } as any,
         } as any);
       }
     },
     onSuccess: () => {
-      const msg = syndromicFlags.length > 0
-        ? `Consultation saved & ${syndromicFlags.length} alert(s) raised!`
+      const allFlags = [...new Set([
+        ...syndromicFlags.map(f => f.disease),
+        ...(nlpResult?.detected_signals || []).filter(s => s.confidence >= 50).map(s => s.disease),
+      ])];
+      const msg = allFlags.length > 0
+        ? `Consultation saved & ${allFlags.length} alert(s) raised!`
         : labOrders.length > 0
         ? `Consultation saved & ${labOrders.length} lab order(s) created!`
         : 'Consultation saved';
@@ -220,7 +287,7 @@ export default function ConsultationPage() {
       setSelectedPatient(null); setSelectedSymptoms([]); setChiefComplaint('');
       setVitals({ temperature: '', bp: '', pulse: '', respiratoryRate: '', spo2: '', weight: '' });
       setClinicalNotes(''); setDiagnosis(''); setTreatment(''); setDisposition('Outpatient');
-      setPrescriptions([]); setLabOrders([]);
+      setPrescriptions([]); setLabOrders([]); setNlpResult(null);
     },
     onError: (err: any) => toast({ title: 'Error saving', description: err.message, variant: 'destructive' }),
   });
@@ -348,10 +415,91 @@ export default function ConsultationPage() {
           {/* Clinical Notes, Diagnosis, Treatment */}
           <div className="card-ehr p-4 space-y-4">
             <div>
-              <label className="text-sm font-medium block mb-1">Clinical Notes</label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-sm font-medium">Clinical Notes</label>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={runNlpScreening}
+                  disabled={nlpLoading || (!clinicalNotes && !chiefComplaint)}
+                  className="gap-1.5 text-xs"
+                >
+                  {nlpLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <BrainCircuit className="h-3 w-3" />}
+                  {nlpLoading ? 'Screening…' : 'AI Screen for Disease Signals'}
+                </Button>
+              </div>
               <textarea value={clinicalNotes} onChange={e => setClinicalNotes(e.target.value)} rows={3}
+                placeholder="Write clinical notes in English or Pidgin — AI will scan for disease signals…"
                 className="w-full px-3 py-2 border border-input rounded bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none" />
             </div>
+
+            {/* AI NLP Results Panel */}
+            {nlpResult && (
+              <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <BrainCircuit className="h-4 w-4 text-primary" />
+                    <span className="text-sm font-heading font-medium">AI-PEWS NLP Analysis</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">
+                      {nlpResult.source === 'ai_nlp' ? 'AI + Keywords' : 'Keywords Only'}
+                    </span>
+                  </div>
+                  <button onClick={() => setNlpResult(null)} className="text-muted-foreground hover:text-foreground">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+
+                {nlpResult.language_detected && (
+                  <p className="text-xs text-muted-foreground">Language detected: {nlpResult.language_detected}</p>
+                )}
+
+                {nlpResult.detected_signals.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No disease signals detected in the clinical notes.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {nlpResult.detected_signals.map((signal, i) => {
+                      const severityColors: Record<string, string> = {
+                        low: 'bg-muted text-muted-foreground',
+                        moderate: 'bg-accent/20 text-accent-foreground',
+                        high: 'bg-destructive/10 text-destructive',
+                        critical: 'bg-destructive text-destructive-foreground',
+                      };
+                      return (
+                        <div key={i} className="rounded border border-border bg-background p-3 space-y-1">
+                          <div className="flex items-center gap-2">
+                            <ShieldAlert className="h-4 w-4 text-destructive" />
+                            <span className="text-sm font-medium capitalize">{signal.disease.replace('_', ' ')}</span>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium capitalize ${severityColors[signal.severity] || severityColors.moderate}`}>
+                              {signal.severity}
+                            </span>
+                            <span className="text-xs text-muted-foreground ml-auto">
+                              Confidence: {signal.confidence}%
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{signal.reasoning}</p>
+                          {signal.matched_symptoms.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {signal.matched_symptoms.map((s, j) => (
+                                <span key={j} className="text-[10px] px-1.5 py-0.5 rounded bg-destructive/10 text-destructive">
+                                  {s}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {nlpResult.additional_clinical_signals && (
+                  <p className="text-xs text-muted-foreground border-t border-border pt-2">
+                    <span className="font-medium">Other findings:</span> {nlpResult.additional_clinical_signals}
+                  </p>
+                )}
+              </div>
+            )}
             <div>
               <label className="text-sm font-medium block mb-1">Provisional Diagnosis + ICD-10</label>
               <input type="text" value={diagnosis} onChange={e => setDiagnosis(e.target.value)}
