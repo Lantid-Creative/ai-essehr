@@ -91,6 +91,8 @@ export default function ConsultationPage() {
   const [disposition, setDisposition] = useState<string>('Outpatient');
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [labOrders, setLabOrders] = useState<LabOrder[]>([]);
+  const [nlpResult, setNlpResult] = useState<NlpResult | null>(null);
+  const [nlpLoading, setNlpLoading] = useState(false);
 
   const { data: searchResults = [] } = useQuery({
     queryKey: ['patient-search', patientSearch, facilityId],
