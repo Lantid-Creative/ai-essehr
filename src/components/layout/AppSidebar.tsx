@@ -3,23 +3,24 @@ import { useAppContext, AppRole } from '@/context/AppContext';
 import {
   LayoutDashboard, UserPlus, Stethoscope, BedDouble, Shield, Syringe,
   FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity,
-  CalendarPlus, ClipboardList, Package, Receipt
+  CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe
 } from 'lucide-react';
 
 interface NavItem {
   label: string;
   path: string;
   icon: React.ComponentType<{ className?: string }>;
-  roles?: AppRole[]; // If empty/undefined, visible to all
+  roles?: AppRole[];
 }
 
 const allNavItems: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { label: 'Appointments', path: '/appointments', icon: CalendarPlus, roles: ['facility_admin', 'doctor', 'nurse', 'chew', 'data_clerk'] },
+  { label: 'Queue & Triage', path: '/appointments', icon: CalendarPlus, roles: ['facility_admin', 'doctor', 'nurse', 'chew', 'data_clerk'] },
   { label: 'Patients', path: '/patients', icon: UserPlus, roles: ['facility_admin', 'doctor', 'nurse', 'chew', 'data_clerk'] },
   { label: 'Consultation', path: '/consultation', icon: Stethoscope, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Wards', path: '/wards', icon: BedDouble, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Surveillance', path: '/surveillance', icon: Shield, roles: ['facility_admin', 'doctor', 'nurse', 'chew', 'epidemiologist', 'dsno', 'super_admin'] },
+  { label: 'Early Warnings', path: '/early-warnings', icon: AlertTriangle, roles: ['facility_admin', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'Immunization', path: '/immunization', icon: Syringe, roles: ['facility_admin', 'nurse', 'chew'] },
   { label: 'Laboratory', path: '/laboratory', icon: FlaskConical, roles: ['facility_admin', 'doctor', 'lab_tech'] },
   { label: 'Pharmacy', path: '/pharmacy', icon: Pill, roles: ['facility_admin', 'doctor', 'pharmacist'] },
@@ -28,6 +29,7 @@ const allNavItems: NavItem[] = [
   { label: 'MCH', path: '/mch', icon: Baby, roles: ['facility_admin', 'nurse', 'chew'] },
   { label: 'Staff', path: '/staff', icon: Users, roles: ['facility_admin', 'super_admin'] },
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
+  { label: 'Data Chain', path: '/data-chain', icon: Globe, roles: ['facility_admin', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'Audit Trail', path: '/audit', icon: ClipboardList, roles: ['facility_admin', 'super_admin'] },
   { label: 'Sync', path: '/sync', icon: Wifi },
   { label: 'Settings', path: '/settings', icon: Settings },
@@ -54,11 +56,13 @@ export default function AppSidebar() {
         } lg:translate-x-0 w-60`}
       >
         <div className="h-16 flex items-center gap-2 px-4 border-b border-sidebar-border">
-          <Activity className="h-6 w-6 text-primary" />
+          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
+            <Activity className="h-4 w-4 text-primary-foreground" />
+          </div>
           <div className="flex-1 min-w-0">
-            <span className="font-heading font-bold text-base tracking-tight">AI-ESS EHR</span>
-            <p className="text-[10px] text-sidebar-foreground/70 leading-tight truncate">
-              Surveillance-First Platform
+            <span className="font-heading font-bold text-sm tracking-tight">AI-PEWS</span>
+            <p className="text-[10px] text-sidebar-foreground/60 leading-tight truncate">
+              Early Warning System
             </p>
           </div>
           <button className="lg:hidden p-1" onClick={() => setSidebarOpen(false)}>
@@ -74,10 +78,10 @@ export default function AppSidebar() {
                 key={item.path}
                 to={item.path}
                 onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded text-sm font-body transition-colors ${
+                className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-body transition-colors ${
                   active
                     ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-                    : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/50'
+                    : 'text-sidebar-foreground/75 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'
                 }`}
               >
                 <item.icon className="h-4 w-4 shrink-0" />
@@ -87,8 +91,9 @@ export default function AppSidebar() {
           })}
         </nav>
 
-        <div className="px-4 py-3 border-t border-sidebar-border text-[11px] text-sidebar-foreground/50">
-          © {new Date().getFullYear()} Lantid Creative LTD
+        <div className="px-4 py-3 border-t border-sidebar-border text-[10px] text-sidebar-foreground/40">
+          <p>© {new Date().getFullYear()} Lantid Creative LTD</p>
+          <p className="mt-0.5">Powered by Nigeria Governors' Forum</p>
         </div>
       </aside>
     </>
