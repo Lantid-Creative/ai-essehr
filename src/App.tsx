@@ -14,6 +14,7 @@ import RegisterFacilityPage from "@/pages/RegisterFacilityPage";
 import RegisterPatientPage from "@/pages/RegisterPatientPage";
 import FAQPage from "@/pages/FAQPage";
 import HelpPage from "@/pages/HelpPage";
+import CommunityReportPage from "@/pages/CommunityReportPage";
 import Dashboard from "@/pages/Dashboard";
 import PatientsPage from "@/pages/PatientsPage";
 import ConsultationPage from "@/pages/ConsultationPage";
@@ -31,6 +32,8 @@ import AppointmentsPage from "@/pages/AppointmentsPage";
 import AuditLogPage from "@/pages/AuditLogPage";
 import DrugInventoryPage from "@/pages/DrugInventoryPage";
 import BillingPage from "@/pages/BillingPage";
+import DataChainPage from "@/pages/DataChainPage";
+import EarlyWarningsPage from "@/pages/EarlyWarningsPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -58,6 +61,7 @@ const App = () => (
             <Route path="/register/patient" element={<RegisterPatientPage />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/help" element={<HelpPage />} />
+            <Route path="/community-report" element={<CommunityReportPage />} />
 
             {/* Protected dashboard routes */}
             <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
@@ -65,12 +69,14 @@ const App = () => (
             <Route path="/consultation" element={<ProtectedPage><ConsultationPage /></ProtectedPage>} />
             <Route path="/wards" element={<ProtectedPage><WardsPage /></ProtectedPage>} />
             <Route path="/surveillance" element={<ProtectedPage><SurveillancePage /></ProtectedPage>} />
+            <Route path="/early-warnings" element={<ProtectedPage><EarlyWarningsPage /></ProtectedPage>} />
             <Route path="/immunization" element={<ProtectedPage><ImmunizationPage /></ProtectedPage>} />
             <Route path="/laboratory" element={<ProtectedPage><LaboratoryPage /></ProtectedPage>} />
             <Route path="/pharmacy" element={<ProtectedPage><PharmacyPage /></ProtectedPage>} />
             <Route path="/mch" element={<ProtectedPage><MCHPage /></ProtectedPage>} />
             <Route path="/staff" element={<ProtectedPage><StaffPage /></ProtectedPage>} />
             <Route path="/reports" element={<ProtectedPage><ReportsPage /></ProtectedPage>} />
+            <Route path="/data-chain" element={<ProtectedPage><DataChainPage /></ProtectedPage>} />
             <Route path="/appointments" element={<ProtectedPage><AppointmentsPage /></ProtectedPage>} />
             <Route path="/audit" element={<ProtectedPage><AuditLogPage /></ProtectedPage>} />
             <Route path="/inventory" element={<ProtectedPage><DrugInventoryPage /></ProtectedPage>} />
