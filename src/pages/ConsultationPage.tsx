@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAppContext } from '@/context/AppContext';
-import { AlertTriangle, Search, Loader2, Plus, Trash2, FileText, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, Search, Loader2, Plus, Trash2, FileText, ShieldAlert, BrainCircuit, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,23 @@ import { useToast } from '@/hooks/use-toast';
 import PatientHealthRecord from '@/components/patient/PatientHealthRecord';
 import DrugInteractionAlert, { checkDrugInteractions } from '@/components/consultation/DrugInteractionAlert';
 import type { Tables } from '@/integrations/supabase/types';
+
+interface NlpSignal {
+  disease: string;
+  confidence: number;
+  matched_symptoms: string[];
+  severity: string;
+  reasoning: string;
+}
+
+interface NlpResult {
+  source?: string;
+  detected_signals: NlpSignal[];
+  language_detected?: string;
+  additional_clinical_signals?: string;
+  keyword_pre_screen?: Record<string, string[]>;
+  error?: string;
+}
 
 type Patient = Tables<'patients'>;
 
