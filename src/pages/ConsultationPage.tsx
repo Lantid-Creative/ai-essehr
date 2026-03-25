@@ -164,10 +164,48 @@ export default function ConsultationPage() {
   };
   const removeLabOrder = (i: number) => setLabOrders(labOrders.filter((_, idx) => idx !== i));
 
+  // Run AI NLP screening
+  const runNlpScreening = async () => {
+    if (!clinicalNotes && !chiefComplaint) return;
+    setNlpLoading(true);
+    setNlpResult(null);
+    try {
+      const { data, error } = await supabase.functions.invoke('syndromic-nlp', {
+        body: {
+          clinical_notes: clinicalNotes,
+          chief_complaint: chiefComplaint,
+          symptoms: selectedSymptoms,
+        },
+      });
+      if (error) throw error;
+      setNlpResult(data as NlpResult);
+    } catch (err: any) {
+      console.error('NLP screening error:', err);
+      toast({ title: 'AI screening failed', description: err.message, variant: 'destructive' });
+    } finally {
+      setNlpLoading(false);
+    }
+  };
+
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (!selectedPatient) throw new Error('No patient selected');
-      const isSyndromic = syndromicFlags.length > 0;
+
+      // Combine rule-based flags with AI NLP signals (confidence >= 50)
+      const nlpDiseases = (nlpResult?.detected_signals || [])
+        .filter(s => s.confidence >= 50)
+        .map(s => {
+          const nameMap: Record<string, string> = {
+            cholera: 'Cholera', lassa_fever: 'Lassa Fever',
+            meningitis: 'Meningitis', measles: 'Measles', diphtheria: 'Diphtheria',
+          };
+          return nameMap[s.disease] || s.disease;
+        });
+      const allFlaggedDiseases = [...new Set([
+        ...syndromicFlags.map(f => f.disease),
+        ...nlpDiseases,
+      ])];
+      const isSyndromic = allFlaggedDiseases.length > 0;
       const validRx = prescriptions.filter(p => p.drug.trim());
 
       const { data: encounter, error } = await supabase.from('encounters').insert({
@@ -183,7 +221,7 @@ export default function ConsultationPage() {
         treatment_plan: treatment,
         prescriptions: validRx.length > 0 ? validRx as any : null,
         is_syndromic_alert: isSyndromic,
-        syndromic_flags: syndromicFlags.map(f => f.disease) as any,
+        syndromic_flags: allFlaggedDiseases as any,
       }).select('id').single();
       if (error) throw error;
 
@@ -200,15 +238,21 @@ export default function ConsultationPage() {
         await supabase.from('lab_results').insert(labInserts);
       }
 
-      // Auto-create surveillance alerts
+      // Auto-create surveillance alerts for all flagged diseases
       if (isSyndromic) {
-        for (const flag of syndromicFlags) {
+        for (const disease of allFlaggedDiseases) {
+          const nlpSignal = (nlpResult?.detected_signals || []).find(
+            s => s.disease === disease.toLowerCase().replace(' ', '_')
+          );
+          const severityMap: Record<string, 'low' | 'medium' | 'high' | 'critical'> = {
+            low: 'low', moderate: 'medium', high: 'high', critical: 'critical',
+          };
           await supabase.from('surveillance_alerts').insert({
-            disease_name: flag.disease,
+            disease_name: disease,
             facility_id: facilityId,
             reported_by: user?.id,
-            severity: syndromicFlags.length >= 2 ? 'high' : 'medium',
-            description: `Syndromic alert: ${flag.disease} detected. Patient: ${selectedPatient.first_name} ${selectedPatient.last_name}. Symptoms: ${selectedSymptoms.join(', ')}`,
+            severity: nlpSignal ? (severityMap[nlpSignal.severity] || 'medium') : (allFlaggedDiseases.length >= 2 ? 'high' : 'medium'),
+            description: `Syndromic alert: ${disease} detected via ${nlpSignal ? 'AI NLP analysis' : 'symptom checklist'}. Patient: ${selectedPatient.first_name} ${selectedPatient.last_name}. ${nlpSignal ? `AI confidence: ${nlpSignal.confidence}%. Reasoning: ${nlpSignal.reasoning}` : `Symptoms: ${selectedSymptoms.join(', ')}`}`,
           });
         }
       }
@@ -221,13 +265,17 @@ export default function ConsultationPage() {
           action: 'create',
           entity_type: 'encounter',
           entity_id: encounter.id,
-          details: { patient: `${selectedPatient.first_name} ${selectedPatient.last_name}`, diagnosis, syndromic: isSyndromic } as any,
+          details: { patient: `${selectedPatient.first_name} ${selectedPatient.last_name}`, diagnosis, syndromic: isSyndromic, nlp_source: nlpResult?.source } as any,
         } as any);
       }
     },
     onSuccess: () => {
-      const msg = syndromicFlags.length > 0
-        ? `Consultation saved & ${syndromicFlags.length} alert(s) raised!`
+      const allFlags = [...new Set([
+        ...syndromicFlags.map(f => f.disease),
+        ...(nlpResult?.detected_signals || []).filter(s => s.confidence >= 50).map(s => s.disease),
+      ])];
+      const msg = allFlags.length > 0
+        ? `Consultation saved & ${allFlags.length} alert(s) raised!`
         : labOrders.length > 0
         ? `Consultation saved & ${labOrders.length} lab order(s) created!`
         : 'Consultation saved';
@@ -239,7 +287,7 @@ export default function ConsultationPage() {
       setSelectedPatient(null); setSelectedSymptoms([]); setChiefComplaint('');
       setVitals({ temperature: '', bp: '', pulse: '', respiratoryRate: '', spo2: '', weight: '' });
       setClinicalNotes(''); setDiagnosis(''); setTreatment(''); setDisposition('Outpatient');
-      setPrescriptions([]); setLabOrders([]);
+      setPrescriptions([]); setLabOrders([]); setNlpResult(null);
     },
     onError: (err: any) => toast({ title: 'Error saving', description: err.message, variant: 'destructive' }),
   });
