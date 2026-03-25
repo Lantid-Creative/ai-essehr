@@ -1,4 +1,4 @@
-import { Menu, Wifi, WifiOff, LogOut } from 'lucide-react';
+import { Menu, Wifi, WifiOff, LogOut, Shield } from 'lucide-react';
 import { useAppContext } from '@/context/AppContext';
 import { useNavigate } from 'react-router-dom';
 import { useOnlineStatus } from '@/hooks/useOfflineSync';
@@ -28,9 +28,12 @@ export default function TopBar() {
         <Menu className="h-5 w-5" />
       </button>
 
-      <div className="hidden sm:block min-w-0">
-        <p className="text-sm font-heading font-medium truncate">{profile?.full_name || 'AI-ESS EHR'}</p>
-        <p className="text-[11px] opacity-70 truncate">{displayRole}</p>
+      <div className="hidden sm:flex items-center gap-2 min-w-0">
+        <Shield className="h-4 w-4 text-primary shrink-0" />
+        <div>
+          <p className="text-sm font-heading font-medium truncate">{profile?.full_name || 'AI-PEWS Nigeria'}</p>
+          <p className="text-[11px] opacity-70 truncate">{displayRole}</p>
+        </div>
       </div>
 
       <div className="flex-1" />
@@ -52,7 +55,7 @@ export default function TopBar() {
       <NotificationsDropdown />
 
       <div className="hidden md:flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+        <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
           {initials}
         </div>
         <div className="text-xs leading-tight">
@@ -61,7 +64,7 @@ export default function TopBar() {
         </div>
       </div>
 
-      <button onClick={handleSignOut} className="p-1.5 rounded hover:bg-white/10 transition-colors" title="Sign out">
+      <button onClick={handleSignOut} className="p-1.5 rounded hover:bg-primary/20 transition-colors" title="Sign out">
         <LogOut className="h-4 w-4" />
       </button>
     </header>
