@@ -24,19 +24,43 @@ export default function RegisterFacilityPage() {
 
   const [facilityName, setFacilityName] = useState('');
   const [facilityType, setFacilityType] = useState('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
   const [region, setRegion] = useState('');
   const [district, setDistrict] = useState('');
   const [address, setAddress] = useState('');
   const [facilityPhone, setFacilityPhone] = useState('');
   const [facilityEmail, setFacilityEmail] = useState('');
+  const [headOfFacility, setHeadOfFacility] = useState('');
 
   const [adminName, setAdminName] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPhone, setAdminPhone] = useState('');
+  const [adminTitle, setAdminTitle] = useState('');
+  const [adminLicense, setAdminLicense] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
+  const [attested, setAttested] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Block obvious free-mail domains for the facility's official email
+    const freeMail = /@(gmail|yahoo|hotmail|outlook|icloud|aol|protonmail|live|msn)\./i;
+    if (facilityEmail && freeMail.test(facilityEmail)) {
+      toast({
+        title: 'Use an official facility email',
+        description: 'Please provide an institutional email address (e.g. info@yourhospital.org), not a personal Gmail/Yahoo address.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (!attested) {
+      toast({
+        title: 'Attestation required',
+        description: 'You must confirm you are an authorized representative of a registered health facility.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -53,18 +77,19 @@ export default function RegisterFacilityPage() {
       if (authError) throw authError;
       if (!authData.user) throw new Error('Failed to create account');
 
-      // 2. Create the facility
+      // 2. Create the facility (active immediately)
       const { data: facility, error: facilityError } = await supabase
         .from('facilities')
         .insert({
           name: facilityName,
           facility_type: facilityType as any,
+          facility_code: registrationNumber || null,
           region,
           district,
           address,
           phone: facilityPhone,
           email: facilityEmail,
-          status: 'pending' as any,
+          status: 'active' as any,
         })
         .select()
         .single();
@@ -78,12 +103,11 @@ export default function RegisterFacilityPage() {
           facility_id: facility.id,
           full_name: adminName,
           phone: adminPhone,
+          job_title: adminTitle || null,
         })
         .eq('id', authData.user.id);
 
-      if (profileError) {
-        console.error('Profile update error:', profileError);
-      }
+      if (profileError) console.error('Profile update error:', profileError);
 
       // 4. Assign facility_admin role
       const { error: roleError } = await supabase
@@ -93,14 +117,27 @@ export default function RegisterFacilityPage() {
           role: 'facility_admin' as any,
           facility_id: facility.id,
         });
+      if (roleError) console.error('Role assignment error:', roleError);
 
-      if (roleError) {
-        console.error('Role assignment error:', roleError);
-      }
+      // 5. Audit attestation for compliance
+      await supabase.from('audit_logs').insert({
+        user_id: authData.user.id,
+        facility_id: facility.id,
+        action: 'facility_registered',
+        entity_type: 'facility',
+        entity_id: facility.id,
+        details: {
+          registration_number: registrationNumber,
+          head_of_facility: headOfFacility,
+          admin_license: adminLicense,
+          admin_title: adminTitle,
+          attested_at: new Date().toISOString(),
+        },
+      });
 
       toast({
-        title: 'Facility Registered!',
-        description: 'Please check your email to verify your account, then sign in.',
+        title: 'Facility activated',
+        description: 'Verify your email, then sign in to begin using AI-PEWS.',
       });
       navigate('/login');
     } catch (error: any) {
@@ -163,18 +200,26 @@ export default function RegisterFacilityPage() {
               <Input value={district} onChange={(e) => setDistrict(e.target.value)} placeholder="District / LGA" className="mt-1.5" />
             </div>
             <div>
-              <Label>Phone</Label>
-              <Input value={facilityPhone} onChange={(e) => setFacilityPhone(e.target.value)} placeholder="+1 234 567 890" className="mt-1.5" />
+              <Label>Facility Registration Number *</Label>
+              <Input value={registrationNumber} onChange={(e) => setRegistrationNumber(e.target.value)} placeholder="e.g. FMOH/HCF/12345 or HEFAMAA No." className="mt-1.5" required />
             </div>
             <div>
-              <Label>Facility Email</Label>
-              <Input type="email" value={facilityEmail} onChange={(e) => setFacilityEmail(e.target.value)} placeholder="info@facility.com" className="mt-1.5" />
+              <Label>Head of Facility / Medical Director *</Label>
+              <Input value={headOfFacility} onChange={(e) => setHeadOfFacility(e.target.value)} placeholder="Dr. ..." className="mt-1.5" required />
+            </div>
+            <div>
+              <Label>Facility Phone *</Label>
+              <Input value={facilityPhone} onChange={(e) => setFacilityPhone(e.target.value)} placeholder="+234 ..." className="mt-1.5" required />
+            </div>
+            <div>
+              <Label>Official Facility Email *</Label>
+              <Input type="email" value={facilityEmail} onChange={(e) => setFacilityEmail(e.target.value)} placeholder="info@yourhospital.org (no Gmail/Yahoo)" className="mt-1.5" required />
             </div>
           </div>
 
           <div>
-            <Label>Address</Label>
-            <Textarea value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Physical address of the facility" className="mt-1.5" rows={2} />
+            <Label>Physical Address *</Label>
+            <Textarea value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Full street address — used for verification" className="mt-1.5" rows={2} required />
           </div>
 
           <hr className="border-border" />
@@ -187,12 +232,20 @@ export default function RegisterFacilityPage() {
               <Input value={adminName} onChange={(e) => setAdminName(e.target.value)} placeholder="Dr. Jane Smith" className="mt-1.5" required />
             </div>
             <div>
+              <Label>Job Title *</Label>
+              <Input value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="e.g. Medical Director, CMO, Hospital Manager" className="mt-1.5" required />
+            </div>
+            <div>
+              <Label>Professional License No. *</Label>
+              <Input value={adminLicense} onChange={(e) => setAdminLicense(e.target.value)} placeholder="MDCN / NMCN / PCN registration number" className="mt-1.5" required />
+            </div>
+            <div>
               <Label>Email *</Label>
-              <Input type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} placeholder="admin@facility.com" className="mt-1.5" required />
+              <Input type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} placeholder="you@yourhospital.org" className="mt-1.5" required />
             </div>
             <div>
               <Label>Phone *</Label>
-              <Input type="tel" value={adminPhone} onChange={(e) => setAdminPhone(e.target.value)} placeholder="+1 234 567 890" className="mt-1.5" required />
+              <Input type="tel" value={adminPhone} onChange={(e) => setAdminPhone(e.target.value)} placeholder="+234 ..." className="mt-1.5" required />
             </div>
             <div>
               <Label>Password *</Label>
@@ -200,8 +253,22 @@ export default function RegisterFacilityPage() {
             </div>
           </div>
 
+          <label className="flex gap-3 items-start text-sm bg-muted/50 p-4 rounded-lg cursor-pointer">
+            <input
+              type="checkbox"
+              checked={attested}
+              onChange={(e) => setAttested(e.target.checked)}
+              className="mt-1 h-4 w-4 shrink-0"
+            />
+            <span className="text-muted-foreground">
+              I confirm that I am an authorized representative of the registered health facility named above,
+              that all information provided is accurate, and that I understand any false declaration may result
+              in immediate suspension and reporting to the Federal Ministry of Health and NCDC.
+            </span>
+          </label>
+
           <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={loading}>
-            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Registering...</> : 'Register Facility'}
+            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Activating...</> : 'Register & Activate Facility'}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
