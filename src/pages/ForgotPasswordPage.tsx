@@ -16,59 +16,57 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
-
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } else {
-      setSent(true);
-    }
+    if (error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    else setSent(true);
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <div className="w-full max-w-md">
-        <div className="flex items-center gap-2 mb-8 justify-center">
-          <Activity className="h-8 w-8 text-primary" />
-          <span className="text-xl font-heading font-bold text-foreground">AI-ESS EHR</span>
-        </div>
+    <div className="min-h-screen bg-cream flex flex-col">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-10 py-5">
+        <Link to="/login" className="inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink">
+          <ArrowLeft className="h-4 w-4" /> Back to sign in
+        </Link>
+      </div>
 
-        <div className="card-ehr p-8">
+      <div className="flex-1 flex items-center justify-center px-4 pb-16">
+        <div className="w-full max-w-md bg-white rounded-3xl border border-black/5 p-8 sm:p-10">
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 rounded-lg gradient-primary grid place-items-center">
+              <Activity className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="font-heading font-bold text-ink">AI-PEWS</span>
+          </div>
+
           {sent ? (
-            <div className="text-center space-y-4">
+            <div className="text-center space-y-4 py-4">
               <CheckCircle2 className="h-12 w-12 text-primary mx-auto" />
-              <h2 className="text-xl font-heading font-bold text-foreground">Check your email</h2>
-              <p className="text-muted-foreground text-sm">
-                We've sent a password reset link to <strong>{email}</strong>. Click the link to reset your password.
+              <h2 className="editorial-display text-2xl text-ink">Check your email.</h2>
+              <p className="text-ink-soft text-sm">
+                We sent a reset link to <strong className="text-ink">{email}</strong>.
               </p>
               <Link to="/login">
-                <Button variant="outline" className="mt-4">Back to Sign In</Button>
+                <Button variant="outline" className="mt-2 rounded-full">Back to sign in</Button>
               </Link>
             </div>
           ) : (
             <>
-              <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Forgot password?</h2>
-              <p className="text-muted-foreground text-sm mb-6">Enter your email and we'll send you a reset link.</p>
+              <span className="text-xs uppercase tracking-[0.2em] text-editorial-muted">Account recovery</span>
+              <h1 className="editorial-display text-ink text-3xl mt-3 mb-2">Forgot password?</h1>
+              <p className="text-sm text-ink-soft mb-6">Enter your email — we'll send a secure reset link.</p>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@facility.com" className="mt-1.5" required />
+                  <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@facility.org" className="mt-1.5 h-11" required />
                 </div>
-                <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={loading}>
-                  {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending...</> : 'Send Reset Link'}
+                <Button type="submit" className="w-full h-12 text-base font-semibold rounded-full bg-ink text-[hsl(var(--cream))] hover:bg-ink/90" disabled={loading}>
+                  {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Sending…</> : 'Send reset link'}
                 </Button>
               </form>
-
-              <div className="mt-6 text-center">
-                <Link to="/login" className="text-sm text-primary hover:underline flex items-center justify-center gap-1">
-                  <ArrowLeft className="h-4 w-4" /> Back to Sign In
-                </Link>
-              </div>
             </>
           )}
         </div>
