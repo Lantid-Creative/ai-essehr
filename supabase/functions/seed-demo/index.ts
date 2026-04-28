@@ -29,18 +29,9 @@ const dobFromAge = (age: number) => {
   return d.toISOString().slice(0, 10);
 };
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
-
-  const sb = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    { auth: { persistSession: false } }
-  );
-
+async function runSeed(sb: any) {
   const log: string[] = [];
   const credentials: any[] = [];
-
   try {
     // ============ 1. FACILITIES ============
     const facilitySpecs = [
@@ -601,26 +592,31 @@ Deno.serve(async (req) => {
     // ============ 10. INSURANCE ============
     const { count: schemeCount } = await sb.from("insurance_schemes").select("id", { count: "exact", head: true }).eq("facility_id", ADH);
     if ((schemeCount ?? 0) < 4) {
-      const { data: schemes } = await sb.from("insurance_schemes").insert([
+      const { data: schemes, error: schErr } = await sb.from("insurance_schemes").insert([
         { facility_id: ADH, name: "NHIA Formal Sector", scheme_type: "nhia", code: "NHIA-FSSHIP", contact_email: "claims@nhia.gov.ng", contact_phone: "+2348001000001", default_copay_percent: 10, preauth_required: false, active: true },
         { facility_id: ADH, name: "Hygeia HMO", scheme_type: "private_hmo", code: "HYG-001", contact_email: "providers@hygeia.com", default_copay_percent: 0, preauth_required: true, active: true },
         { facility_id: ADH, name: "Avon Healthcare", scheme_type: "private_hmo", code: "AVN-002", contact_email: "providers@avonhealthcare.com", default_copay_percent: 5, preauth_required: true, active: true },
         { facility_id: ADH, name: "FCT CBHIS", scheme_type: "cbhis", code: "FCT-CBHIS", contact_email: "fct@cbhis.gov.ng", default_copay_percent: 5, preauth_required: false, active: true },
       ]).select("id, name");
+      if (schErr) log.push("insurance_schemes err: " + schErr.message);
 
       const adhPats = patientsByFac[ADH] ?? [];
-      const enrolRows = adhPats.slice(0, 8).map((p, i) => ({
-        patient_id: p.id,
-        scheme_id: schemes![i % schemes!.length].id,
-        policy_number: `POL-${schemes![i % schemes!.length].name.split(" ")[0].toUpperCase()}-${randInt(100000, 999999)}`,
-        valid_from: daysAgo(180).slice(0, 10),
-        valid_until: daysAgo(-185).slice(0, 10),
-        is_primary: true,
-        dependents: i % 3 === 0 ? [{ name: "Spouse", dob: dobFromAge(35) }] : [],
-      }));
-      const { data: enrolments } = await sb.from("patient_insurance_enrolments").insert(enrolRows).select("id, patient_id, scheme_id");
-
-      log.push(`Insurance schemes: ${schemes?.length}, enrolments: ${enrolments?.length}`);
+      if (schemes && schemes.length > 0) {
+        const enrolRows = adhPats.slice(0, 8).map((p, i) => ({
+          patient_id: p.id,
+          scheme_id: schemes[i % schemes.length].id,
+          policy_number: `POL-${schemes[i % schemes.length].name.split(" ")[0].toUpperCase()}-${randInt(100000, 999999)}`,
+          valid_from: daysAgo(180).slice(0, 10),
+          valid_until: daysAgo(-185).slice(0, 10),
+          is_primary: true,
+          dependents: i % 3 === 0 ? [{ name: "Spouse", dob: dobFromAge(35) }] : [],
+        }));
+        const { data: enrolments, error: enErr } = await sb.from("patient_insurance_enrolments").insert(enrolRows).select("id, patient_id, scheme_id");
+        if (enErr) log.push("enrolments err: " + enErr.message);
+        log.push(`Insurance schemes: ${schemes.length}, enrolments: ${enrolments?.length ?? 0}`);
+      } else {
+        log.push("Insurance schemes: 0 (insert returned no rows)");
+      }
     }
 
     // ============ 11. INVOICES + PAYMENTS + DEPOSITS + CASHIER ============
@@ -767,20 +763,41 @@ Deno.serve(async (req) => {
     }
 
     log.push("OK");
-
-    return new Response(
-      JSON.stringify({
-        password: PASSWORD,
-        facilities,
-        users: credentials.sort((a, b) => a.role.localeCompare(b.role)),
-        log,
-      }, null, 2),
-      { headers: { ...cors, "Content-Type": "application/json" } }
-    );
+    const sorted = credentials.sort((a, b) => a.role.localeCompare(b.role));
+    await sb.from("demo_seed_status").insert({
+      status: "success",
+      message: "Seed completed",
+      credentials: { password: PASSWORD, users: sorted, log },
+    });
+    return { ok: true, password: PASSWORD, users: sorted, log };
   } catch (e: any) {
-    return new Response(
-      JSON.stringify({ error: e.message, log }, null, 2),
-      { status: 500, headers: { ...cors, "Content-Type": "application/json" } }
-    );
+    await sb.from("demo_seed_status").insert({
+      status: "error",
+      message: e.message,
+      credentials: { log, partial_users: credentials },
+    });
+    return { ok: false, error: e.message, log };
   }
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+
+  const sb = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    { auth: { persistSession: false } }
+  );
+
+  // Run in background; return immediately so the HTTP request doesn't time out
+  // @ts-ignore - EdgeRuntime is provided by Deno Deploy/Supabase Edge Runtime
+  EdgeRuntime.waitUntil(runSeed(sb));
+
+  return new Response(
+    JSON.stringify({
+      status: "started",
+      message: "Seeding running in background. Poll public.demo_seed_status for results (1-3 minutes).",
+    }),
+    { headers: { ...cors, "Content-Type": "application/json" } }
+  );
 });
