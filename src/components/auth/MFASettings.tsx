@@ -152,7 +152,7 @@ export default function MFASettings() {
         ) : (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">
-              Add an extra layer of security. Required for super admins and facility admins.
+              Add an extra layer of security with an authenticator app. Optional — you can enable or disable this at any time.
             </p>
             <Button onClick={startEnroll} disabled={enrolling}>
               {enrolling ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Shield className="w-4 h-4 mr-1" />}
