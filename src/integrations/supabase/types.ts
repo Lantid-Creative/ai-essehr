@@ -207,6 +207,171 @@ export type Database = {
           },
         ]
       }
+      case_report_dispatches: {
+        Row: {
+          acknowledged_at: string | null
+          case_report_id: string
+          created_at: string
+          dispatched_at: string | null
+          external_id: string | null
+          id: string
+          last_error: string | null
+          max_retries: number
+          next_retry_at: string | null
+          payload: Json
+          response: Json | null
+          retry_count: number
+          status: string
+          target: string
+          updated_at: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          case_report_id: string
+          created_at?: string
+          dispatched_at?: string | null
+          external_id?: string | null
+          id?: string
+          last_error?: string | null
+          max_retries?: number
+          next_retry_at?: string | null
+          payload: Json
+          response?: Json | null
+          retry_count?: number
+          status?: string
+          target: string
+          updated_at?: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          case_report_id?: string
+          created_at?: string
+          dispatched_at?: string | null
+          external_id?: string | null
+          id?: string
+          last_error?: string | null
+          max_retries?: number
+          next_retry_at?: string | null
+          payload?: Json
+          response?: Json | null
+          retry_count?: number
+          status?: string
+          target?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_report_dispatches_case_report_id_fkey"
+            columns: ["case_report_id"]
+            isOneToOne: false
+            referencedRelation: "case_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      case_reports: {
+        Row: {
+          case_classification: string
+          created_at: string
+          created_by: string | null
+          disease: string
+          encounter_id: string | null
+          external_uuid: string
+          facility_id: string
+          facility_validated_at: string | null
+          facility_validated_by: string | null
+          id: string
+          lga_validated_at: string | null
+          lga_validated_by: string | null
+          onset_date: string | null
+          outcome: string | null
+          patient_id: string
+          rejection_reason: string | null
+          sla_facility_due_at: string | null
+          sla_lga_due_at: string | null
+          sla_state_due_at: string | null
+          state_validated_at: string | null
+          state_validated_by: string | null
+          status: string
+          symptoms: Json
+          updated_at: string
+        }
+        Insert: {
+          case_classification?: string
+          created_at?: string
+          created_by?: string | null
+          disease: string
+          encounter_id?: string | null
+          external_uuid?: string
+          facility_id: string
+          facility_validated_at?: string | null
+          facility_validated_by?: string | null
+          id?: string
+          lga_validated_at?: string | null
+          lga_validated_by?: string | null
+          onset_date?: string | null
+          outcome?: string | null
+          patient_id: string
+          rejection_reason?: string | null
+          sla_facility_due_at?: string | null
+          sla_lga_due_at?: string | null
+          sla_state_due_at?: string | null
+          state_validated_at?: string | null
+          state_validated_by?: string | null
+          status?: string
+          symptoms?: Json
+          updated_at?: string
+        }
+        Update: {
+          case_classification?: string
+          created_at?: string
+          created_by?: string | null
+          disease?: string
+          encounter_id?: string | null
+          external_uuid?: string
+          facility_id?: string
+          facility_validated_at?: string | null
+          facility_validated_by?: string | null
+          id?: string
+          lga_validated_at?: string | null
+          lga_validated_by?: string | null
+          onset_date?: string | null
+          outcome?: string | null
+          patient_id?: string
+          rejection_reason?: string | null
+          sla_facility_due_at?: string | null
+          sla_lga_due_at?: string | null
+          sla_state_due_at?: string | null
+          state_validated_at?: string | null
+          state_validated_by?: string | null
+          status?: string
+          symptoms?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_reports_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "encounters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_reports_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_reports_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       drug_inventory: {
         Row: {
           batch_number: string | null
@@ -271,6 +436,7 @@ export type Database = {
       }
       encounters: {
         Row: {
+          case_classification: string | null
           chief_complaint: string | null
           clinician_id: string | null
           created_at: string
@@ -282,6 +448,7 @@ export type Database = {
           encounter_type: Database["public"]["Enums"]["encounter_type"]
           examination_notes: string | null
           facility_id: string | null
+          icd10_code: string | null
           id: string
           is_syndromic_alert: boolean
           patient_id: string
@@ -294,6 +461,7 @@ export type Database = {
           vital_signs: Json | null
         }
         Insert: {
+          case_classification?: string | null
           chief_complaint?: string | null
           clinician_id?: string | null
           created_at?: string
@@ -305,6 +473,7 @@ export type Database = {
           encounter_type?: Database["public"]["Enums"]["encounter_type"]
           examination_notes?: string | null
           facility_id?: string | null
+          icd10_code?: string | null
           id?: string
           is_syndromic_alert?: boolean
           patient_id: string
@@ -317,6 +486,7 @@ export type Database = {
           vital_signs?: Json | null
         }
         Update: {
+          case_classification?: string | null
           chief_complaint?: string | null
           clinician_id?: string | null
           created_at?: string
@@ -328,6 +498,7 @@ export type Database = {
           encounter_type?: Database["public"]["Enums"]["encounter_type"]
           examination_notes?: string | null
           facility_id?: string | null
+          icd10_code?: string | null
           id?: string
           is_syndromic_alert?: boolean
           patient_id?: string
@@ -363,17 +534,21 @@ export type Database = {
           approved_by: string | null
           bed_count: number | null
           created_at: string
+          dhis2_orgunit_id: string | null
           district: string | null
           email: string | null
           facility_code: string | null
           facility_type: Database["public"]["Enums"]["facility_type"]
           id: string
           latitude: number | null
+          lga_code: string | null
           longitude: number | null
           name: string
           phone: string | null
           region: string | null
           rejection_reason: string | null
+          sormas_facility_uuid: string | null
+          state_code: string | null
           status: Database["public"]["Enums"]["facility_status"]
           updated_at: string
         }
@@ -383,17 +558,21 @@ export type Database = {
           approved_by?: string | null
           bed_count?: number | null
           created_at?: string
+          dhis2_orgunit_id?: string | null
           district?: string | null
           email?: string | null
           facility_code?: string | null
           facility_type?: Database["public"]["Enums"]["facility_type"]
           id?: string
           latitude?: number | null
+          lga_code?: string | null
           longitude?: number | null
           name: string
           phone?: string | null
           region?: string | null
           rejection_reason?: string | null
+          sormas_facility_uuid?: string | null
+          state_code?: string | null
           status?: Database["public"]["Enums"]["facility_status"]
           updated_at?: string
         }
@@ -403,17 +582,21 @@ export type Database = {
           approved_by?: string | null
           bed_count?: number | null
           created_at?: string
+          dhis2_orgunit_id?: string | null
           district?: string | null
           email?: string | null
           facility_code?: string | null
           facility_type?: Database["public"]["Enums"]["facility_type"]
           id?: string
           latitude?: number | null
+          lga_code?: string | null
           longitude?: number | null
           name?: string
           phone?: string | null
           region?: string | null
           rejection_reason?: string | null
+          sormas_facility_uuid?: string | null
+          state_code?: string | null
           status?: Database["public"]["Enums"]["facility_status"]
           updated_at?: string
         }
