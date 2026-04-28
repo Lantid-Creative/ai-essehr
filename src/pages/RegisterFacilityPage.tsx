@@ -200,18 +200,26 @@ export default function RegisterFacilityPage() {
               <Input value={district} onChange={(e) => setDistrict(e.target.value)} placeholder="District / LGA" className="mt-1.5" />
             </div>
             <div>
-              <Label>Phone</Label>
-              <Input value={facilityPhone} onChange={(e) => setFacilityPhone(e.target.value)} placeholder="+1 234 567 890" className="mt-1.5" />
+              <Label>Facility Registration Number *</Label>
+              <Input value={registrationNumber} onChange={(e) => setRegistrationNumber(e.target.value)} placeholder="e.g. FMOH/HCF/12345 or HEFAMAA No." className="mt-1.5" required />
             </div>
             <div>
-              <Label>Facility Email</Label>
-              <Input type="email" value={facilityEmail} onChange={(e) => setFacilityEmail(e.target.value)} placeholder="info@facility.com" className="mt-1.5" />
+              <Label>Head of Facility / Medical Director *</Label>
+              <Input value={headOfFacility} onChange={(e) => setHeadOfFacility(e.target.value)} placeholder="Dr. ..." className="mt-1.5" required />
+            </div>
+            <div>
+              <Label>Facility Phone *</Label>
+              <Input value={facilityPhone} onChange={(e) => setFacilityPhone(e.target.value)} placeholder="+234 ..." className="mt-1.5" required />
+            </div>
+            <div>
+              <Label>Official Facility Email *</Label>
+              <Input type="email" value={facilityEmail} onChange={(e) => setFacilityEmail(e.target.value)} placeholder="info@yourhospital.org (no Gmail/Yahoo)" className="mt-1.5" required />
             </div>
           </div>
 
           <div>
-            <Label>Address</Label>
-            <Textarea value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Physical address of the facility" className="mt-1.5" rows={2} />
+            <Label>Physical Address *</Label>
+            <Textarea value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Full street address — used for verification" className="mt-1.5" rows={2} required />
           </div>
 
           <hr className="border-border" />
@@ -224,12 +232,20 @@ export default function RegisterFacilityPage() {
               <Input value={adminName} onChange={(e) => setAdminName(e.target.value)} placeholder="Dr. Jane Smith" className="mt-1.5" required />
             </div>
             <div>
+              <Label>Job Title *</Label>
+              <Input value={adminTitle} onChange={(e) => setAdminTitle(e.target.value)} placeholder="e.g. Medical Director, CMO, Hospital Manager" className="mt-1.5" required />
+            </div>
+            <div>
+              <Label>Professional License No. *</Label>
+              <Input value={adminLicense} onChange={(e) => setAdminLicense(e.target.value)} placeholder="MDCN / NMCN / PCN registration number" className="mt-1.5" required />
+            </div>
+            <div>
               <Label>Email *</Label>
-              <Input type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} placeholder="admin@facility.com" className="mt-1.5" required />
+              <Input type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} placeholder="you@yourhospital.org" className="mt-1.5" required />
             </div>
             <div>
               <Label>Phone *</Label>
-              <Input type="tel" value={adminPhone} onChange={(e) => setAdminPhone(e.target.value)} placeholder="+1 234 567 890" className="mt-1.5" required />
+              <Input type="tel" value={adminPhone} onChange={(e) => setAdminPhone(e.target.value)} placeholder="+234 ..." className="mt-1.5" required />
             </div>
             <div>
               <Label>Password *</Label>
@@ -237,8 +253,22 @@ export default function RegisterFacilityPage() {
             </div>
           </div>
 
+          <label className="flex gap-3 items-start text-sm bg-muted/50 p-4 rounded-lg cursor-pointer">
+            <input
+              type="checkbox"
+              checked={attested}
+              onChange={(e) => setAttested(e.target.checked)}
+              className="mt-1 h-4 w-4 shrink-0"
+            />
+            <span className="text-muted-foreground">
+              I confirm that I am an authorized representative of the registered health facility named above,
+              that all information provided is accurate, and that I understand any false declaration may result
+              in immediate suspension and reporting to the Federal Ministry of Health and NCDC.
+            </span>
+          </label>
+
           <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={loading}>
-            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Registering...</> : 'Register Facility'}
+            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Activating...</> : 'Register & Activate Facility'}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
