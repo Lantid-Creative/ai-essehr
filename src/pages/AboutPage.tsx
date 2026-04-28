@@ -24,7 +24,7 @@ export default function AboutPage() {
       <section className="px-3 sm:px-5 lg:px-6 mt-4">
         <div className="relative rounded-[28px] overflow-hidden min-h-[440px]">
           <img src={aerial} alt="Aerial of Nigerian community" className="absolute inset-0 w-full h-full object-cover" width={1280} height={832} />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-ink/85" />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/75 to-ink/95" />
           <div className="relative z-10 p-8 md:p-14 max-w-3xl text-center mx-auto">
             <span className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/70">About AI-PEWS</span>
             <h1 className="editorial-display text-[hsl(var(--cream))] text-4xl md:text-6xl mt-4">

@@ -26,7 +26,7 @@ export default function SolutionChainPage() {
       <section className="px-3 sm:px-5 lg:px-6 mt-4">
         <div className="relative rounded-[28px] overflow-hidden min-h-[480px] md:min-h-[560px] bg-primary">
           <img src={heroImg} alt="Validated data chain across Nigeria" className="absolute inset-0 w-full h-full object-cover opacity-50" width={1280} height={832} />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/55 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/40" />
           <div className="relative z-10 p-8 md:p-14 max-w-3xl">
             <span className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/70">For Agencies & Governments</span>
             <h1 className="editorial-display text-[hsl(var(--cream))] text-4xl md:text-6xl mt-4 mb-5">
