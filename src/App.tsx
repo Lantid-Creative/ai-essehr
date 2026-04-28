@@ -106,6 +106,7 @@ const App = () => (
             <Route path="/admin/facility-audit" element={<ProtectedPage><FacilityAuditTrailPage /></ProtectedPage>} />
             <Route path="/reports/idsr" element={<ProtectedPage><IDSRWeeklyReportPage /></ProtectedPage>} />
             <Route path="/reports/kpis" element={<ProtectedPage><FacilityKPIPage /></ProtectedPage>} />
+            <Route path="/reports/heatmap" element={<ProtectedPage><GeoHeatmapPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
