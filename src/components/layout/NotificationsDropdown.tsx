@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Bell, AlertTriangle, FlaskConical, Pill, Syringe, X } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
+import { Bell, AlertTriangle, FlaskConical, Pill, Syringe, X, ArrowRightLeft } from 'lucide-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAppContext } from '@/context/AppContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface Notification {
   id: string;
-  type: 'alert' | 'lab' | 'pharmacy' | 'appointment';
+  type: 'alert' | 'lab' | 'pharmacy' | 'appointment' | 'referral';
   title: string;
   description: string;
   time: string;
@@ -18,6 +19,7 @@ export default function NotificationsDropdown() {
   const [open, setOpen] = useState(false);
   const { facilityId, roles } = useAppContext();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: notifications = [] } = useQuery({
     queryKey: ['notifications', facilityId],
@@ -103,11 +105,60 @@ export default function NotificationsDropdown() {
         }
       }
 
+      // Incoming pending referrals (for clinical staff & facility admins)
+      if (roles.some(r => ['doctor', 'nurse', 'facility_admin'].includes(r))) {
+        const { data: refs } = await supabase.from('patient_referrals')
+          .select('id, reason, urgency, created_at, patients(first_name,last_name)')
+          .eq('receiving_facility_id', facilityId)
+          .eq('status', 'pending')
+          .order('created_at', { ascending: false })
+          .limit(5);
+        (refs || []).forEach((r: any) => {
+          const name = r.patients ? `${r.patients.first_name} ${r.patients.last_name}` : 'a patient';
+          items.push({
+            id: `referral-${r.id}`,
+            type: 'referral',
+            title: `${r.urgency === 'emergency' ? '🚨' : r.urgency === 'urgent' ? '⚠️' : '↪️'} New referral: ${name}`,
+            description: r.reason || 'Awaiting your response',
+            time: new Date(r.created_at).toLocaleDateString(),
+            link: '/referrals',
+          });
+        });
+      }
+
       return items;
     },
     enabled: !!facilityId,
     refetchInterval: 30000,
   });
+
+  // Real-time toast + refresh when a new referral arrives
+  useEffect(() => {
+    if (!facilityId) return;
+    const channel = supabase
+      .channel(`referrals-${facilityId}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'patient_referrals',
+        filter: `receiving_facility_id=eq.${facilityId}`,
+      }, (payload: any) => {
+        const r = payload.new;
+        toast(
+          r.urgency === 'emergency' ? '🚨 Emergency referral received'
+            : r.urgency === 'urgent' ? '⚠️ Urgent referral received'
+            : '↪️ New patient referral',
+          {
+            description: r.reason || 'Open the Referrals inbox to respond.',
+            action: { label: 'Open', onClick: () => navigate('/referrals') },
+          }
+        );
+        queryClient.invalidateQueries({ queryKey: ['notifications', facilityId] });
+        queryClient.invalidateQueries({ queryKey: ['referrals-incoming', facilityId] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [facilityId, navigate, queryClient]);
 
   // Close on outside click
   useEffect(() => {
@@ -125,6 +176,7 @@ export default function NotificationsDropdown() {
     lab: <FlaskConical className="h-4 w-4 text-accent" />,
     pharmacy: <Pill className="h-4 w-4 text-primary" />,
     appointment: <Syringe className="h-4 w-4 text-primary" />,
+    referral: <ArrowRightLeft className="h-4 w-4 text-primary" />,
   };
 
   return (
