@@ -27,6 +27,12 @@ export default function SettingsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    if (window.location.hash === '#mfa') {
+      setTimeout(() => document.getElementById('mfa')?.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  }, []);
+
   const [fullName, setFullName] = useState(profile?.full_name || '');
   const [phone, setPhone] = useState(profile?.phone || '');
   const [jobTitle, setJobTitle] = useState(profile?.job_title || '');
