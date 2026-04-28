@@ -14,6 +14,7 @@ interface Profile {
   department: string | null;
   facility_id: string | null;
   is_active: boolean;
+  is_suspended?: boolean;
 }
 
 interface AppContextType {

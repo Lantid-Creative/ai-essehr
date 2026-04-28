@@ -447,6 +447,27 @@ export default function BillingPage() {
 function PayButton({ invoice, onPay }: { invoice: any; onPay: (method: string) => void }) {
   const [open, setOpen] = useState(false);
   const [method, setMethod] = useState('cash');
+  const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handlePaystack = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('paystack-init', {
+        body: { invoice_id: invoice.id, callback_url: `${window.location.origin}/pay/return` },
+      });
+      if (error) throw error;
+      if (data?.authorization_url) {
+        window.open(data.authorization_url, '_blank', 'noopener');
+        toast({ title: 'Payment link opened', description: 'Complete payment in the new tab.' });
+        setOpen(false);
+      } else {
+        toast({ title: 'Failed', description: data?.error || 'Could not start payment', variant: 'destructive' });
+      }
+    } catch (e: any) {
+      toast({ title: 'Failed', description: e.message || String(e), variant: 'destructive' });
+    } finally { setLoading(false); }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -455,14 +476,25 @@ function PayButton({ invoice, onPay }: { invoice: any; onPay: (method: string) =
           <CreditCard className="h-3 w-3" /> Pay
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-xs">
+      <DialogContent className="max-w-sm">
         <DialogHeader>
           <DialogTitle>Record Payment</DialogTitle>
         </DialogHeader>
         <p className="text-sm">Invoice: <span className="font-mono">{invoice.invoice_number}</span></p>
         <p className="text-lg font-bold">₦{(parseFloat(invoice.total) || 0).toLocaleString()}</p>
+
+        <Button onClick={handlePaystack} disabled={loading} variant="default" className="w-full gap-2">
+          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
+          Pay online (Card / USSD / Transfer)
+        </Button>
+
+        <div className="relative my-1">
+          <div className="absolute inset-0 flex items-center"><span className="w-full border-t" /></div>
+          <div className="relative flex justify-center text-xs"><span className="bg-background px-2 text-muted-foreground">or record manually</span></div>
+        </div>
+
         <div>
-          <Label>Payment Method</Label>
+          <Label>Manual method</Label>
           <Select value={method} onValueChange={setMethod}>
             <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -473,8 +505,8 @@ function PayButton({ invoice, onPay }: { invoice: any; onPay: (method: string) =
             </SelectContent>
           </Select>
         </div>
-        <Button onClick={() => { onPay(method); setOpen(false); }} className="w-full gap-2">
-          <CheckCircle className="h-4 w-4" /> Confirm Payment
+        <Button variant="outline" onClick={() => { onPay(method); setOpen(false); }} className="w-full gap-2">
+          <CheckCircle className="h-4 w-4" /> Confirm manual payment
         </Button>
       </DialogContent>
     </Dialog>
