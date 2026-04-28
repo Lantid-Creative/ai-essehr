@@ -273,6 +273,8 @@ export type Database = {
       facilities: {
         Row: {
           address: string | null
+          approved_at: string | null
+          approved_by: string | null
           bed_count: number | null
           created_at: string
           district: string | null
@@ -285,11 +287,14 @@ export type Database = {
           name: string
           phone: string | null
           region: string | null
+          rejection_reason: string | null
           status: Database["public"]["Enums"]["facility_status"]
           updated_at: string
         }
         Insert: {
           address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           bed_count?: number | null
           created_at?: string
           district?: string | null
@@ -302,11 +307,14 @@ export type Database = {
           name: string
           phone?: string | null
           region?: string | null
+          rejection_reason?: string | null
           status?: Database["public"]["Enums"]["facility_status"]
           updated_at?: string
         }
         Update: {
           address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
           bed_count?: number | null
           created_at?: string
           district?: string | null
@@ -319,6 +327,7 @@ export type Database = {
           name?: string
           phone?: string | null
           region?: string | null
+          rejection_reason?: string | null
           status?: Database["public"]["Enums"]["facility_status"]
           updated_at?: string
         }
@@ -576,6 +585,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      patient_referrals: {
+        Row: {
+          clinical_summary: string | null
+          created_at: string
+          encounter_id: string | null
+          id: string
+          patient_id: string
+          reason: string
+          receiving_facility_id: string
+          referring_clinician_id: string | null
+          referring_facility_id: string
+          responded_at: string | null
+          responded_by: string | null
+          response_notes: string | null
+          status: string
+          updated_at: string
+          urgency: string
+        }
+        Insert: {
+          clinical_summary?: string | null
+          created_at?: string
+          encounter_id?: string | null
+          id?: string
+          patient_id: string
+          reason: string
+          receiving_facility_id: string
+          referring_clinician_id?: string | null
+          referring_facility_id: string
+          responded_at?: string | null
+          responded_by?: string | null
+          response_notes?: string | null
+          status?: string
+          updated_at?: string
+          urgency?: string
+        }
+        Update: {
+          clinical_summary?: string | null
+          created_at?: string
+          encounter_id?: string | null
+          id?: string
+          patient_id?: string
+          reason?: string
+          receiving_facility_id?: string
+          referring_clinician_id?: string | null
+          referring_facility_id?: string
+          responded_at?: string | null
+          responded_by?: string | null
+          response_notes?: string | null
+          status?: string
+          updated_at?: string
+          urgency?: string
+        }
+        Relationships: []
       }
       patients: {
         Row: {
@@ -871,6 +934,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      user_can_access_referral: {
+        Args: { _receiving: string; _referring: string; _user_id: string }
+        Returns: boolean
+      }
+      user_has_referral_access_to_patient: {
+        Args: { _patient_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       alert_severity: "low" | "medium" | "high" | "critical"
@@ -899,7 +970,12 @@ export type Database = {
         | "anc"
         | "immunization"
         | "lab"
-      facility_status: "pending" | "active" | "suspended" | "deactivated"
+      facility_status:
+        | "pending"
+        | "active"
+        | "suspended"
+        | "deactivated"
+        | "rejected"
       facility_type:
         | "primary"
         | "secondary"
@@ -1064,7 +1140,13 @@ export const Constants = {
         "immunization",
         "lab",
       ],
-      facility_status: ["pending", "active", "suspended", "deactivated"],
+      facility_status: [
+        "pending",
+        "active",
+        "suspended",
+        "deactivated",
+        "rejected",
+      ],
       facility_type: ["primary", "secondary", "tertiary", "clinic", "hospital"],
       gender_type: ["male", "female", "other"],
       patient_status: ["active", "inactive", "deceased", "transferred"],
