@@ -12,10 +12,10 @@ import doctorPhoto from '@/assets/landing-doctor.jpg';
 import aerialPhoto from '@/assets/landing-aerial.jpg';
 
 const navLinks = [
-  { label: 'The Crisis', href: '#crisis' },
-  { label: 'Solution', href: '#solution' },
-  { label: 'Partners', href: '#partners' },
-  { label: 'Impact', href: '#impact' },
+  { label: 'Solutions', href: '/solutions' },
+  { label: 'Features', href: '/features' },
+  { label: 'Case Studies', href: '/case-studies/first-time-citizen' },
+  { label: 'About', href: '/about' },
 ];
 
 const heroChips = [
@@ -38,15 +38,15 @@ const services = [
     eyebrow: 'For facilities',
     title: 'Surveillance-Optimised EHR',
     desc: 'Every patient encounter captured digitally at point of care. Offline-first. Multilingual.',
-    cta: 'Deploy at facility', href: '/register/facility',
+    cta: 'Deploy at facility', href: '/solutions/ehr',
     tone: 'cream',
   },
   {
     icon: Brain,
     eyebrow: 'For epidemiologists',
-    title: 'AI Detection Engine',
-    desc: 'NLP reads English & Pidgin clinical notes. Syndromic clustering across facilities — 40% more signal.',
-    cta: 'See how it works', href: '#solution',
+    title: 'Sentinel AI Engine',
+    desc: 'Reads English & Pidgin clinical notes. Syndromic clustering across facilities — 40% more signal.',
+    cta: 'See how it works', href: '/solutions/sentinel-ai',
     tone: 'mint',
   },
   {
@@ -54,7 +54,7 @@ const services = [
     eyebrow: 'For agencies',
     title: 'Validated Data Chain',
     desc: 'LGA validates → one-click push to SORMAS & DHIS2 simultaneously. State validates → NCDC receives.',
-    cta: 'Open chain view', href: '/login',
+    cta: 'Open chain view', href: '/solutions/data-chain',
     tone: 'sand',
   },
   {
@@ -62,7 +62,7 @@ const services = [
     eyebrow: 'For citizens',
     title: 'Early Warning Alerts',
     desc: 'Autonomous alerts via WhatsApp & SMS when thresholds are crossed. No human escalation needed.',
-    cta: 'Report an outbreak', href: '/community-report',
+    cta: 'Sign up for alerts', href: '/register/citizen',
     tone: 'sky',
   },
 ];
@@ -129,9 +129,9 @@ export default function LandingPage() {
 
             <div className="hidden lg:flex items-center gap-1 glass-chip px-2 h-11">
               {navLinks.map((l) => (
-                <a key={l.href} href={l.href} className="px-4 h-9 rounded-full inline-flex items-center text-sm text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))] transition">
+                <Link key={l.href} to={l.href} className="px-4 h-9 rounded-full inline-flex items-center text-sm text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))] transition">
                   {l.label}
-                </a>
+                </Link>
               ))}
               <Link to="/community-report" className="px-4 h-9 rounded-full inline-flex items-center text-sm text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))] transition">
                 Report Outbreak
@@ -157,7 +157,7 @@ export default function LandingPage() {
           {mobileMenuOpen && (
             <div className="md:hidden absolute top-20 left-4 right-4 z-30 glass-chip p-4 space-y-2">
               {navLinks.map((l) => (
-                <a key={l.href} href={l.href} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))]">{l.label}</a>
+                <Link key={l.href} to={l.href} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))]">{l.label}</Link>
               ))}
               <Link to="/community-report" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))]">Report Outbreak</Link>
               <div className="grid grid-cols-2 gap-2 pt-2">
@@ -389,6 +389,9 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+          <div className="mt-10 text-center">
+            <Link to="/features" className="pill-dark">See all features <ArrowUpRight className="h-4 w-4" /></Link>
+          </div>
         </div>
       </section>
 
@@ -409,7 +412,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="lg:col-span-7 bg-ink text-[hsl(var(--cream))] rounded-3xl p-8 md:p-12">
-              <span className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/50">Generative AI</span>
+              <span className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/50">Sentinel AI</span>
               <h3 className="editorial-display text-4xl md:text-5xl mt-3 mb-6">
                 Reading Nigerian<br />
                 <span className="italic font-light">clinical language.</span>
@@ -542,6 +545,23 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Citizen CTA */}
+      <section className="bg-cream py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="rounded-3xl bg-[hsl(153,40%,88%)] p-8 md:p-12 grid lg:grid-cols-[1fr_auto] gap-6 items-center">
+            <div>
+              <span className="text-xs uppercase tracking-[0.2em] text-ink-soft">For every Nigerian</span>
+              <h3 className="editorial-display text-ink text-3xl md:text-4xl mt-2 mb-2">Get protected. <span className="italic font-light">In 30 seconds.</span></h3>
+              <p className="text-ink-soft max-w-xl">Sign up with your phone number and LGA. Receive WhatsApp & SMS outbreak alerts. Free. Always.</p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link to="/register/citizen" className="pill-dark">Create citizen account <ArrowUpRight className="h-4 w-4" /></Link>
+              <Link to="/login" className="pill-light">Sign in</Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA */}
       <section className="bg-cream pb-12">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
@@ -558,7 +578,7 @@ export default function LandingPage() {
               <Link to="/register/facility" className="pill-light">
                 Deploy AI-PEWS <ArrowUpRight className="h-4 w-4" />
               </Link>
-              <Link to="/faq" className="inline-flex items-center gap-2 rounded-full bg-white/10 text-[hsl(var(--cream))] px-5 h-11 text-sm font-medium hover:bg-white/15 transition">
+              <Link to="/about" className="inline-flex items-center gap-2 rounded-full bg-white/10 text-[hsl(var(--cream))] px-5 h-11 text-sm font-medium hover:bg-white/15 transition">
                 Learn more
               </Link>
             </div>
@@ -613,8 +633,9 @@ export default function LandingPage() {
           <div className="border-t border-ink/10 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-editorial-muted">
             <span>© {new Date().getFullYear()} Nigeria Governors' Forum · Technical Partner: Lantid Creative LTD</span>
             <div className="flex gap-6 mt-3 sm:mt-0">
-              <a href="#" className="hover:text-ink">Privacy Policy</a>
-              <a href="#" className="hover:text-ink">Terms of Service</a>
+              <Link to="/legal/privacy" className="hover:text-ink">Privacy Policy</Link>
+              <Link to="/legal/terms" className="hover:text-ink">Terms of Service</Link>
+              <Link to="/legal/security" className="hover:text-ink">Security</Link>
             </div>
           </div>
         </div>

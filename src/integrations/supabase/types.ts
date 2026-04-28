@@ -2547,6 +2547,7 @@ export type Database = {
         | "epidemiologist"
         | "dsno"
         | "paramedic"
+        | "citizen"
       encounter_type:
         | "consultation"
         | "emergency"
@@ -2716,6 +2717,7 @@ export const Constants = {
         "epidemiologist",
         "dsno",
         "paramedic",
+        "citizen",
       ],
       encounter_type: [
         "consultation",
