@@ -12,6 +12,7 @@ import FacilityApprovalPage from "@/pages/FacilityApprovalPage";
 import FacilityAuditTrailPage from "@/pages/FacilityAuditTrailPage";
 import IDSRWeeklyReportPage from "@/pages/IDSRWeeklyReportPage";
 import FacilityKPIPage from "@/pages/FacilityKPIPage";
+import GeoHeatmapPage from "@/pages/GeoHeatmapPage";
 import ReferralsPage from "@/pages/ReferralsPage";
 import RescueTapPage from "@/pages/RescueTapPage";
 import AmbulancePortalPage from "@/pages/AmbulancePortalPage";
