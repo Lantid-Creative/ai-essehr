@@ -9,6 +9,8 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import FacilityGate from "@/components/auth/FacilityGate";
 import FacilityApprovalPage from "@/pages/FacilityApprovalPage";
 import FacilityAuditTrailPage from "@/pages/FacilityAuditTrailPage";
+import IDSRWeeklyReportPage from "@/pages/IDSRWeeklyReportPage";
+import FacilityKPIPage from "@/pages/FacilityKPIPage";
 import ReferralsPage from "@/pages/ReferralsPage";
 import RescueTapPage from "@/pages/RescueTapPage";
 import AmbulancePortalPage from "@/pages/AmbulancePortalPage";
@@ -98,6 +100,8 @@ const App = () => (
             <Route path="/er-inbound" element={<ProtectedPage><ERInboundPage /></ProtectedPage>} />
             <Route path="/admin/facilities" element={<ProtectedPage><FacilityApprovalPage /></ProtectedPage>} />
             <Route path="/admin/facility-audit" element={<ProtectedPage><FacilityAuditTrailPage /></ProtectedPage>} />
+            <Route path="/reports/idsr" element={<ProtectedPage><IDSRWeeklyReportPage /></ProtectedPage>} />
+            <Route path="/reports/kpis" element={<ProtectedPage><FacilityKPIPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
