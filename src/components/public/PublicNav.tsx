@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Activity, Menu, X, ArrowUpRight, ChevronDown } from 'lucide-react';
+import { Activity, Menu, X, ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
 
 const primaryLinks = [
