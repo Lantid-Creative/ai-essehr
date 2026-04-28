@@ -781,8 +781,45 @@ export type Database = {
           },
         ]
       }
+      invoice_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string
+          method: string
+          notes: string | null
+          payment_transaction_id: string | null
+          recorded_by: string
+          reference: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id: string
+          method?: string
+          notes?: string | null
+          payment_transaction_id?: string | null
+          recorded_by: string
+          reference?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string
+          method?: string
+          notes?: string | null
+          payment_transaction_id?: string | null
+          recorded_by?: string
+          reference?: string | null
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
+          amount_paid: number
           created_at: string
           created_by: string | null
           discount: number
@@ -800,6 +837,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          amount_paid?: number
           created_at?: string
           created_by?: string | null
           discount?: number
@@ -817,6 +855,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          amount_paid?: number
           created_at?: string
           created_by?: string | null
           discount?: number
@@ -1063,6 +1102,72 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payment_transactions: {
+        Row: {
+          access_code: string | null
+          amount: number
+          authorization_url: string | null
+          channel: string | null
+          created_at: string
+          currency: string
+          facility_id: string
+          gateway_response: string | null
+          id: string
+          initiated_by: string | null
+          invoice_id: string | null
+          metadata: Json | null
+          paid_at: string | null
+          patient_id: string | null
+          provider: string
+          raw_response: Json | null
+          reference: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          access_code?: string | null
+          amount: number
+          authorization_url?: string | null
+          channel?: string | null
+          created_at?: string
+          currency?: string
+          facility_id: string
+          gateway_response?: string | null
+          id?: string
+          initiated_by?: string | null
+          invoice_id?: string | null
+          metadata?: Json | null
+          paid_at?: string | null
+          patient_id?: string | null
+          provider?: string
+          raw_response?: Json | null
+          reference: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          access_code?: string | null
+          amount?: number
+          authorization_url?: string | null
+          channel?: string | null
+          created_at?: string
+          currency?: string
+          facility_id?: string
+          gateway_response?: string | null
+          id?: string
+          initiated_by?: string | null
+          invoice_id?: string | null
+          metadata?: Json | null
+          paid_at?: string | null
+          patient_id?: string | null
+          provider?: string
+          raw_response?: Json | null
+          reference?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       platform_settings: {
         Row: {
