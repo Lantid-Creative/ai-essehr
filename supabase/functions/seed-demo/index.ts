@@ -29,18 +29,9 @@ const dobFromAge = (age: number) => {
   return d.toISOString().slice(0, 10);
 };
 
-Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
-
-  const sb = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    { auth: { persistSession: false } }
-  );
-
+async function runSeed(sb: any) {
   const log: string[] = [];
   const credentials: any[] = [];
-
   try {
     // ============ 1. FACILITIES ============
     const facilitySpecs = [
