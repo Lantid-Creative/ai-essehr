@@ -12,10 +12,10 @@ import doctorPhoto from '@/assets/landing-doctor.jpg';
 import aerialPhoto from '@/assets/landing-aerial.jpg';
 
 const navLinks = [
-  { label: 'The Crisis', href: '#crisis' },
-  { label: 'Solution', href: '#solution' },
-  { label: 'Partners', href: '#partners' },
-  { label: 'Impact', href: '#impact' },
+  { label: 'Solutions', href: '/solutions' },
+  { label: 'Features', href: '/features' },
+  { label: 'Case Studies', href: '/case-studies/first-time-citizen' },
+  { label: 'About', href: '/about' },
 ];
 
 const heroChips = [
