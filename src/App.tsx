@@ -8,6 +8,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import FacilityGate from "@/components/auth/FacilityGate";
 import MFAGate from "@/components/auth/MFAGate";
+import SuspensionGate from "@/components/auth/SuspensionGate";
 import FacilityApprovalPage from "@/pages/FacilityApprovalPage";
 import FacilityAuditTrailPage from "@/pages/FacilityAuditTrailPage";
 import IDSRWeeklyReportPage from "@/pages/IDSRWeeklyReportPage";
@@ -54,11 +55,13 @@ const queryClient = new QueryClient();
 
 const ProtectedPage = ({ children }: { children: React.ReactNode }) => (
   <ProtectedRoute>
-    <MFAGate>
-      <FacilityGate>
-        <MainLayout>{children}</MainLayout>
-      </FacilityGate>
-    </MFAGate>
+    <SuspensionGate>
+      <MFAGate>
+        <FacilityGate>
+          <MainLayout>{children}</MainLayout>
+        </FacilityGate>
+      </MFAGate>
+    </SuspensionGate>
   </ProtectedRoute>
 );
 
