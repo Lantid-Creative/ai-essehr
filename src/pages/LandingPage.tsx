@@ -129,9 +129,9 @@ export default function LandingPage() {
 
             <div className="hidden lg:flex items-center gap-1 glass-chip px-2 h-11">
               {navLinks.map((l) => (
-                <a key={l.href} href={l.href} className="px-4 h-9 rounded-full inline-flex items-center text-sm text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))] transition">
+                <Link key={l.href} to={l.href} className="px-4 h-9 rounded-full inline-flex items-center text-sm text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))] transition">
                   {l.label}
-                </a>
+                </Link>
               ))}
               <Link to="/community-report" className="px-4 h-9 rounded-full inline-flex items-center text-sm text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))] transition">
                 Report Outbreak
@@ -157,7 +157,7 @@ export default function LandingPage() {
           {mobileMenuOpen && (
             <div className="md:hidden absolute top-20 left-4 right-4 z-30 glass-chip p-4 space-y-2">
               {navLinks.map((l) => (
-                <a key={l.href} href={l.href} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))]">{l.label}</a>
+                <Link key={l.href} to={l.href} onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))]">{l.label}</Link>
               ))}
               <Link to="/community-report" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-ink-soft hover:bg-ink hover:text-[hsl(var(--cream))]">Report Outbreak</Link>
               <div className="grid grid-cols-2 gap-2 pt-2">
