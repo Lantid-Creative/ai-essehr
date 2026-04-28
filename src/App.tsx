@@ -56,6 +56,20 @@ import NursingPage from "@/pages/NursingPage";
 import SpecimensPage from "@/pages/SpecimensPage";
 import ClinicalTasksPage from "@/pages/ClinicalTasksPage";
 import ConsentFormsPage from "@/pages/ConsentFormsPage";
+import SolutionsIndexPage from "@/pages/solutions/SolutionsIndexPage";
+import SolutionEHRPage from "@/pages/solutions/SolutionEHRPage";
+import SolutionAIPage from "@/pages/solutions/SolutionAIPage";
+import SolutionChainPage from "@/pages/solutions/SolutionChainPage";
+import SolutionAlertsPage from "@/pages/solutions/SolutionAlertsPage";
+import FeaturesIndexPage from "@/pages/FeaturesIndexPage";
+import CaseFirstTimeCitizenPage from "@/pages/case-studies/CaseFirstTimeCitizenPage";
+import CaseReturningCitizenPage from "@/pages/case-studies/CaseReturningCitizenPage";
+import AboutPage from "@/pages/AboutPage";
+import ContactPage from "@/pages/ContactPage";
+import PrivacyPage from "@/pages/legal/PrivacyPage";
+import TermsPage from "@/pages/legal/TermsPage";
+import SecurityPage from "@/pages/legal/SecurityPage";
+import RegisterCitizenPage from "@/pages/RegisterCitizenPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -91,6 +105,20 @@ const App = () => (
             <Route path="/help" element={<HelpPage />} />
             <Route path="/community-report" element={<CommunityReportPage />} />
             <Route path="/pay/return" element={<PayReturnPage />} />
+            <Route path="/register/citizen" element={<RegisterCitizenPage />} />
+            <Route path="/solutions" element={<SolutionsIndexPage />} />
+            <Route path="/solutions/ehr" element={<SolutionEHRPage />} />
+            <Route path="/solutions/sentinel-ai" element={<SolutionAIPage />} />
+            <Route path="/solutions/data-chain" element={<SolutionChainPage />} />
+            <Route path="/solutions/early-warnings" element={<SolutionAlertsPage />} />
+            <Route path="/features" element={<FeaturesIndexPage />} />
+            <Route path="/case-studies/first-time-citizen" element={<CaseFirstTimeCitizenPage />} />
+            <Route path="/case-studies/returning-citizen" element={<CaseReturningCitizenPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/legal/privacy" element={<PrivacyPage />} />
+            <Route path="/legal/terms" element={<TermsPage />} />
+            <Route path="/legal/security" element={<SecurityPage />} />
 
             {/* Protected dashboard routes */}
             <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
