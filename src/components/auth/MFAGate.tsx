@@ -109,6 +109,10 @@ export default function MFAGate({ children }: { children: React.ReactNode }) {
   }
 
   if (state === 'must_enroll') {
+    // Allow the settings page through so the user can actually enroll.
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/settings')) {
+      return <>{children}</>;
+    }
     return (
       <div className="min-h-screen flex items-center justify-center bg-sidebar p-4">
         <Card className="w-full max-w-lg">
@@ -117,7 +121,7 @@ export default function MFAGate({ children }: { children: React.ReactNode }) {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Your administrator role requires two-factor authentication. You'll be redirected to Settings to enroll.
+              Your administrator role requires two-factor authentication. Set it up now to access the dashboard.
             </p>
             <Button onClick={() => { window.location.href = '/settings#mfa'; }} className="w-full">
               Set up 2FA now
