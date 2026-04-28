@@ -38,15 +38,15 @@ const services = [
     eyebrow: 'For facilities',
     title: 'Surveillance-Optimised EHR',
     desc: 'Every patient encounter captured digitally at point of care. Offline-first. Multilingual.',
-    cta: 'Deploy at facility', href: '/register/facility',
+    cta: 'Deploy at facility', href: '/solutions/ehr',
     tone: 'cream',
   },
   {
     icon: Brain,
     eyebrow: 'For epidemiologists',
-    title: 'AI Detection Engine',
-    desc: 'NLP reads English & Pidgin clinical notes. Syndromic clustering across facilities — 40% more signal.',
-    cta: 'See how it works', href: '#solution',
+    title: 'Sentinel AI Engine',
+    desc: 'Reads English & Pidgin clinical notes. Syndromic clustering across facilities — 40% more signal.',
+    cta: 'See how it works', href: '/solutions/sentinel-ai',
     tone: 'mint',
   },
   {
@@ -54,7 +54,7 @@ const services = [
     eyebrow: 'For agencies',
     title: 'Validated Data Chain',
     desc: 'LGA validates → one-click push to SORMAS & DHIS2 simultaneously. State validates → NCDC receives.',
-    cta: 'Open chain view', href: '/login',
+    cta: 'Open chain view', href: '/solutions/data-chain',
     tone: 'sand',
   },
   {
@@ -62,7 +62,7 @@ const services = [
     eyebrow: 'For citizens',
     title: 'Early Warning Alerts',
     desc: 'Autonomous alerts via WhatsApp & SMS when thresholds are crossed. No human escalation needed.',
-    cta: 'Report an outbreak', href: '/community-report',
+    cta: 'Sign up for alerts', href: '/register/citizen',
     tone: 'sky',
   },
 ];
