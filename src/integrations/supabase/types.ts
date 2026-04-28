@@ -207,6 +207,45 @@ export type Database = {
           },
         ]
       }
+      broadcast_announcements: {
+        Row: {
+          active: boolean
+          body: string
+          created_at: string
+          created_by: string
+          expires_at: string | null
+          id: string
+          severity: string
+          target_role: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          body: string
+          created_at?: string
+          created_by: string
+          expires_at?: string | null
+          id?: string
+          severity?: string
+          target_role?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          body?: string
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          id?: string
+          severity?: string
+          target_role?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       case_report_dispatches: {
         Row: {
           acknowledged_at: string | null
@@ -602,6 +641,48 @@ export type Database = {
         }
         Relationships: []
       }
+      facility_payment_credentials: {
+        Row: {
+          account_number: string | null
+          business_name: string | null
+          configured_by: string | null
+          created_at: string
+          facility_id: string
+          is_active: boolean
+          percentage_charge: number
+          provider: string
+          settlement_bank: string | null
+          subaccount_code: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_number?: string | null
+          business_name?: string | null
+          configured_by?: string | null
+          created_at?: string
+          facility_id: string
+          is_active?: boolean
+          percentage_charge?: number
+          provider?: string
+          settlement_bank?: string | null
+          subaccount_code?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_number?: string | null
+          business_name?: string | null
+          configured_by?: string | null
+          created_at?: string
+          facility_id?: string
+          is_active?: boolean
+          percentage_charge?: number
+          provider?: string
+          settlement_bank?: string | null
+          subaccount_code?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       immunizations: {
         Row: {
           administered_at: string
@@ -983,6 +1064,36 @@ export type Database = {
           },
         ]
       }
+      platform_settings: {
+        Row: {
+          created_at: string
+          description: string | null
+          is_secret: boolean
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          is_secret?: boolean
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          is_secret?: boolean
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -993,6 +1104,7 @@ export type Database = {
           full_name: string
           id: string
           is_active: boolean
+          is_suspended: boolean
           job_title: string | null
           phone: string | null
           updated_at: string
@@ -1006,6 +1118,7 @@ export type Database = {
           full_name?: string
           id: string
           is_active?: boolean
+          is_suspended?: boolean
           job_title?: string | null
           phone?: string | null
           updated_at?: string
@@ -1019,6 +1132,7 @@ export type Database = {
           full_name?: string
           id?: string
           is_active?: boolean
+          is_suspended?: boolean
           job_title?: string | null
           phone?: string | null
           updated_at?: string
@@ -1208,6 +1322,36 @@ export type Database = {
           },
         ]
       }
+      user_suspensions: {
+        Row: {
+          id: string
+          lifted_at: string | null
+          lifted_by: string | null
+          reason: string
+          suspended_at: string
+          suspended_by: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          lifted_at?: string | null
+          lifted_by?: string | null
+          reason: string
+          suspended_at?: string
+          suspended_by: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          lifted_at?: string | null
+          lifted_by?: string | null
+          reason?: string
+          suspended_at?: string
+          suspended_by?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ward_beds: {
         Row: {
           admission_date: string | null
@@ -1290,6 +1434,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_user_suspended: { Args: { _user_id: string }; Returns: boolean }
       jsonb_diff_keys: { Args: { _new: Json; _old: Json }; Returns: string[] }
       log_audit_event: {
         Args: {
