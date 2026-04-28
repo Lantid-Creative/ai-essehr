@@ -411,6 +411,266 @@ export type Database = {
           },
         ]
       }
+      cashier_movements: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          invoice_id: string | null
+          movement_type: string
+          notes: string | null
+          recorded_by: string
+          reference: string | null
+          shift_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          movement_type: string
+          notes?: string | null
+          recorded_by: string
+          reference?: string | null
+          shift_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          invoice_id?: string | null
+          movement_type?: string
+          notes?: string | null
+          recorded_by?: string
+          reference?: string | null
+          shift_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cashier_movements_shift_id_fkey"
+            columns: ["shift_id"]
+            isOneToOne: false
+            referencedRelation: "cashier_shifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cashier_shifts: {
+        Row: {
+          actual_cash: number | null
+          cashier_id: string
+          closed_at: string | null
+          created_at: string
+          expected_cash: number
+          facility_id: string
+          id: string
+          notes: string | null
+          opened_at: string
+          opening_cash: number
+          status: string
+          updated_at: string
+          variance: number | null
+        }
+        Insert: {
+          actual_cash?: number | null
+          cashier_id: string
+          closed_at?: string | null
+          created_at?: string
+          expected_cash?: number
+          facility_id: string
+          id?: string
+          notes?: string | null
+          opened_at?: string
+          opening_cash?: number
+          status?: string
+          updated_at?: string
+          variance?: number | null
+        }
+        Update: {
+          actual_cash?: number | null
+          cashier_id?: string
+          closed_at?: string | null
+          created_at?: string
+          expected_cash?: number
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          opened_at?: string
+          opening_cash?: number
+          status?: string
+          updated_at?: string
+          variance?: number | null
+        }
+        Relationships: []
+      }
+      clinical_tasks: {
+        Row: {
+          assignee_id: string | null
+          assignee_role: string | null
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_at: string | null
+          encounter_id: string | null
+          facility_id: string
+          id: string
+          patient_id: string | null
+          priority: string
+          related_entity_id: string | null
+          related_entity_type: string | null
+          status: string
+          task_type: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          assignee_id?: string | null
+          assignee_role?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_at?: string | null
+          encounter_id?: string | null
+          facility_id: string
+          id?: string
+          patient_id?: string | null
+          priority?: string
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          status?: string
+          task_type: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          assignee_id?: string | null
+          assignee_role?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_at?: string | null
+          encounter_id?: string | null
+          facility_id?: string
+          id?: string
+          patient_id?: string | null
+          priority?: string
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          status?: string
+          task_type?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      consent_forms: {
+        Row: {
+          body: string
+          collected_by: string
+          consent_type: string
+          created_at: string
+          encounter_id: string | null
+          facility_id: string
+          id: string
+          patient_id: string
+          signature_image_url: string | null
+          signed_at: string | null
+          signed_by_patient_name: string | null
+          status: string
+          title: string
+          updated_at: string
+          witness_name: string | null
+          witness_signature_url: string | null
+        }
+        Insert: {
+          body: string
+          collected_by: string
+          consent_type: string
+          created_at?: string
+          encounter_id?: string | null
+          facility_id: string
+          id?: string
+          patient_id: string
+          signature_image_url?: string | null
+          signed_at?: string | null
+          signed_by_patient_name?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          witness_name?: string | null
+          witness_signature_url?: string | null
+        }
+        Update: {
+          body?: string
+          collected_by?: string
+          consent_type?: string
+          created_at?: string
+          encounter_id?: string | null
+          facility_id?: string
+          id?: string
+          patient_id?: string
+          signature_image_url?: string | null
+          signed_at?: string | null
+          signed_by_patient_name?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          witness_name?: string | null
+          witness_signature_url?: string | null
+        }
+        Relationships: []
+      }
+      critical_value_callbacks: {
+        Row: {
+          acknowledged_at: string | null
+          acknowledged_by: string | null
+          callback_method: string
+          created_at: string
+          facility_id: string
+          id: string
+          lab_result_id: string
+          notes: string | null
+          notified_at: string
+          notified_by: string
+          notified_clinician_id: string | null
+          patient_id: string
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          callback_method?: string
+          created_at?: string
+          facility_id: string
+          id?: string
+          lab_result_id: string
+          notes?: string | null
+          notified_at?: string
+          notified_by: string
+          notified_clinician_id?: string | null
+          patient_id: string
+        }
+        Update: {
+          acknowledged_at?: string | null
+          acknowledged_by?: string | null
+          callback_method?: string
+          created_at?: string
+          facility_id?: string
+          id?: string
+          lab_result_id?: string
+          notes?: string | null
+          notified_at?: string
+          notified_by?: string
+          notified_clinician_id?: string | null
+          patient_id?: string
+        }
+        Relationships: []
+      }
       drug_inventory: {
         Row: {
           batch_number: string | null
@@ -472,6 +732,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      encounter_signoffs: {
+        Row: {
+          encounter_id: string
+          encounter_snapshot: Json
+          facility_id: string
+          id: string
+          ip_address: string | null
+          signature_text: string
+          signed_at: string
+          signed_by: string
+          user_agent: string | null
+        }
+        Insert: {
+          encounter_id: string
+          encounter_snapshot: Json
+          facility_id: string
+          id?: string
+          ip_address?: string | null
+          signature_text: string
+          signed_at?: string
+          signed_by: string
+          user_agent?: string | null
+        }
+        Update: {
+          encounter_id?: string
+          encounter_snapshot?: Json
+          facility_id?: string
+          id?: string
+          ip_address?: string | null
+          signature_text?: string
+          signed_at?: string
+          signed_by?: string
+          user_agent?: string | null
+        }
+        Relationships: []
       }
       encounters: {
         Row: {
@@ -740,6 +1036,333 @@ export type Database = {
           },
         ]
       }
+      insurance_claim_batches: {
+        Row: {
+          amount_paid: number
+          batch_number: string
+          created_at: string
+          created_by: string | null
+          facility_id: string
+          id: string
+          notes: string | null
+          period_end: string
+          period_start: string
+          reconciled_at: string | null
+          scheme_id: string
+          status: string
+          submitted_at: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          amount_paid?: number
+          batch_number: string
+          created_at?: string
+          created_by?: string | null
+          facility_id: string
+          id?: string
+          notes?: string | null
+          period_end: string
+          period_start: string
+          reconciled_at?: string | null
+          scheme_id: string
+          status?: string
+          submitted_at?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          amount_paid?: number
+          batch_number?: string
+          created_at?: string
+          created_by?: string | null
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          period_end?: string
+          period_start?: string
+          reconciled_at?: string | null
+          scheme_id?: string
+          status?: string
+          submitted_at?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_claim_batches_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_schemes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurance_claim_items: {
+        Row: {
+          category: string
+          claim_id: string
+          created_at: string
+          description: string
+          id: string
+          quantity: number
+          scheme_tariff: number | null
+          total: number
+          unit_price: number
+        }
+        Insert: {
+          category?: string
+          claim_id: string
+          created_at?: string
+          description: string
+          id?: string
+          quantity?: number
+          scheme_tariff?: number | null
+          total?: number
+          unit_price?: number
+        }
+        Update: {
+          category?: string
+          claim_id?: string
+          created_at?: string
+          description?: string
+          id?: string
+          quantity?: number
+          scheme_tariff?: number | null
+          total?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_claim_items_claim_id_fkey"
+            columns: ["claim_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_claims"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurance_claims: {
+        Row: {
+          batch_id: string | null
+          claim_number: string
+          copay_amount: number
+          created_at: string
+          created_by: string | null
+          decided_at: string | null
+          diagnosis_code: string | null
+          encounter_id: string | null
+          enrolment_id: string | null
+          facility_id: string
+          gross_amount: number
+          id: string
+          invoice_id: string | null
+          patient_id: string
+          preauth_id: string | null
+          rejection_reason: string | null
+          scheme_id: string
+          scheme_paid: number
+          scheme_payable: number
+          status: string
+          submitted_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          batch_id?: string | null
+          claim_number: string
+          copay_amount?: number
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          diagnosis_code?: string | null
+          encounter_id?: string | null
+          enrolment_id?: string | null
+          facility_id: string
+          gross_amount?: number
+          id?: string
+          invoice_id?: string | null
+          patient_id: string
+          preauth_id?: string | null
+          rejection_reason?: string | null
+          scheme_id: string
+          scheme_paid?: number
+          scheme_payable?: number
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          batch_id?: string | null
+          claim_number?: string
+          copay_amount?: number
+          created_at?: string
+          created_by?: string | null
+          decided_at?: string | null
+          diagnosis_code?: string | null
+          encounter_id?: string | null
+          enrolment_id?: string | null
+          facility_id?: string
+          gross_amount?: number
+          id?: string
+          invoice_id?: string | null
+          patient_id?: string
+          preauth_id?: string | null
+          rejection_reason?: string | null
+          scheme_id?: string
+          scheme_paid?: number
+          scheme_payable?: number
+          status?: string
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_claims_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_claim_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_claims_enrolment_id_fkey"
+            columns: ["enrolment_id"]
+            isOneToOne: false
+            referencedRelation: "patient_insurance_enrolments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_claims_preauth_id_fkey"
+            columns: ["preauth_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_preauthorizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_claims_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_schemes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurance_preauthorizations: {
+        Row: {
+          authorization_code: string | null
+          created_at: string
+          decided_at: string | null
+          encounter_id: string | null
+          enrolment_id: string | null
+          estimated_amount: number
+          facility_id: string
+          id: string
+          patient_id: string
+          reason: string
+          requested_by: string | null
+          scheme_id: string
+          scheme_response: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          authorization_code?: string | null
+          created_at?: string
+          decided_at?: string | null
+          encounter_id?: string | null
+          enrolment_id?: string | null
+          estimated_amount?: number
+          facility_id: string
+          id?: string
+          patient_id: string
+          reason: string
+          requested_by?: string | null
+          scheme_id: string
+          scheme_response?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          authorization_code?: string | null
+          created_at?: string
+          decided_at?: string | null
+          encounter_id?: string | null
+          enrolment_id?: string | null
+          estimated_amount?: number
+          facility_id?: string
+          id?: string
+          patient_id?: string
+          reason?: string
+          requested_by?: string | null
+          scheme_id?: string
+          scheme_response?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insurance_preauthorizations_enrolment_id_fkey"
+            columns: ["enrolment_id"]
+            isOneToOne: false
+            referencedRelation: "patient_insurance_enrolments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insurance_preauthorizations_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_schemes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insurance_schemes: {
+        Row: {
+          active: boolean
+          code: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          default_copay_percent: number
+          facility_id: string
+          id: string
+          name: string
+          preauth_required: boolean
+          scheme_type: string
+          tariff_notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          code?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          default_copay_percent?: number
+          facility_id: string
+          id?: string
+          name: string
+          preauth_required?: boolean
+          scheme_type: string
+          tariff_notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          code?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          default_copay_percent?: number
+          facility_id?: string
+          id?: string
+          name?: string
+          preauth_required?: boolean
+          scheme_type?: string
+          tariff_notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invoice_items: {
         Row: {
           category: string
@@ -971,6 +1594,160 @@ export type Database = {
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medication_administrations: {
+        Row: {
+          administered_at: string | null
+          administered_by: string | null
+          created_at: string
+          dose: string
+          drug_name: string
+          encounter_id: string | null
+          facility_id: string
+          hold_reason: string | null
+          id: string
+          notes: string | null
+          patient_id: string
+          route: string | null
+          scheduled_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          administered_at?: string | null
+          administered_by?: string | null
+          created_at?: string
+          dose: string
+          drug_name: string
+          encounter_id?: string | null
+          facility_id: string
+          hold_reason?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
+          route?: string | null
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          administered_at?: string | null
+          administered_by?: string | null
+          created_at?: string
+          dose?: string
+          drug_name?: string
+          encounter_id?: string | null
+          facility_id?: string
+          hold_reason?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          route?: string | null
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      patient_deposits: {
+        Row: {
+          amount: number
+          balance: number
+          created_at: string
+          facility_id: string
+          id: string
+          notes: string | null
+          patient_id: string
+          recorded_by: string
+          reference: string | null
+          shift_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          balance: number
+          created_at?: string
+          facility_id: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          recorded_by: string
+          reference?: string | null
+          shift_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          balance?: number
+          created_at?: string
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          recorded_by?: string
+          reference?: string | null
+          shift_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_deposits_shift_id_fkey"
+            columns: ["shift_id"]
+            isOneToOne: false
+            referencedRelation: "cashier_shifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_insurance_enrolments: {
+        Row: {
+          card_image_url: string | null
+          created_at: string
+          dependents: Json
+          id: string
+          is_primary: boolean
+          patient_id: string
+          policy_number: string
+          scheme_id: string
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          card_image_url?: string | null
+          created_at?: string
+          dependents?: Json
+          id?: string
+          is_primary?: boolean
+          patient_id: string
+          policy_number: string
+          scheme_id: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          card_image_url?: string | null
+          created_at?: string
+          dependents?: Json
+          id?: string
+          is_primary?: boolean
+          patient_id?: string
+          policy_number?: string
+          scheme_id?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_insurance_enrolments_scheme_id_fkey"
+            columns: ["scheme_id"]
+            isOneToOne: false
+            referencedRelation: "insurance_schemes"
             referencedColumns: ["id"]
           },
         ]
@@ -1330,6 +2107,132 @@ export type Database = {
         }
         Relationships: []
       }
+      sms_outbox: {
+        Row: {
+          channel: string
+          created_at: string
+          created_by: string | null
+          external_id: string | null
+          facility_id: string | null
+          id: string
+          last_error: string | null
+          max_retries: number
+          message: string
+          next_retry_at: string | null
+          provider: string | null
+          related_entity_id: string | null
+          related_entity_type: string | null
+          retry_count: number
+          sent_at: string | null
+          status: string
+          to_phone: string
+          updated_at: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          created_by?: string | null
+          external_id?: string | null
+          facility_id?: string | null
+          id?: string
+          last_error?: string | null
+          max_retries?: number
+          message: string
+          next_retry_at?: string | null
+          provider?: string | null
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          retry_count?: number
+          sent_at?: string | null
+          status?: string
+          to_phone: string
+          updated_at?: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          created_by?: string | null
+          external_id?: string | null
+          facility_id?: string | null
+          id?: string
+          last_error?: string | null
+          max_retries?: number
+          message?: string
+          next_retry_at?: string | null
+          provider?: string | null
+          related_entity_id?: string | null
+          related_entity_type?: string | null
+          retry_count?: number
+          sent_at?: string | null
+          status?: string
+          to_phone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      specimens: {
+        Row: {
+          barcode: string
+          chain_of_custody: Json
+          collected_at: string
+          collected_by: string | null
+          created_at: string
+          encounter_id: string | null
+          facility_id: string
+          id: string
+          lab_result_id: string | null
+          patient_id: string
+          received_at: string | null
+          received_by: string | null
+          rejection_reason: string | null
+          resulted_at: string | null
+          specimen_type: string
+          status: string
+          test_requested: string
+          updated_at: string
+        }
+        Insert: {
+          barcode: string
+          chain_of_custody?: Json
+          collected_at?: string
+          collected_by?: string | null
+          created_at?: string
+          encounter_id?: string | null
+          facility_id: string
+          id?: string
+          lab_result_id?: string | null
+          patient_id: string
+          received_at?: string | null
+          received_by?: string | null
+          rejection_reason?: string | null
+          resulted_at?: string | null
+          specimen_type: string
+          status?: string
+          test_requested: string
+          updated_at?: string
+        }
+        Update: {
+          barcode?: string
+          chain_of_custody?: Json
+          collected_at?: string
+          collected_by?: string | null
+          created_at?: string
+          encounter_id?: string | null
+          facility_id?: string
+          id?: string
+          lab_result_id?: string | null
+          patient_id?: string
+          received_at?: string | null
+          received_by?: string | null
+          rejection_reason?: string | null
+          resulted_at?: string | null
+          specimen_type?: string
+          status?: string
+          test_requested?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       surveillance_alerts: {
         Row: {
           assigned_to: string | null
@@ -1454,6 +2357,66 @@ export type Database = {
           suspended_at?: string
           suspended_by?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      vitals_observations: {
+        Row: {
+          consciousness: string | null
+          created_at: string
+          diastolic_bp: number | null
+          encounter_id: string | null
+          facility_id: string
+          id: string
+          news2_score: number | null
+          notes: string | null
+          observed_at: string
+          pain_score: number | null
+          patient_id: string
+          pulse_bpm: number | null
+          recorded_by: string | null
+          respiratory_rate: number | null
+          spo2: number | null
+          systolic_bp: number | null
+          temperature_c: number | null
+        }
+        Insert: {
+          consciousness?: string | null
+          created_at?: string
+          diastolic_bp?: number | null
+          encounter_id?: string | null
+          facility_id: string
+          id?: string
+          news2_score?: number | null
+          notes?: string | null
+          observed_at?: string
+          pain_score?: number | null
+          patient_id: string
+          pulse_bpm?: number | null
+          recorded_by?: string | null
+          respiratory_rate?: number | null
+          spo2?: number | null
+          systolic_bp?: number | null
+          temperature_c?: number | null
+        }
+        Update: {
+          consciousness?: string | null
+          created_at?: string
+          diastolic_bp?: number | null
+          encounter_id?: string | null
+          facility_id?: string
+          id?: string
+          news2_score?: number | null
+          notes?: string | null
+          observed_at?: string
+          pain_score?: number | null
+          patient_id?: string
+          pulse_bpm?: number | null
+          recorded_by?: string | null
+          respiratory_rate?: number | null
+          spo2?: number | null
+          systolic_bp?: number | null
+          temperature_c?: number | null
         }
         Relationships: []
       }
