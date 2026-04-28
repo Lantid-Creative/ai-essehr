@@ -64,7 +64,7 @@ export default function RegisterFacilityPage() {
           address,
           phone: facilityPhone,
           email: facilityEmail,
-          status: 'active' as any,
+          status: 'pending' as any,
         })
         .select()
         .single();
