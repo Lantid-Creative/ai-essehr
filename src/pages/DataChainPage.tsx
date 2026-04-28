@@ -1,222 +1,289 @@
-import { useState, useEffect } from 'react';
-import { useAppContext } from '@/context/AppContext';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Globe, CheckCircle2, ArrowRight, Clock, AlertTriangle, Send, FileCheck } from 'lucide-react';
-import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { format } from "date-fns";
+import { CheckCircle2, Clock, XCircle, Send, RefreshCw, AlertTriangle, Globe2, ShieldCheck, Building2 } from "lucide-react";
+import { toast } from "sonner";
 
-interface SurveillanceReport {
+interface CaseReport {
   id: string;
+  external_uuid: string;
   disease: string;
-  case_count: number;
-  facility_name: string;
-  lga: string;
-  state: string;
-  status: 'pending_lga' | 'lga_approved' | 'state_approved' | 'federal_received';
+  case_classification: string;
+  status: string;
+  facility_id: string;
+  patient_id: string;
+  onset_date: string | null;
+  outcome: string | null;
+  facility_validated_at: string | null;
+  lga_validated_at: string | null;
+  state_validated_at: string | null;
+  rejection_reason: string | null;
   created_at: string;
-  lga_approved_by?: string;
-  lga_approved_at?: string;
-  state_approved_by?: string;
-  state_approved_at?: string;
-  federal_pushed_at?: string;
+  symptoms: any;
+}
+interface Dispatch {
+  id: string;
+  case_report_id: string;
+  target: "SORMAS" | "DHIS2";
+  status: string;
+  retry_count: number;
+  external_id: string | null;
+  last_error: string | null;
+  dispatched_at: string | null;
+  next_retry_at: string | null;
 }
 
-// Mock data for demonstration
-const mockReports: SurveillanceReport[] = [
-  {
-    id: '1', disease: 'Lassa Fever', case_count: 3, facility_name: 'PHC Oba-Ile',
-    lga: 'Akure South', state: 'Ondo', status: 'pending_lga',
-    created_at: new Date().toISOString(),
-  },
-  {
-    id: '2', disease: 'Cholera', case_count: 7, facility_name: 'PHC Anka',
-    lga: 'Anka', state: 'Zamfara', status: 'lga_approved',
-    created_at: new Date(Date.now() - 86400000).toISOString(),
-    lga_approved_by: 'DSNO Anka', lga_approved_at: new Date(Date.now() - 43200000).toISOString(),
-  },
-  {
-    id: '3', disease: 'Meningitis', case_count: 12, facility_name: 'PHC Dutse',
-    lga: 'Dutse', state: 'Jigawa', status: 'state_approved',
-    created_at: new Date(Date.now() - 172800000).toISOString(),
-    lga_approved_by: 'DSNO Dutse', lga_approved_at: new Date(Date.now() - 130000000).toISOString(),
-    state_approved_by: 'State Epidemiologist', state_approved_at: new Date(Date.now() - 86400000).toISOString(),
-  },
-  {
-    id: '4', disease: 'Measles', case_count: 5, facility_name: 'PHC Sabon Gari',
-    lga: 'Sabon Gari', state: 'Kaduna', status: 'federal_received',
-    created_at: new Date(Date.now() - 259200000).toISOString(),
-    lga_approved_by: 'DSNO Sabon Gari', lga_approved_at: new Date(Date.now() - 216000000).toISOString(),
-    state_approved_by: 'State Epidemiologist', state_approved_at: new Date(Date.now() - 172800000).toISOString(),
-    federal_pushed_at: new Date(Date.now() - 172800000).toISOString(),
-  },
-];
+const STATUS_BADGE: Record<string, string> = {
+  pending_facility: "bg-muted text-muted-foreground",
+  facility_validated: "bg-blue-500/15 text-blue-700",
+  pending_lga: "bg-amber-500/15 text-amber-700",
+  lga_validated: "bg-amber-500/15 text-amber-700",
+  pending_state: "bg-orange-500/15 text-orange-700",
+  state_validated: "bg-emerald-500/15 text-emerald-700",
+  dispatched: "bg-emerald-500/15 text-emerald-700",
+  partially_dispatched: "bg-amber-500/15 text-amber-700",
+  failed: "bg-destructive/15 text-destructive",
+  rejected: "bg-destructive/15 text-destructive",
+};
 
-const statusConfig: Record<string, { label: string; color: string; step: number }> = {
-  pending_lga: { label: 'Pending LGA Validation', color: 'bg-warning text-warning-foreground', step: 1 },
-  lga_approved: { label: 'LGA Approved → Pushing to SORMAS/DHIS2', color: 'bg-primary text-primary-foreground', step: 2 },
-  state_approved: { label: 'State Validated', color: 'bg-success text-success-foreground', step: 3 },
-  federal_received: { label: 'NCDC Received', color: 'bg-accent text-accent-foreground', step: 4 },
+const DISP_BADGE: Record<string, string> = {
+  pending: "bg-muted text-muted-foreground",
+  sending: "bg-blue-500/15 text-blue-700",
+  success: "bg-emerald-500/15 text-emerald-700",
+  failed: "bg-amber-500/15 text-amber-700",
+  dead_letter: "bg-destructive/15 text-destructive",
 };
 
 export default function DataChainPage() {
-  const { roles } = useAppContext();
-  const [reports, setReports] = useState<SurveillanceReport[]>(mockReports);
-  const [filter, setFilter] = useState<string>('all');
+  const [loading, setLoading] = useState(true);
+  const [cases, setCases] = useState<CaseReport[]>([]);
+  const [dispatches, setDispatches] = useState<Dispatch[]>([]);
+  const [processing, setProcessing] = useState(false);
 
-  const filtered = filter === 'all' ? reports : reports.filter(r => r.status === filter);
+  const load = async () => {
+    setLoading(true);
+    const [{ data: cs }, { data: ds }] = await Promise.all([
+      supabase.from("case_reports").select("*").order("created_at", { ascending: false }).limit(100),
+      supabase.from("case_report_dispatches").select("*").order("created_at", { ascending: false }).limit(200),
+    ]);
+    setCases((cs as CaseReport[]) || []);
+    setDispatches((ds as Dispatch[]) || []);
+    setLoading(false);
+  };
 
-  const handleApprove = (id: string, nextStatus: string) => {
-    setReports(prev =>
-      prev.map(r => {
-        if (r.id !== id) return r;
-        const now = new Date().toISOString();
-        if (nextStatus === 'lga_approved') {
-          return { ...r, status: 'lga_approved' as const, lga_approved_by: 'Current DSNO', lga_approved_at: now };
-        }
-        if (nextStatus === 'state_approved') {
-          return { ...r, status: 'state_approved' as const, state_approved_by: 'State Epidemiologist', state_approved_at: now, federal_pushed_at: now };
-        }
-        return r;
-      })
-    );
-    toast.success(nextStatus === 'lga_approved'
-      ? 'LGA validated — pushed to SORMAS & DHIS2 simultaneously'
-      : 'State validated — NCDC notified');
+  useEffect(() => { load(); }, []);
+
+  const advance = async (c: CaseReport, to: "facility_validated" | "lga_validated" | "state_validated") => {
+    const updates: Record<string, any> = { status: to };
+    const now = new Date().toISOString();
+    if (to === "facility_validated") updates.facility_validated_at = now;
+    if (to === "lga_validated") updates.lga_validated_at = now;
+    if (to === "state_validated") updates.state_validated_at = now;
+    const { error } = await supabase.from("case_reports").update(updates).eq("id", c.id);
+    if (error) return toast.error(error.message);
+    toast.success(`Case advanced to ${to.replace(/_/g, " ")}`);
+    load();
+  };
+
+  const reject = async (c: CaseReport) => {
+    const reason = prompt("Rejection reason:");
+    if (!reason) return;
+    const { error } = await supabase.from("case_reports").update({ status: "rejected", rejection_reason: reason }).eq("id", c.id);
+    if (error) return toast.error(error.message);
+    toast.success("Case rejected");
+    load();
+  };
+
+  const processQueue = async () => {
+    setProcessing(true);
+    const { data, error } = await supabase.functions.invoke("dispatch-case-reports", { body: { mode: "process" } });
+    setProcessing(false);
+    if (error) return toast.error(error.message);
+    toast.success(`Processed ${data?.processed ?? 0} dispatches`);
+    load();
+  };
+
+  const dispatchOne = async (caseId: string) => {
+    const { data, error } = await supabase.functions.invoke("dispatch-case-reports", { body: { case_report_id: caseId } });
+    if (error) return toast.error(error.message);
+    toast.success(`Dispatched: ${data?.processed ?? 0} jobs`);
+    load();
+  };
+
+  const dispatchesFor = (caseId: string) => dispatches.filter((d) => d.case_report_id === caseId);
+
+  const stats = {
+    total: cases.length,
+    pending: cases.filter((c) => c.status.startsWith("pending")).length,
+    dispatched: cases.filter((c) => c.status === "dispatched").length,
+    failed: cases.filter((c) => c.status === "failed" || c.status === "partially_dispatched").length,
+    sormasOk: dispatches.filter((d) => d.target === "SORMAS" && d.status === "success").length,
+    dhis2Ok: dispatches.filter((d) => d.target === "DHIS2" && d.status === "success").length,
+    deadLetter: dispatches.filter((d) => d.status === "dead_letter").length,
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-heading font-bold text-foreground">Validated Data Chain</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Three-tier validation: Facility → LGA DSNO → State Epidemiologist → NCDC. Simultaneous push to SORMAS & DHIS2 on LGA approval.
-        </p>
+    <div className="container max-w-6xl py-8 space-y-6">
+      <div className="flex items-start justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <Globe2 className="h-8 w-8 text-primary" />
+            Validated Data Chain
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            3-tier validation (Facility → LGA → State) with outbox dispatch to SORMAS &amp; DHIS2
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={load}><RefreshCw className="h-4 w-4 mr-2" />Refresh</Button>
+          <Button onClick={processQueue} disabled={processing}>
+            <Send className="h-4 w-4 mr-2" />{processing ? "Processing..." : "Process Outbox"}
+          </Button>
+        </div>
       </div>
 
-      {/* Pipeline Overview */}
-      <div className="grid grid-cols-4 gap-3">
+      <Alert>
+        <ShieldCheck className="h-4 w-4" />
+        <AlertTitle>How dispatch works</AlertTitle>
+        <AlertDescription className="text-sm space-y-1 mt-1">
+          <div>• Cases auto-enqueue to <b>SORMAS</b> (CaseDataDto) + <b>DHIS2</b> (dataValueSets) when LGA-validated.</div>
+          <div>• Outbox retries with exponential backoff (1m → 5m → 15m → 1h → 4h), max 5 attempts before dead-letter.</div>
+          <div>• If <code>SORMAS_BASE_URL</code>/<code>DHIS2_BASE_URL</code> secrets are unset, dispatcher runs in <b>simulation mode</b> for pilot demos.</div>
+        </AlertDescription>
+      </Alert>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
         {[
-          { label: 'Pending LGA', count: reports.filter(r => r.status === 'pending_lga').length, icon: Clock, color: 'text-warning' },
-          { label: 'LGA Approved', count: reports.filter(r => r.status === 'lga_approved').length, icon: CheckCircle2, color: 'text-primary' },
-          { label: 'State Validated', count: reports.filter(r => r.status === 'state_approved').length, icon: FileCheck, color: 'text-success' },
-          { label: 'NCDC Received', count: reports.filter(r => r.status === 'federal_received').length, icon: Globe, color: 'text-accent' },
-        ].map(s => (
-          <Card key={s.label} className="card-ehr">
-            <CardContent className="p-4 flex items-center gap-3">
-              <s.icon className={`h-8 w-8 ${s.color}`} />
-              <div>
-                <div className="text-2xl font-heading font-bold text-foreground">{s.count}</div>
-                <div className="text-xs text-muted-foreground">{s.label}</div>
-              </div>
+          { label: "Total cases", value: stats.total, icon: Building2 },
+          { label: "Pending validation", value: stats.pending, icon: Clock },
+          { label: "Dispatched", value: stats.dispatched, icon: CheckCircle2 },
+          { label: "Failed/Partial", value: stats.failed, icon: AlertTriangle },
+          { label: "SORMAS ✓", value: stats.sormasOk, icon: Send },
+          { label: "DHIS2 ✓", value: stats.dhis2Ok, icon: Send },
+          { label: "Dead-letter", value: stats.deadLetter, icon: XCircle },
+        ].map((s) => (
+          <Card key={s.label}>
+            <CardContent className="pt-4">
+              <s.icon className="h-4 w-4 text-muted-foreground mb-1" />
+              <div className="text-2xl font-bold">{s.value}</div>
+              <p className="text-xs text-muted-foreground">{s.label}</p>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Validation Flow Diagram */}
-      <Card className="card-ehr">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-heading">Data Validation Flow</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between gap-2 text-xs">
-            {['Facility EHR', 'LGA DSNO', 'SORMAS + DHIS2', 'State Epidemiologist', 'NCDC'].map((step, i) => (
-              <div key={step} className="flex items-center gap-2">
-                <div className={`px-3 py-2 rounded-lg font-medium ${i === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-                  {step}
+      <Tabs defaultValue="cases">
+        <TabsList>
+          <TabsTrigger value="cases">Case reports ({cases.length})</TabsTrigger>
+          <TabsTrigger value="outbox">Dispatch outbox ({dispatches.length})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="cases" className="space-y-4">
+          {loading && <Skeleton className="h-48 w-full" />}
+          {!loading && cases.length === 0 && (
+            <Card><CardContent className="pt-6 text-center text-muted-foreground">
+              No case reports yet. Create one from a consultation by classifying it as a notifiable disease.
+            </CardContent></Card>
+          )}
+          {cases.map((c) => {
+            const ds = dispatchesFor(c.id);
+            return (
+              <Card key={c.id}>
+                <CardHeader>
+                  <div className="flex items-start justify-between flex-wrap gap-3">
+                    <div>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        {c.disease}
+                        <Badge variant="outline">{c.case_classification}</Badge>
+                        <Badge className={STATUS_BADGE[c.status]}>{c.status.replace(/_/g, " ")}</Badge>
+                      </CardTitle>
+                      <CardDescription className="text-xs mt-1 font-mono">UUID: {c.external_uuid}</CardDescription>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {c.status === "pending_facility" && (
+                        <Button size="sm" onClick={() => advance(c, "facility_validated")}>Facility validate</Button>
+                      )}
+                      {(c.status === "facility_validated" || c.status === "pending_lga") && (
+                        <Button size="sm" onClick={() => advance(c, "lga_validated")}>LGA DSNO validate</Button>
+                      )}
+                      {(c.status === "lga_validated" || c.status === "pending_state") && (
+                        <Button size="sm" onClick={() => advance(c, "state_validated")}>State validate</Button>
+                      )}
+                      {(c.status === "lga_validated" || c.status === "state_validated" || c.status === "failed" || c.status === "partially_dispatched") && (
+                        <Button size="sm" variant="outline" onClick={() => dispatchOne(c.id)}>Dispatch now</Button>
+                      )}
+                      {c.status !== "rejected" && c.status !== "dispatched" && (
+                        <Button size="sm" variant="ghost" onClick={() => reject(c)}>Reject</Button>
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div><div className="text-xs text-muted-foreground">Onset</div><div>{c.onset_date || "—"}</div></div>
+                    <div><div className="text-xs text-muted-foreground">Outcome</div><div>{c.outcome || "—"}</div></div>
+                    <div><div className="text-xs text-muted-foreground">Reported</div><div>{format(new Date(c.created_at), "dd MMM HH:mm")}</div></div>
+                    <div><div className="text-xs text-muted-foreground">LGA validated</div><div>{c.lga_validated_at ? format(new Date(c.lga_validated_at), "dd MMM HH:mm") : "—"}</div></div>
+                  </div>
+
+                  {ds.length > 0 && (
+                    <div className="border-t pt-3">
+                      <div className="text-xs font-semibold text-muted-foreground mb-2">DISPATCH STATUS</div>
+                      <div className="space-y-1">
+                        {ds.map((d) => (
+                          <div key={d.id} className="flex items-center justify-between text-sm">
+                            <span className="flex items-center gap-2">
+                              <Badge variant="outline">{d.target}</Badge>
+                              <Badge className={DISP_BADGE[d.status]}>{d.status}</Badge>
+                              {d.retry_count > 0 && <span className="text-xs text-muted-foreground">{d.retry_count} retries</span>}
+                            </span>
+                            <span className="text-xs text-muted-foreground font-mono">
+                              {d.external_id || d.last_error?.slice(0, 60) || "—"}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {c.rejection_reason && (
+                    <Alert variant="destructive">
+                      <AlertDescription className="text-sm">Rejected: {c.rejection_reason}</AlertDescription>
+                    </Alert>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </TabsContent>
+
+        <TabsContent value="outbox" className="space-y-2">
+          {dispatches.length === 0 && (
+            <Card><CardContent className="pt-6 text-center text-muted-foreground">No dispatches yet.</CardContent></Card>
+          )}
+          {dispatches.map((d) => (
+            <Card key={d.id}>
+              <CardContent className="pt-4 flex items-center justify-between flex-wrap gap-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <Badge variant="outline">{d.target}</Badge>
+                  <Badge className={DISP_BADGE[d.status]}>{d.status}</Badge>
+                  <span className="text-muted-foreground">retries: {d.retry_count}</span>
                 </div>
-                {i < 4 && <ArrowRight className="h-4 w-4 text-muted-foreground/40 shrink-0" />}
-              </div>
-            ))}
-          </div>
-          <p className="text-xs text-muted-foreground mt-3">
-            On LGA approval, data pushes simultaneously to both SORMAS and DHIS2 — each in its required format.
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Filter */}
-      <div className="flex items-center gap-3">
-        <Select value={filter} onValueChange={setFilter}>
-          <SelectTrigger className="w-[220px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Reports</SelectItem>
-            <SelectItem value="pending_lga">Pending LGA Validation</SelectItem>
-            <SelectItem value="lga_approved">LGA Approved</SelectItem>
-            <SelectItem value="state_approved">State Validated</SelectItem>
-            <SelectItem value="federal_received">NCDC Received</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Reports */}
-      <div className="space-y-3">
-        {filtered.map(report => {
-          const config = statusConfig[report.status];
-          return (
-            <Card key={report.id} className="card-ehr">
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="font-heading font-bold text-foreground">{report.disease}</span>
-                      <Badge className={config.color}>{config.label}</Badge>
-                      <span className="text-xs text-muted-foreground">{report.case_count} case(s)</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {report.facility_name} · {report.lga} LGA · {report.state} State
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Reported: {format(new Date(report.created_at), 'dd MMM yyyy HH:mm')}
-                    </p>
-
-                    {/* Validation Trail */}
-                    <div className="mt-3 space-y-1">
-                      {report.lga_approved_at && (
-                        <p className="text-xs text-success flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3" />
-                          LGA validated by {report.lga_approved_by} at {format(new Date(report.lga_approved_at), 'dd MMM HH:mm')}
-                        </p>
-                      )}
-                      {report.state_approved_at && (
-                        <p className="text-xs text-success flex items-center gap-1">
-                          <CheckCircle2 className="h-3 w-3" />
-                          State validated by {report.state_approved_by} at {format(new Date(report.state_approved_at), 'dd MMM HH:mm')}
-                        </p>
-                      )}
-                      {report.federal_pushed_at && (
-                        <p className="text-xs text-accent flex items-center gap-1">
-                          <Globe className="h-3 w-3" />
-                          Pushed to SORMAS & DHIS2 at {format(new Date(report.federal_pushed_at), 'dd MMM HH:mm')}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    {report.status === 'pending_lga' && (
-                      <Button size="sm" className="gradient-primary text-primary-foreground" onClick={() => handleApprove(report.id, 'lga_approved')}>
-                        <CheckCircle2 className="h-4 w-4 mr-1" /> LGA Approve
-                      </Button>
-                    )}
-                    {report.status === 'lga_approved' && (
-                      <Button size="sm" variant="outline" onClick={() => handleApprove(report.id, 'state_approved')}>
-                        <FileCheck className="h-4 w-4 mr-1" /> State Validate
-                      </Button>
-                    )}
-                  </div>
+                <div className="text-xs font-mono text-muted-foreground truncate max-w-md">
+                  {d.dispatched_at ? `Sent ${format(new Date(d.dispatched_at), "dd MMM HH:mm")}` : d.next_retry_at ? `Next retry ${format(new Date(d.next_retry_at), "dd MMM HH:mm")}` : "—"}
+                  {d.last_error && ` · ${d.last_error.slice(0, 80)}`}
                 </div>
               </CardContent>
             </Card>
-          );
-        })}
-      </div>
+          ))}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
