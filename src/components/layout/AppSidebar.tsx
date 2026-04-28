@@ -3,7 +3,7 @@ import { useAppContext, AppRole } from '@/context/AppContext';
 import {
   LayoutDashboard, UserPlus, Stethoscope, BedDouble, Shield, Syringe,
   FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity,
-  CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe, ArrowRightLeft, Building2, Truck, AlertOctagon, ShieldCheck, FileText, TrendingUp
+  CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe, ArrowRightLeft, Building2, Truck, AlertOctagon, ShieldCheck, FileText, TrendingUp, MapPin
 } from 'lucide-react';
 
 interface NavItem {
@@ -38,6 +38,7 @@ const allNavItems: NavItem[] = [
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'IDSR Weekly', path: '/reports/idsr', icon: FileText, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'Facility KPIs', path: '/reports/kpis', icon: TrendingUp, roles: ['facility_admin', 'data_clerk', 'super_admin'] },
+  { label: 'Geo Heatmap', path: '/reports/heatmap', icon: MapPin, roles: ['facility_admin', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'Data Chain', path: '/data-chain', icon: Globe, roles: ['facility_admin', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'Audit Trail', path: '/audit', icon: ClipboardList, roles: ['facility_admin', 'super_admin'] },
   { label: 'Sync', path: '/sync', icon: Wifi },
