@@ -152,29 +152,25 @@ export default function RegisterFacilityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <nav className="bg-sidebar border-b border-sidebar-border">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 gap-3">
-          <Activity className="h-6 w-6 text-primary" />
-          <span className="font-heading font-bold text-sidebar-foreground">AI-ESS EHR</span>
-          <span className="text-sidebar-foreground/40 text-sm ml-auto">
-            <Link to="/" className="hover:text-primary-foreground flex items-center gap-1"><ArrowLeft className="h-4 w-4" /> Home</Link>
-          </span>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-cream">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-10 py-5 flex items-center justify-between">
+        <Link to="/" className="inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink">
+          <ArrowLeft className="h-4 w-4" /> Back to home
+        </Link>
+        <Link to="/login" className="text-sm text-ink-soft hover:text-ink">Already registered? <span className="text-primary font-medium">Sign in</span></Link>
+      </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-12">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="bg-primary w-12 h-12 rounded-lg flex items-center justify-center">
-            <Building2 className="h-6 w-6 text-primary-foreground" />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-10 pb-16">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="bg-ink w-11 h-11 rounded-2xl flex items-center justify-center">
+            <Building2 className="h-5 w-5 text-[hsl(var(--cream))]" />
           </div>
-          <div>
-            <h1 className="text-2xl font-heading font-bold text-foreground">Register Your Facility</h1>
-            <p className="text-muted-foreground text-sm">Join the health surveillance network</p>
-          </div>
+          <span className="text-xs uppercase tracking-[0.2em] text-editorial-muted">Facility onboarding</span>
         </div>
+        <h1 className="editorial-display text-ink text-3xl sm:text-4xl mb-2">Register your facility.</h1>
+        <p className="text-ink-soft mb-8 max-w-xl">Join Nigeria's national disease-surveillance network. Activation is immediate; verification follows.</p>
 
-        <form onSubmit={handleSubmit} className="card-ehr p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white rounded-3xl border border-black/5 p-6 sm:p-8 space-y-6">
           <h3 className="font-heading font-semibold text-foreground">Facility Information</h3>
 
           <div className="grid md:grid-cols-2 gap-5">
@@ -267,11 +263,11 @@ export default function RegisterFacilityPage() {
             </span>
           </label>
 
-          <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={loading}>
-            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Activating...</> : 'Register & Activate Facility'}
+          <Button type="submit" className="w-full h-12 text-base font-semibold rounded-full bg-ink text-[hsl(var(--cream))] hover:bg-ink/90" disabled={loading}>
+            {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Activating…</> : 'Register & activate facility'}
           </Button>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-sm text-ink-soft">
             Already registered? <Link to="/login" className="text-primary hover:underline font-medium">Sign in</Link>
           </p>
         </form>

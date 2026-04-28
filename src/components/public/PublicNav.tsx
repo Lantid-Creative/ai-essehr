@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Activity, Menu, X, ArrowUpRight, ChevronDown } from 'lucide-react';
+import { Activity, Menu, X, ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
 
 const primaryLinks = [
@@ -24,11 +24,11 @@ export default function PublicNav({ variant = 'solid' }: PublicNavProps) {
   return (
     <>
       <nav className={`relative z-30 flex items-center justify-between px-3 sm:px-5 ${wrapperClass} h-14`}>
-        <Link to="/" className="flex items-center gap-2 px-2">
-          <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
+        <Link to="/" className="flex items-center gap-2 px-1 sm:px-2 min-w-0">
+          <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center shrink-0">
             <Activity className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="font-heading font-bold text-ink tracking-tight text-sm sm:text-base">AI-PEWS</span>
+          <span className="font-heading font-bold text-ink tracking-tight text-sm sm:text-base truncate">AI-PEWS</span>
           <span className="hidden sm:inline text-[10px] text-editorial-muted font-medium">NIGERIA</span>
         </Link>
 
@@ -52,7 +52,7 @@ export default function PublicNav({ variant = 'solid' }: PublicNavProps) {
           </Link>
         </div>
 
-        <div className="hidden md:flex items-center gap-2">
+        <div className="hidden lg:flex items-center gap-2">
           <Link to="/login" className="pill-light">Sign In</Link>
           <Link to="/register/facility" className="pill-dark">
             Get Started <ArrowUpRight className="h-4 w-4" />
@@ -60,17 +60,10 @@ export default function PublicNav({ variant = 'solid' }: PublicNavProps) {
         </div>
 
         <button
-          className="lg:hidden md:hidden h-10 w-10 inline-flex items-center justify-center text-ink rounded-full hover:bg-ink/5"
+          className="lg:hidden h-10 w-10 inline-flex items-center justify-center text-ink rounded-full hover:bg-ink/5 shrink-0"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
-
-        <button
-          className="hidden md:inline-flex lg:hidden h-10 w-10 items-center justify-center text-ink rounded-full hover:bg-ink/5"
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
+          aria-expanded={open}
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
