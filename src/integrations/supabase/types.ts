@@ -1098,6 +1098,17 @@ export type Database = {
         }
         Returns: boolean
       }
+      jsonb_diff_keys: { Args: { _new: Json; _old: Json }; Returns: string[] }
+      log_audit_event: {
+        Args: {
+          _action: string
+          _details?: Json
+          _entity_id: string
+          _entity_type: string
+          _facility_id?: string
+        }
+        Returns: string
+      }
       user_can_access_referral: {
         Args: { _receiving: string; _referring: string; _user_id: string }
         Returns: boolean
