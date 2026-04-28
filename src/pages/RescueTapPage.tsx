@@ -33,27 +33,8 @@ export default function RescueTapPage() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [locating, setLocating] = useState(false);
 
-  // Fetch latest active rescue (if any)
-  const { data: active } = useQuery({
+  const { data: current } = useQuery({
     queryKey: ['my-active-rescue', user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data } = await supabase
-        .from('rescue_requests')
-        .select('*, ambulances(call_sign, plate_number, capability), suggested:facilities!rescue_requests_suggested_hospital_id_fkey(name), destination:facilities!rescue_requests_destination_hospital_id_fkey(name)')
-        .eq('caller_user_id', user.id)
-        .not('status', 'in', '(at_hospital,cancelled)')
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      return data;
-    },
-    enabled: !!user,
-  });
-
-  // Fallback query if FK names differ — try simpler shape
-  const { data: activeFallback } = useQuery({
-    queryKey: ['my-active-rescue-simple', user?.id],
     queryFn: async () => {
       if (!user) return null;
       const { data } = await supabase
@@ -66,10 +47,8 @@ export default function RescueTapPage() {
         .maybeSingle();
       return data;
     },
-    enabled: !!user && !active,
+    enabled: !!user,
   });
-
-  const current = active || activeFallback;
 
   // Realtime updates on caller's request
   useEffect(() => {
@@ -78,7 +57,6 @@ export default function RescueTapPage() {
       .channel(`rescue-${user.id}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'rescue_requests', filter: `caller_user_id=eq.${user.id}` }, () => {
         queryClient.invalidateQueries({ queryKey: ['my-active-rescue', user.id] });
-        queryClient.invalidateQueries({ queryKey: ['my-active-rescue-simple', user.id] });
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
