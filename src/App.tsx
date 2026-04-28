@@ -9,6 +9,10 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import FacilityGate from "@/components/auth/FacilityGate";
 import FacilityApprovalPage from "@/pages/FacilityApprovalPage";
 import ReferralsPage from "@/pages/ReferralsPage";
+import RescueTapPage from "@/pages/RescueTapPage";
+import AmbulancePortalPage from "@/pages/AmbulancePortalPage";
+import AmbulanceFleetPage from "@/pages/AmbulanceFleetPage";
+import ERInboundPage from "@/pages/ERInboundPage";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
@@ -87,6 +91,10 @@ const App = () => (
             <Route path="/inventory" element={<ProtectedPage><DrugInventoryPage /></ProtectedPage>} />
             <Route path="/billing" element={<ProtectedPage><BillingPage /></ProtectedPage>} />
             <Route path="/referrals" element={<ProtectedPage><ReferralsPage /></ProtectedPage>} />
+            <Route path="/rescue" element={<ProtectedPage><RescueTapPage /></ProtectedPage>} />
+            <Route path="/ambulance" element={<ProtectedPage><AmbulancePortalPage /></ProtectedPage>} />
+            <Route path="/fleet" element={<ProtectedPage><AmbulanceFleetPage /></ProtectedPage>} />
+            <Route path="/er-inbound" element={<ProtectedPage><ERInboundPage /></ProtectedPage>} />
             <Route path="/admin/facilities" element={<ProtectedPage><FacilityApprovalPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
