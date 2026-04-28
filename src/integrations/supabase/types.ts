@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      ambulance_care_log: {
+        Row: {
+          entry_type: string
+          free_text: string | null
+          id: string
+          payload: Json
+          recorded_at: string
+          recorded_by: string
+          rescue_request_id: string
+        }
+        Insert: {
+          entry_type: string
+          free_text?: string | null
+          id?: string
+          payload?: Json
+          recorded_at?: string
+          recorded_by: string
+          rescue_request_id: string
+        }
+        Update: {
+          entry_type?: string
+          free_text?: string | null
+          id?: string
+          payload?: Json
+          recorded_at?: string
+          recorded_by?: string
+          rescue_request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ambulance_care_log_rescue_request_id_fkey"
+            columns: ["rescue_request_id"]
+            isOneToOne: false
+            referencedRelation: "rescue_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ambulances: {
+        Row: {
+          call_sign: string
+          capability: string
+          created_at: string
+          current_crew: string[] | null
+          current_lat: number | null
+          current_lng: number | null
+          facility_id: string
+          id: string
+          last_ping_at: string | null
+          notes: string | null
+          plate_number: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          call_sign: string
+          capability?: string
+          created_at?: string
+          current_crew?: string[] | null
+          current_lat?: number | null
+          current_lng?: number | null
+          facility_id: string
+          id?: string
+          last_ping_at?: string | null
+          notes?: string | null
+          plate_number?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          call_sign?: string
+          capability?: string
+          created_at?: string
+          current_crew?: string[] | null
+          current_lat?: number | null
+          current_lng?: number | null
+          facility_id?: string
+          id?: string
+          last_ping_at?: string | null
+          notes?: string | null
+          plate_number?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       appointments: {
         Row: {
           appointment_date: string
@@ -764,6 +850,84 @@ export type Database = {
           },
         ]
       }
+      rescue_requests: {
+        Row: {
+          arrived_hospital_at: string | null
+          assigned_ambulance_id: string | null
+          assigned_at: string | null
+          caller_name: string
+          caller_phone: string | null
+          caller_user_id: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          created_at: string
+          destination_eta_minutes: number | null
+          destination_hospital_id: string | null
+          id: string
+          notes: string | null
+          patient_id: string | null
+          picked_up_at: string | null
+          pickup_address: string | null
+          pickup_lat: number | null
+          pickup_lng: number | null
+          status: string
+          suggested_hospital_id: string | null
+          symptom_summary: string | null
+          updated_at: string
+          urgency: string
+        }
+        Insert: {
+          arrived_hospital_at?: string | null
+          assigned_ambulance_id?: string | null
+          assigned_at?: string | null
+          caller_name: string
+          caller_phone?: string | null
+          caller_user_id?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          destination_eta_minutes?: number | null
+          destination_hospital_id?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string | null
+          picked_up_at?: string | null
+          pickup_address?: string | null
+          pickup_lat?: number | null
+          pickup_lng?: number | null
+          status?: string
+          suggested_hospital_id?: string | null
+          symptom_summary?: string | null
+          updated_at?: string
+          urgency?: string
+        }
+        Update: {
+          arrived_hospital_at?: string | null
+          assigned_ambulance_id?: string | null
+          assigned_at?: string | null
+          caller_name?: string
+          caller_phone?: string | null
+          caller_user_id?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          destination_eta_minutes?: number | null
+          destination_hospital_id?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string | null
+          picked_up_at?: string | null
+          pickup_address?: string | null
+          pickup_lat?: number | null
+          pickup_lng?: number | null
+          status?: string
+          suggested_hospital_id?: string | null
+          symptom_summary?: string | null
+          updated_at?: string
+          urgency?: string
+        }
+        Relationships: []
+      }
       surveillance_alerts: {
         Row: {
           assigned_to: string | null
@@ -938,6 +1102,10 @@ export type Database = {
         Args: { _receiving: string; _referring: string; _user_id: string }
         Returns: boolean
       }
+      user_can_view_rescue: {
+        Args: { _rescue_id: string; _user_id: string }
+        Returns: boolean
+      }
       user_has_referral_access_to_patient: {
         Args: { _patient_id: string; _user_id: string }
         Returns: boolean
@@ -962,6 +1130,7 @@ export type Database = {
         | "data_clerk"
         | "epidemiologist"
         | "dsno"
+        | "paramedic"
       encounter_type:
         | "consultation"
         | "emergency"
@@ -1130,6 +1299,7 @@ export const Constants = {
         "data_clerk",
         "epidemiologist",
         "dsno",
+        "paramedic",
       ],
       encounter_type: [
         "consultation",
