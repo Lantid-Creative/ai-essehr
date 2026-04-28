@@ -1090,6 +1090,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      enforce_rate_limit: {
+        Args: {
+          _per_hour: number
+          _per_minute: number
+          _table: string
+          _user_col: string
+        }
+        Returns: undefined
+      }
       get_user_facility_id: { Args: { _user_id: string }; Returns: string }
       has_role: {
         Args: {

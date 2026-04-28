@@ -7,6 +7,7 @@ import { AppProvider } from "@/context/AppContext";
 import MainLayout from "@/components/layout/MainLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import FacilityGate from "@/components/auth/FacilityGate";
+import MFAGate from "@/components/auth/MFAGate";
 import FacilityApprovalPage from "@/pages/FacilityApprovalPage";
 import FacilityAuditTrailPage from "@/pages/FacilityAuditTrailPage";
 import IDSRWeeklyReportPage from "@/pages/IDSRWeeklyReportPage";
@@ -50,9 +51,11 @@ const queryClient = new QueryClient();
 
 const ProtectedPage = ({ children }: { children: React.ReactNode }) => (
   <ProtectedRoute>
-    <FacilityGate>
-      <MainLayout>{children}</MainLayout>
-    </FacilityGate>
+    <MFAGate>
+      <FacilityGate>
+        <MainLayout>{children}</MainLayout>
+      </FacilityGate>
+    </MFAGate>
   </ProtectedRoute>
 );
 
