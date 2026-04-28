@@ -758,20 +758,41 @@ async function runSeed(sb: any) {
     }
 
     log.push("OK");
-
-    return new Response(
-      JSON.stringify({
-        password: PASSWORD,
-        facilities,
-        users: credentials.sort((a, b) => a.role.localeCompare(b.role)),
-        log,
-      }, null, 2),
-      { headers: { ...cors, "Content-Type": "application/json" } }
-    );
+    const sorted = credentials.sort((a, b) => a.role.localeCompare(b.role));
+    await sb.from("demo_seed_status").insert({
+      status: "success",
+      message: "Seed completed",
+      credentials: { password: PASSWORD, users: sorted, log },
+    });
+    return { ok: true, password: PASSWORD, users: sorted, log };
   } catch (e: any) {
-    return new Response(
-      JSON.stringify({ error: e.message, log }, null, 2),
-      { status: 500, headers: { ...cors, "Content-Type": "application/json" } }
-    );
+    await sb.from("demo_seed_status").insert({
+      status: "error",
+      message: e.message,
+      credentials: { log, partial_users: credentials },
+    });
+    return { ok: false, error: e.message, log };
   }
+}
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+
+  const sb = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    { auth: { persistSession: false } }
+  );
+
+  // Run in background; return immediately so the HTTP request doesn't time out
+  // @ts-ignore - EdgeRuntime is provided by Deno Deploy/Supabase Edge Runtime
+  EdgeRuntime.waitUntil(runSeed(sb));
+
+  return new Response(
+    JSON.stringify({
+      status: "started",
+      message: "Seeding running in background. Poll public.demo_seed_status for results (1-3 minutes).",
+    }),
+    { headers: { ...cors, "Content-Type": "application/json" } }
+  );
 });
