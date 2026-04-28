@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import MFASettings from '@/components/auth/MFASettings';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAppContext } from '@/context/AppContext';
@@ -187,6 +188,10 @@ export default function SettingsPage() {
           )}
         </div>
       )}
+
+      <div id="mfa" className="scroll-mt-20">
+        <MFASettings />
+      </div>
     </div>
   );
 }
