@@ -49,6 +49,7 @@ import BillingPage from "@/pages/BillingPage";
 import DataChainPage from "@/pages/DataChainPage";
 import EarlyWarningsPage from "@/pages/EarlyWarningsPage";
 import SuperAdminPortalPage from "@/pages/SuperAdminPortalPage";
+import PayReturnPage from "@/pages/PayReturnPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -83,6 +84,7 @@ const App = () => (
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/help" element={<HelpPage />} />
             <Route path="/community-report" element={<CommunityReportPage />} />
+            <Route path="/pay/return" element={<PayReturnPage />} />
 
             {/* Protected dashboard routes */}
             <Route path="/dashboard" element={<ProtectedPage><Dashboard /></ProtectedPage>} />
