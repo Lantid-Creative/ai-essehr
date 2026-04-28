@@ -592,26 +592,31 @@ async function runSeed(sb: any) {
     // ============ 10. INSURANCE ============
     const { count: schemeCount } = await sb.from("insurance_schemes").select("id", { count: "exact", head: true }).eq("facility_id", ADH);
     if ((schemeCount ?? 0) < 4) {
-      const { data: schemes } = await sb.from("insurance_schemes").insert([
+      const { data: schemes, error: schErr } = await sb.from("insurance_schemes").insert([
         { facility_id: ADH, name: "NHIA Formal Sector", scheme_type: "nhia", code: "NHIA-FSSHIP", contact_email: "claims@nhia.gov.ng", contact_phone: "+2348001000001", default_copay_percent: 10, preauth_required: false, active: true },
         { facility_id: ADH, name: "Hygeia HMO", scheme_type: "private_hmo", code: "HYG-001", contact_email: "providers@hygeia.com", default_copay_percent: 0, preauth_required: true, active: true },
         { facility_id: ADH, name: "Avon Healthcare", scheme_type: "private_hmo", code: "AVN-002", contact_email: "providers@avonhealthcare.com", default_copay_percent: 5, preauth_required: true, active: true },
         { facility_id: ADH, name: "FCT CBHIS", scheme_type: "cbhis", code: "FCT-CBHIS", contact_email: "fct@cbhis.gov.ng", default_copay_percent: 5, preauth_required: false, active: true },
       ]).select("id, name");
+      if (schErr) log.push("insurance_schemes err: " + schErr.message);
 
       const adhPats = patientsByFac[ADH] ?? [];
-      const enrolRows = adhPats.slice(0, 8).map((p, i) => ({
-        patient_id: p.id,
-        scheme_id: schemes![i % schemes!.length].id,
-        policy_number: `POL-${schemes![i % schemes!.length].name.split(" ")[0].toUpperCase()}-${randInt(100000, 999999)}`,
-        valid_from: daysAgo(180).slice(0, 10),
-        valid_until: daysAgo(-185).slice(0, 10),
-        is_primary: true,
-        dependents: i % 3 === 0 ? [{ name: "Spouse", dob: dobFromAge(35) }] : [],
-      }));
-      const { data: enrolments } = await sb.from("patient_insurance_enrolments").insert(enrolRows).select("id, patient_id, scheme_id");
-
-      log.push(`Insurance schemes: ${schemes?.length}, enrolments: ${enrolments?.length}`);
+      if (schemes && schemes.length > 0) {
+        const enrolRows = adhPats.slice(0, 8).map((p, i) => ({
+          patient_id: p.id,
+          scheme_id: schemes[i % schemes.length].id,
+          policy_number: `POL-${schemes[i % schemes.length].name.split(" ")[0].toUpperCase()}-${randInt(100000, 999999)}`,
+          valid_from: daysAgo(180).slice(0, 10),
+          valid_until: daysAgo(-185).slice(0, 10),
+          is_primary: true,
+          dependents: i % 3 === 0 ? [{ name: "Spouse", dob: dobFromAge(35) }] : [],
+        }));
+        const { data: enrolments, error: enErr } = await sb.from("patient_insurance_enrolments").insert(enrolRows).select("id, patient_id, scheme_id");
+        if (enErr) log.push("enrolments err: " + enErr.message);
+        log.push(`Insurance schemes: ${schemes.length}, enrolments: ${enrolments?.length ?? 0}`);
+      } else {
+        log.push("Insurance schemes: 0 (insert returned no rows)");
+      }
     }
 
     // ============ 11. INVOICES + PAYMENTS + DEPOSITS + CASHIER ============
