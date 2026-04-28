@@ -6,6 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/context/AppContext";
 import MainLayout from "@/components/layout/MainLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import FacilityGate from "@/components/auth/FacilityGate";
+import FacilityApprovalPage from "@/pages/FacilityApprovalPage";
+import ReferralsPage from "@/pages/ReferralsPage";
 import LandingPage from "@/pages/LandingPage";
 import LoginPage from "@/pages/LoginPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
@@ -40,7 +43,9 @@ const queryClient = new QueryClient();
 
 const ProtectedPage = ({ children }: { children: React.ReactNode }) => (
   <ProtectedRoute>
-    <MainLayout>{children}</MainLayout>
+    <FacilityGate>
+      <MainLayout>{children}</MainLayout>
+    </FacilityGate>
   </ProtectedRoute>
 );
 
@@ -81,6 +86,8 @@ const App = () => (
             <Route path="/audit" element={<ProtectedPage><AuditLogPage /></ProtectedPage>} />
             <Route path="/inventory" element={<ProtectedPage><DrugInventoryPage /></ProtectedPage>} />
             <Route path="/billing" element={<ProtectedPage><BillingPage /></ProtectedPage>} />
+            <Route path="/referrals" element={<ProtectedPage><ReferralsPage /></ProtectedPage>} />
+            <Route path="/admin/facilities" element={<ProtectedPage><FacilityApprovalPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
