@@ -481,7 +481,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="relative rounded-3xl overflow-hidden min-h-[460px]">
             <img src={aerialPhoto} alt="Aerial of Nigerian community" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/55 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/40" />
             <div className="relative z-10 p-8 md:p-14 grid lg:grid-cols-2 gap-10 items-center">
               <div>
                 <span className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/60">Measurable impact</span>

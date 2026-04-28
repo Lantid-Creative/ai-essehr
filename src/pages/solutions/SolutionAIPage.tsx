@@ -28,7 +28,7 @@ export default function SolutionAIPage() {
       <section className="px-3 sm:px-5 lg:px-6 mt-4">
         <div className="relative rounded-[28px] overflow-hidden min-h-[480px] md:min-h-[560px] bg-ink">
           <img src={heroImg} alt="Sentinel AI neural pattern" className="absolute inset-0 w-full h-full object-cover opacity-40" width={1280} height={832} />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/70 to-ink/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/90 to-ink/60" />
           <div className="relative z-10 p-8 md:p-14 max-w-3xl">
             <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/70">
               <Brain className="h-4 w-4" /> For Epidemiologists
