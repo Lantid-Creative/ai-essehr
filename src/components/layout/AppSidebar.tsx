@@ -3,7 +3,8 @@ import { useAppContext, AppRole } from '@/context/AppContext';
 import {
   LayoutDashboard, UserPlus, Stethoscope, BedDouble, Shield, Syringe,
   FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity,
-  CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe, ArrowRightLeft, Building2, Truck, AlertOctagon, ShieldCheck, FileText, TrendingUp, MapPin, Brain, Crown
+  CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe, ArrowRightLeft, Building2, Truck, AlertOctagon, ShieldCheck, FileText, TrendingUp, MapPin, Brain, Crown,
+  HeartPulse, Banknote, TestTube, Inbox, FileSignature, FileCheck
 } from 'lucide-react';
 
 interface NavItem {
@@ -26,6 +27,12 @@ const allNavItems: NavItem[] = [
   { label: 'Pharmacy', path: '/pharmacy', icon: Pill, roles: ['facility_admin', 'doctor', 'pharmacist'] },
   { label: 'Drug Inventory', path: '/inventory', icon: Package, roles: ['facility_admin', 'pharmacist'] },
   { label: 'Billing', path: '/billing', icon: Receipt, roles: ['facility_admin', 'doctor', 'nurse', 'data_clerk'] },
+  { label: 'Insurance & Claims', path: '/insurance', icon: FileCheck, roles: ['facility_admin', 'data_clerk'] },
+  { label: 'Cashier Shift', path: '/cashier', icon: Banknote, roles: ['facility_admin', 'data_clerk'] },
+  { label: 'My Tasks', path: '/tasks', icon: Inbox, roles: ['facility_admin', 'doctor', 'nurse', 'lab_tech', 'pharmacist'] },
+  { label: 'Nursing Station', path: '/nursing', icon: HeartPulse, roles: ['facility_admin', 'nurse'] },
+  { label: 'Specimens', path: '/specimens', icon: TestTube, roles: ['facility_admin', 'lab_tech'] },
+  { label: 'Consent Forms', path: '/consents', icon: FileSignature, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Referrals', path: '/referrals', icon: ArrowRightLeft, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: '🚨 Rescue Tap', path: '/rescue', icon: AlertOctagon },
   { label: 'Ambulance Portal', path: '/ambulance', icon: Truck, roles: ['paramedic'] },

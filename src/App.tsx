@@ -50,6 +50,12 @@ import DataChainPage from "@/pages/DataChainPage";
 import EarlyWarningsPage from "@/pages/EarlyWarningsPage";
 import SuperAdminPortalPage from "@/pages/SuperAdminPortalPage";
 import PayReturnPage from "@/pages/PayReturnPage";
+import InsuranceClaimsPage from "@/pages/InsuranceClaimsPage";
+import CashierShiftPage from "@/pages/CashierShiftPage";
+import NursingPage from "@/pages/NursingPage";
+import SpecimensPage from "@/pages/SpecimensPage";
+import ClinicalTasksPage from "@/pages/ClinicalTasksPage";
+import ConsentFormsPage from "@/pages/ConsentFormsPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -116,6 +122,12 @@ const App = () => (
             <Route path="/reports/kpis" element={<ProtectedPage><FacilityKPIPage /></ProtectedPage>} />
             <Route path="/reports/heatmap" element={<ProtectedPage><GeoHeatmapPage /></ProtectedPage>} />
             <Route path="/ai-anomaly" element={<ProtectedPage><AIAnomalyDetectionPage /></ProtectedPage>} />
+            <Route path="/insurance" element={<ProtectedPage><InsuranceClaimsPage /></ProtectedPage>} />
+            <Route path="/cashier" element={<ProtectedPage><CashierShiftPage /></ProtectedPage>} />
+            <Route path="/nursing" element={<ProtectedPage><NursingPage /></ProtectedPage>} />
+            <Route path="/specimens" element={<ProtectedPage><SpecimensPage /></ProtectedPage>} />
+            <Route path="/tasks" element={<ProtectedPage><ClinicalTasksPage /></ProtectedPage>} />
+            <Route path="/consents" element={<ProtectedPage><ConsentFormsPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
