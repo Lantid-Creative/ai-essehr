@@ -235,16 +235,19 @@ export default function FacilityApprovalPage() {
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Facility Administration</h1>
-        <p className="text-sm text-muted-foreground">Approve new hospitals and bulk-onboard facilities for the national rollout.</p>
+        <p className="text-sm text-muted-foreground">
+          Hospitals self-activate at registration. Use this console to monitor onboarded facilities,
+          suspend bad actors, or bulk-onboard government batches.
+        </p>
       </div>
 
-      <Tabs defaultValue="pending">
+      <Tabs defaultValue="active">
         <TabsList>
-          <TabsTrigger value="pending">
-            Pending {pending.length > 0 && <Badge variant="destructive" className="ml-2">{pending.length}</Badge>}
-          </TabsTrigger>
           <TabsTrigger value="active">Active ({active.length})</TabsTrigger>
-          <TabsTrigger value="other">Other ({other.length})</TabsTrigger>
+          <TabsTrigger value="pending">
+            Pending review {pending.length > 0 && <Badge variant="secondary" className="ml-2">{pending.length}</Badge>}
+          </TabsTrigger>
+          <TabsTrigger value="other">Suspended / Rejected ({other.length})</TabsTrigger>
           <TabsTrigger value="import">Bulk Import</TabsTrigger>
         </TabsList>
 
