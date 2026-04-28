@@ -12,6 +12,7 @@ import FacilityApprovalPage from "@/pages/FacilityApprovalPage";
 import FacilityAuditTrailPage from "@/pages/FacilityAuditTrailPage";
 import IDSRWeeklyReportPage from "@/pages/IDSRWeeklyReportPage";
 import FacilityKPIPage from "@/pages/FacilityKPIPage";
+import GeoHeatmapPage from "@/pages/GeoHeatmapPage";
 import ReferralsPage from "@/pages/ReferralsPage";
 import RescueTapPage from "@/pages/RescueTapPage";
 import AmbulancePortalPage from "@/pages/AmbulancePortalPage";
@@ -105,6 +106,7 @@ const App = () => (
             <Route path="/admin/facility-audit" element={<ProtectedPage><FacilityAuditTrailPage /></ProtectedPage>} />
             <Route path="/reports/idsr" element={<ProtectedPage><IDSRWeeklyReportPage /></ProtectedPage>} />
             <Route path="/reports/kpis" element={<ProtectedPage><FacilityKPIPage /></ProtectedPage>} />
+            <Route path="/reports/heatmap" element={<ProtectedPage><GeoHeatmapPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
