@@ -47,6 +47,7 @@ import DrugInventoryPage from "@/pages/DrugInventoryPage";
 import BillingPage from "@/pages/BillingPage";
 import DataChainPage from "@/pages/DataChainPage";
 import EarlyWarningsPage from "@/pages/EarlyWarningsPage";
+import SuperAdminPortalPage from "@/pages/SuperAdminPortalPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -103,6 +104,7 @@ const App = () => (
             <Route path="/ambulance" element={<ProtectedPage><AmbulancePortalPage /></ProtectedPage>} />
             <Route path="/fleet" element={<ProtectedPage><AmbulanceFleetPage /></ProtectedPage>} />
             <Route path="/er-inbound" element={<ProtectedPage><ERInboundPage /></ProtectedPage>} />
+            <Route path="/super-admin" element={<ProtectedPage><SuperAdminPortalPage /></ProtectedPage>} />
             <Route path="/admin/facilities" element={<ProtectedPage><FacilityApprovalPage /></ProtectedPage>} />
             <Route path="/admin/facility-audit" element={<ProtectedPage><FacilityAuditTrailPage /></ProtectedPage>} />
             <Route path="/reports/idsr" element={<ProtectedPage><IDSRWeeklyReportPage /></ProtectedPage>} />
