@@ -24,19 +24,43 @@ export default function RegisterFacilityPage() {
 
   const [facilityName, setFacilityName] = useState('');
   const [facilityType, setFacilityType] = useState('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
   const [region, setRegion] = useState('');
   const [district, setDistrict] = useState('');
   const [address, setAddress] = useState('');
   const [facilityPhone, setFacilityPhone] = useState('');
   const [facilityEmail, setFacilityEmail] = useState('');
+  const [headOfFacility, setHeadOfFacility] = useState('');
 
   const [adminName, setAdminName] = useState('');
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPhone, setAdminPhone] = useState('');
+  const [adminTitle, setAdminTitle] = useState('');
+  const [adminLicense, setAdminLicense] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
+  const [attested, setAttested] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Block obvious free-mail domains for the facility's official email
+    const freeMail = /@(gmail|yahoo|hotmail|outlook|icloud|aol|protonmail|live|msn)\./i;
+    if (facilityEmail && freeMail.test(facilityEmail)) {
+      toast({
+        title: 'Use an official facility email',
+        description: 'Please provide an institutional email address (e.g. info@yourhospital.org), not a personal Gmail/Yahoo address.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    if (!attested) {
+      toast({
+        title: 'Attestation required',
+        description: 'You must confirm you are an authorized representative of a registered health facility.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -53,18 +77,19 @@ export default function RegisterFacilityPage() {
       if (authError) throw authError;
       if (!authData.user) throw new Error('Failed to create account');
 
-      // 2. Create the facility
+      // 2. Create the facility (active immediately)
       const { data: facility, error: facilityError } = await supabase
         .from('facilities')
         .insert({
           name: facilityName,
           facility_type: facilityType as any,
+          facility_code: registrationNumber || null,
           region,
           district,
           address,
           phone: facilityPhone,
           email: facilityEmail,
-          status: 'pending' as any,
+          status: 'active' as any,
         })
         .select()
         .single();
@@ -78,12 +103,11 @@ export default function RegisterFacilityPage() {
           facility_id: facility.id,
           full_name: adminName,
           phone: adminPhone,
+          job_title: adminTitle || null,
         })
         .eq('id', authData.user.id);
 
-      if (profileError) {
-        console.error('Profile update error:', profileError);
-      }
+      if (profileError) console.error('Profile update error:', profileError);
 
       // 4. Assign facility_admin role
       const { error: roleError } = await supabase
@@ -93,14 +117,27 @@ export default function RegisterFacilityPage() {
           role: 'facility_admin' as any,
           facility_id: facility.id,
         });
+      if (roleError) console.error('Role assignment error:', roleError);
 
-      if (roleError) {
-        console.error('Role assignment error:', roleError);
-      }
+      // 5. Audit attestation for compliance
+      await supabase.from('audit_logs').insert({
+        user_id: authData.user.id,
+        facility_id: facility.id,
+        action: 'facility_registered',
+        entity_type: 'facility',
+        entity_id: facility.id,
+        details: {
+          registration_number: registrationNumber,
+          head_of_facility: headOfFacility,
+          admin_license: adminLicense,
+          admin_title: adminTitle,
+          attested_at: new Date().toISOString(),
+        },
+      });
 
       toast({
-        title: 'Facility Registered!',
-        description: 'Please check your email to verify your account, then sign in.',
+        title: 'Facility activated',
+        description: 'Verify your email, then sign in to begin using AI-PEWS.',
       });
       navigate('/login');
     } catch (error: any) {
