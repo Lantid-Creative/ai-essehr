@@ -3,7 +3,7 @@ import { useAppContext, AppRole } from '@/context/AppContext';
 import {
   LayoutDashboard, UserPlus, Stethoscope, BedDouble, Shield, Syringe,
   FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity,
-  CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe, ArrowRightLeft, Building2, Truck, AlertOctagon
+  CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe, ArrowRightLeft, Building2, Truck, AlertOctagon, ShieldCheck
 } from 'lucide-react';
 
 interface NavItem {
@@ -32,6 +32,7 @@ const allNavItems: NavItem[] = [
   { label: 'Ambulance Fleet', path: '/fleet', icon: Truck, roles: ['facility_admin', 'super_admin'] },
   { label: 'ER Inbound', path: '/er-inbound', icon: AlertOctagon, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Facility Admin', path: '/admin/facilities', icon: Building2, roles: ['super_admin'] },
+  { label: 'Facility Audit', path: '/admin/facility-audit', icon: ShieldCheck, roles: ['super_admin'] },
   { label: 'MCH', path: '/mch', icon: Baby, roles: ['facility_admin', 'nurse', 'chew'] },
   { label: 'Staff', path: '/staff', icon: Users, roles: ['facility_admin', 'super_admin'] },
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },

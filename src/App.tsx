@@ -8,6 +8,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import FacilityGate from "@/components/auth/FacilityGate";
 import FacilityApprovalPage from "@/pages/FacilityApprovalPage";
+import FacilityAuditTrailPage from "@/pages/FacilityAuditTrailPage";
 import ReferralsPage from "@/pages/ReferralsPage";
 import RescueTapPage from "@/pages/RescueTapPage";
 import AmbulancePortalPage from "@/pages/AmbulancePortalPage";
@@ -96,6 +97,7 @@ const App = () => (
             <Route path="/fleet" element={<ProtectedPage><AmbulanceFleetPage /></ProtectedPage>} />
             <Route path="/er-inbound" element={<ProtectedPage><ERInboundPage /></ProtectedPage>} />
             <Route path="/admin/facilities" element={<ProtectedPage><FacilityApprovalPage /></ProtectedPage>} />
+            <Route path="/admin/facility-audit" element={<ProtectedPage><FacilityAuditTrailPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
