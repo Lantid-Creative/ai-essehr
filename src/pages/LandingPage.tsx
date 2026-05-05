@@ -80,7 +80,7 @@ const partners = [
   { abbr: 'NGF', name: "Nigeria Governors' Forum", role: 'Lead Organisation' },
   { abbr: 'NCDC', name: 'NCDC', role: 'Surveillance Authority' },
   { abbr: 'FMOH', name: 'Federal Ministry of Health', role: 'Health Policy' },
-  { abbr: 'NHEAD', name: 'NHEAD', role: 'Health Innovation' },
+  { abbr: 'NHED', name: 'NHED', role: 'Health Innovation' },
   { abbr: 'LCL', name: 'Lantid Creative Ltd', role: 'Technical Partner' },
 ];
 

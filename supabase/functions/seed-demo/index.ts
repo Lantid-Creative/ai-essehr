@@ -593,7 +593,7 @@ async function runSeed(sb: any) {
     const { count: schemeCount } = await sb.from("insurance_schemes").select("id", { count: "exact", head: true }).eq("facility_id", ADH);
     if ((schemeCount ?? 0) < 4) {
       const { data: schemes, error: schErr } = await sb.from("insurance_schemes").insert([
-        { facility_id: ADH, name: "NHIA Formal Sector", scheme_type: "nhia", code: "NHIA-FSSHIP", contact_email: "claims@nhia.gov.ng", contact_phone: "+2348001000001", default_copay_percent: 10, preauth_required: false, active: true },
+        { facility_id: ADH, name: "NHED Formal Sector", scheme_type: "nhed", code: "NHED-FSSHIP", contact_email: "claims@nhed.gov.ng", contact_phone: "+2348001000001", default_copay_percent: 10, preauth_required: false, active: true },
         { facility_id: ADH, name: "Hygeia HMO", scheme_type: "private_hmo", code: "HYG-001", contact_email: "providers@hygeia.com", default_copay_percent: 0, preauth_required: true, active: true },
         { facility_id: ADH, name: "Avon Healthcare", scheme_type: "private_hmo", code: "AVN-002", contact_email: "providers@avonhealthcare.com", default_copay_percent: 5, preauth_required: true, active: true },
         { facility_id: ADH, name: "FCT CBHIS", scheme_type: "cbhis", code: "FCT-CBHIS", contact_email: "fct@cbhis.gov.ng", default_copay_percent: 5, preauth_required: false, active: true },

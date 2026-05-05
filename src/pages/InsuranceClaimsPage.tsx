@@ -16,7 +16,7 @@ type Scheme = { id: string; name: string; scheme_type: string; default_copay_per
 type Claim = { id: string; claim_number: string; status: string; gross_amount: number; copay_amount: number; scheme_payable: number; scheme_paid: number; created_at: string; scheme_id: string };
 
 const SCHEME_TYPES = [
-  { value: 'nhia', label: 'NHIA (National)' },
+  { value: 'nhed', label: 'NHED (National)' },
   { value: 'hmo', label: 'HMO (Hygeia, Avon, Reliance, AIICO...)' },
   { value: 'corporate', label: 'Corporate / Retainer' },
   { value: 'cbhis', label: 'CBHIS / State (LSHMA, OGSHIA...)' },
@@ -84,7 +84,7 @@ export default function InsuranceClaimsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Insurance & Claims</h1>
-          <p className="text-muted-foreground">NHIA · HMOs · Corporate retainers · CBHIS</p>
+          <p className="text-muted-foreground">NHED · HMOs · Corporate retainers · CBHIS</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
