@@ -16,7 +16,7 @@ type Scheme = { id: string; name: string; scheme_type: string; default_copay_per
 type Claim = { id: string; claim_number: string; status: string; gross_amount: number; copay_amount: number; scheme_payable: number; scheme_paid: number; created_at: string; scheme_id: string };
 
 const SCHEME_TYPES = [
-  { value: 'nhia', label: 'NHIA (National)' },
+  { value: 'nhed', label: 'NHED (National)' },
   { value: 'hmo', label: 'HMO (Hygeia, Avon, Reliance, AIICO...)' },
   { value: 'corporate', label: 'Corporate / Retainer' },
   { value: 'cbhis', label: 'CBHIS / State (LSHMA, OGSHIA...)' },
