@@ -84,7 +84,7 @@ export default function InsuranceClaimsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Insurance & Claims</h1>
-          <p className="text-muted-foreground">NHIA · HMOs · Corporate retainers · CBHIS</p>
+          <p className="text-muted-foreground">NHED · HMOs · Corporate retainers · CBHIS</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
