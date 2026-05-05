@@ -50,7 +50,7 @@ const groups = [
     items: [
       { icon: Wallet, title: 'Cashier Shifts', desc: 'Drawer reconciliation, shift open/close, movement audit.' },
       { icon: Receipt, title: 'Billing & Invoicing', desc: 'Multi-payer billing, printable professional invoices.' },
-      { icon: ShieldCheck, title: 'Insurance Claims', desc: 'NHIA, HMOs, corporate, CBHIS — pre-auth & co-pay logic.' },
+      { icon: ShieldCheck, title: 'Insurance Claims', desc: 'NHED, HMOs, corporate, CBHIS — pre-auth & co-pay logic.' },
       { icon: Database, title: 'Drug Inventory', desc: 'Stock ledger, FEFO, low-stock alerts, supplier tracking.' },
       { icon: Users, title: 'Staff Management', desc: 'Provisioning, certification tracking, role assignment.' },
       { icon: Lock, title: 'Audit Trail', desc: 'Immutable log of every clinical & administrative action.' },
