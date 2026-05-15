@@ -50,6 +50,7 @@ const allNavItems: NavItem[] = [
   { label: 'Cold Chain', path: '/cold-chain', icon: Thermometer, roles: ['facility_admin', 'nurse', 'pharmacist'] },
   { label: 'Discharge Summaries', path: '/discharge-summaries', icon: FileCheck, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Staff', path: '/staff', icon: Users, roles: ['facility_admin', 'super_admin'] },
+  { label: 'NHED Empanelment', path: '/nhed', icon: ShieldCheck, roles: ['facility_admin', 'super_admin'] },
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'Custom Report Builder', path: '/reports/builder', icon: FileText, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'IDSR Weekly', path: '/reports/idsr', icon: FileText, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
