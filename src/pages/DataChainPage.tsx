@@ -7,7 +7,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { CheckCircle2, Clock, XCircle, Send, RefreshCw, AlertTriangle, Globe2, ShieldCheck, Building2 } from "lucide-react";
+import { CheckCircle2, Clock, XCircle, Send, RefreshCw, AlertTriangle, Globe2, ShieldCheck, Building2, Timer, BellRing } from "lucide-react";
+import { formatDistanceToNowStrict } from "date-fns";
 import { toast } from "sonner";
 
 interface CaseReport {
@@ -23,6 +24,9 @@ interface CaseReport {
   facility_validated_at: string | null;
   lga_validated_at: string | null;
   state_validated_at: string | null;
+  sla_facility_due_at: string | null;
+  sla_lga_due_at: string | null;
+  sla_state_due_at: string | null;
   rejection_reason: string | null;
   created_at: string;
   symptoms: any;
@@ -59,6 +63,17 @@ const DISP_BADGE: Record<string, string> = {
   failed: "bg-amber-500/15 text-amber-700",
   dead_letter: "bg-destructive/15 text-destructive",
 };
+
+function slaInfo(c: CaseReport): { label: string; due: string | null; overdue: boolean } | null {
+  let due: string | null = null;
+  let label = "";
+  if (c.status === "pending_facility") { due = c.sla_facility_due_at; label = "Facility validation"; }
+  else if (c.status === "facility_validated" || c.status === "pending_lga") { due = c.sla_lga_due_at; label = "LGA validation"; }
+  else if (c.status === "lga_validated" || c.status === "pending_state") { due = c.sla_state_due_at; label = "State validation"; }
+  else return null;
+  if (!due) return { label, due: null, overdue: false };
+  return { label, due, overdue: new Date(due) < new Date() };
+}
 
 export default function DataChainPage() {
   const [loading, setLoading] = useState(true);
@@ -118,15 +133,35 @@ export default function DataChainPage() {
 
   const dispatchesFor = (caseId: string) => dispatches.filter((d) => d.case_report_id === caseId);
 
+  const overdueCounts = {
+    facility: cases.filter((c) => c.status === "pending_facility" && c.sla_facility_due_at && new Date(c.sla_facility_due_at) < new Date()).length,
+    lga: cases.filter((c) => (c.status === "facility_validated" || c.status === "pending_lga") && c.sla_lga_due_at && new Date(c.sla_lga_due_at) < new Date()).length,
+    state: cases.filter((c) => (c.status === "lga_validated" || c.status === "pending_state") && c.sla_state_due_at && new Date(c.sla_state_due_at) < new Date()).length,
+  };
+  const onTime = {
+    facility: cases.filter((c) => c.facility_validated_at && c.sla_facility_due_at && new Date(c.facility_validated_at) <= new Date(c.sla_facility_due_at)).length,
+    lga: cases.filter((c) => c.lga_validated_at && c.sla_lga_due_at && new Date(c.lga_validated_at) <= new Date(c.sla_lga_due_at)).length,
+    state: cases.filter((c) => c.state_validated_at && c.sla_state_due_at && new Date(c.state_validated_at) <= new Date(c.sla_state_due_at)).length,
+  };
+  const completed = {
+    facility: cases.filter((c) => c.facility_validated_at).length,
+    lga: cases.filter((c) => c.lga_validated_at).length,
+    state: cases.filter((c) => c.state_validated_at).length,
+  };
+  const totalOverdue = overdueCounts.facility + overdueCounts.lga + overdueCounts.state;
+
   const stats = {
     total: cases.length,
     pending: cases.filter((c) => c.status.startsWith("pending")).length,
     dispatched: cases.filter((c) => c.status === "dispatched").length,
     failed: cases.filter((c) => c.status === "failed" || c.status === "partially_dispatched").length,
+    overdue: totalOverdue,
     sormasOk: dispatches.filter((d) => d.target === "SORMAS" && d.status === "success").length,
     dhis2Ok: dispatches.filter((d) => d.target === "DHIS2" && d.status === "success").length,
     deadLetter: dispatches.filter((d) => d.status === "dead_letter").length,
   };
+
+  const pct = (n: number, d: number) => (d > 0 ? Math.round((n / d) * 100) : 0);
 
   return (
     <div className="container max-w-6xl py-8 space-y-6">
@@ -158,20 +193,21 @@ export default function DataChainPage() {
         </AlertDescription>
       </Alert>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
         {[
           { label: "Total cases", value: stats.total, icon: Building2 },
           { label: "Pending validation", value: stats.pending, icon: Clock },
+          { label: "Overdue (SLA breach)", value: stats.overdue, icon: Timer, danger: stats.overdue > 0 },
           { label: "Dispatched", value: stats.dispatched, icon: CheckCircle2 },
           { label: "Failed/Partial", value: stats.failed, icon: AlertTriangle },
           { label: "SORMAS ✓", value: stats.sormasOk, icon: Send },
           { label: "DHIS2 ✓", value: stats.dhis2Ok, icon: Send },
           { label: "Dead-letter", value: stats.deadLetter, icon: XCircle },
         ].map((s) => (
-          <Card key={s.label}>
+          <Card key={s.label} className={s.danger ? "border-destructive/40" : ""}>
             <CardContent className="pt-4">
-              <s.icon className="h-4 w-4 text-muted-foreground mb-1" />
-              <div className="text-2xl font-bold">{s.value}</div>
+              <s.icon className={`h-4 w-4 mb-1 ${s.danger ? "text-destructive" : "text-muted-foreground"}`} />
+              <div className={`text-2xl font-bold ${s.danger ? "text-destructive" : ""}`}>{s.value}</div>
               <p className="text-xs text-muted-foreground">{s.label}</p>
             </CardContent>
           </Card>
@@ -181,6 +217,7 @@ export default function DataChainPage() {
       <Tabs defaultValue="cases">
         <TabsList>
           <TabsTrigger value="cases">Case reports ({cases.length})</TabsTrigger>
+          <TabsTrigger value="sla">SLA timeliness {totalOverdue > 0 && <Badge variant="destructive" className="ml-2">{totalOverdue}</Badge>}</TabsTrigger>
           <TabsTrigger value="outbox">Dispatch outbox ({dispatches.length})</TabsTrigger>
         </TabsList>
 
@@ -193,15 +230,23 @@ export default function DataChainPage() {
           )}
           {cases.map((c) => {
             const ds = dispatchesFor(c.id);
+            const sla = slaInfo(c);
             return (
-              <Card key={c.id}>
+              <Card key={c.id} className={sla?.overdue ? "border-destructive/50" : ""}>
                 <CardHeader>
                   <div className="flex items-start justify-between flex-wrap gap-3">
                     <div>
-                      <CardTitle className="text-lg flex items-center gap-2">
+                      <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
                         {c.disease}
                         <Badge variant="outline">{c.case_classification}</Badge>
                         <Badge className={STATUS_BADGE[c.status]}>{c.status.replace(/_/g, " ")}</Badge>
+                        {sla && sla.due && (
+                          <Badge className={sla.overdue ? "bg-destructive/15 text-destructive" : "bg-amber-500/15 text-amber-700"}>
+                            <Timer className="h-3 w-3 mr-1" />
+                            {sla.overdue ? "Overdue " : ""}
+                            {sla.label} · {sla.overdue ? `${formatDistanceToNowStrict(new Date(sla.due))} ago` : `due in ${formatDistanceToNowStrict(new Date(sla.due))}`}
+                          </Badge>
+                        )}
                       </CardTitle>
                       <CardDescription className="text-xs mt-1 font-mono">UUID: {c.external_uuid}</CardDescription>
                     </div>
@@ -261,6 +306,64 @@ export default function DataChainPage() {
               </Card>
             );
           })}
+        </TabsContent>
+
+        <TabsContent value="sla" className="space-y-4">
+          <Alert>
+            <BellRing className="h-4 w-4" />
+            <AlertTitle>Validation SLA targets</AlertTitle>
+            <AlertDescription className="text-sm">
+              Facility tier: <b>24h</b> from report · LGA DSNO: <b>5 days</b> from facility validation · State: <b>10 days</b> from LGA validation. Cases that miss a target are flagged overdue.
+            </AlertDescription>
+          </Alert>
+          <div className="grid md:grid-cols-3 gap-4">
+            {[
+              { tier: "Facility", overdue: overdueCounts.facility, ontime: onTime.facility, done: completed.facility },
+              { tier: "LGA DSNO", overdue: overdueCounts.lga, ontime: onTime.lga, done: completed.lga },
+              { tier: "State", overdue: overdueCounts.state, ontime: onTime.state, done: completed.state },
+            ].map((t) => (
+              <Card key={t.tier}>
+                <CardHeader>
+                  <CardTitle className="text-base">{t.tier}</CardTitle>
+                  <CardDescription>{t.done} validated · {pct(t.ontime, t.done)}% on-time</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> On-time</span>
+                    <span className="font-semibold">{t.ontime}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2"><Timer className="h-4 w-4 text-destructive" /> Currently overdue</span>
+                    <span className={`font-semibold ${t.overdue > 0 ? "text-destructive" : ""}`}>{t.overdue}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-destructive" /> Overdue queue</CardTitle>
+              <CardDescription>Cases that have breached their tier SLA — action required.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {cases.filter((c) => slaInfo(c)?.overdue).length === 0 && (
+                <div className="text-sm text-muted-foreground">No overdue cases. 🎉</div>
+              )}
+              {cases.filter((c) => slaInfo(c)?.overdue).map((c) => {
+                const sla = slaInfo(c)!;
+                return (
+                  <div key={c.id} className="flex items-center justify-between border rounded-md p-3 text-sm">
+                    <div>
+                      <div className="font-medium">{c.disease} <span className="text-xs text-muted-foreground">({c.case_classification})</span></div>
+                      <div className="text-xs text-muted-foreground">{sla.label} overdue by {formatDistanceToNowStrict(new Date(sla.due!))}</div>
+                    </div>
+                    <Badge className="bg-destructive/15 text-destructive">{c.status.replace(/_/g, " ")}</Badge>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="outbox" className="space-y-2">

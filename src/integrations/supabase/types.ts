@@ -428,6 +428,7 @@ export type Database = {
           outcome: string | null
           patient_id: string
           rejection_reason: string | null
+          sla_breach_notified_at: string | null
           sla_facility_due_at: string | null
           sla_lga_due_at: string | null
           sla_state_due_at: string | null
@@ -454,6 +455,7 @@ export type Database = {
           outcome?: string | null
           patient_id: string
           rejection_reason?: string | null
+          sla_breach_notified_at?: string | null
           sla_facility_due_at?: string | null
           sla_lga_due_at?: string | null
           sla_state_due_at?: string | null
@@ -480,6 +482,7 @@ export type Database = {
           outcome?: string | null
           patient_id?: string
           rejection_reason?: string | null
+          sla_breach_notified_at?: string | null
           sla_facility_due_at?: string | null
           sla_lga_due_at?: string | null
           sla_state_due_at?: string | null
@@ -2962,7 +2965,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      case_validation_sla_kpis: {
+        Row: {
+          facility_id: string | null
+          on_time_facility: number | null
+          on_time_lga: number | null
+          on_time_state: number | null
+          overdue_facility: number | null
+          overdue_lga: number | null
+          overdue_state: number | null
+          total_cases: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_reports_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       enforce_rate_limit: {
