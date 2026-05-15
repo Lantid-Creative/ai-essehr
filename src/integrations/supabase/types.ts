@@ -2081,6 +2081,166 @@ export type Database = {
         }
         Relationships: []
       }
+      nhed_application_documents: {
+        Row: {
+          application_id: string
+          created_at: string
+          doc_label: string
+          doc_type: string
+          file_url: string | null
+          id: string
+          reviewer_notes: string | null
+          status: Database["public"]["Enums"]["nhed_doc_status"]
+          updated_at: string
+          uploaded_at: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          doc_label: string
+          doc_type: string
+          file_url?: string | null
+          id?: string
+          reviewer_notes?: string | null
+          status?: Database["public"]["Enums"]["nhed_doc_status"]
+          updated_at?: string
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          doc_label?: string
+          doc_type?: string
+          file_url?: string | null
+          id?: string
+          reviewer_notes?: string | null
+          status?: Database["public"]["Enums"]["nhed_doc_status"]
+          updated_at?: string
+          uploaded_at?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nhed_application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "nhed_empanelment_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nhed_empanelment_applications: {
+        Row: {
+          application_ref: string | null
+          approved_at: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          created_by: string
+          empanelment_code: string | null
+          expires_at: string | null
+          facility_id: string
+          facility_tier: string | null
+          id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_notes: string | null
+          scheme: string
+          services_offered: string[] | null
+          status: Database["public"]["Enums"]["nhed_app_status"]
+          submitted_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          application_ref?: string | null
+          approved_at?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by: string
+          empanelment_code?: string | null
+          expires_at?: string | null
+          facility_id: string
+          facility_tier?: string | null
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_notes?: string | null
+          scheme: string
+          services_offered?: string[] | null
+          status?: Database["public"]["Enums"]["nhed_app_status"]
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          application_ref?: string | null
+          approved_at?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          created_by?: string
+          empanelment_code?: string | null
+          expires_at?: string | null
+          facility_id?: string
+          facility_tier?: string | null
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_notes?: string | null
+          scheme?: string
+          services_offered?: string[] | null
+          status?: Database["public"]["Enums"]["nhed_app_status"]
+          submitted_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      nhed_status_events: {
+        Row: {
+          actor_id: string | null
+          application_id: string
+          comment: string | null
+          created_at: string
+          from_status: Database["public"]["Enums"]["nhed_app_status"] | null
+          id: string
+          to_status: Database["public"]["Enums"]["nhed_app_status"]
+        }
+        Insert: {
+          actor_id?: string | null
+          application_id: string
+          comment?: string | null
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["nhed_app_status"] | null
+          id?: string
+          to_status: Database["public"]["Enums"]["nhed_app_status"]
+        }
+        Update: {
+          actor_id?: string | null
+          application_id?: string
+          comment?: string | null
+          created_at?: string
+          from_status?: Database["public"]["Enums"]["nhed_app_status"] | null
+          id?: string
+          to_status?: Database["public"]["Enums"]["nhed_app_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nhed_status_events_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "nhed_empanelment_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nhmis_001_submissions: {
         Row: {
           created_at: string
@@ -3153,6 +3313,15 @@ export type Database = {
         | "clinic"
         | "hospital"
       gender_type: "male" | "female" | "other"
+      nhed_app_status:
+        | "draft"
+        | "submitted"
+        | "under_review"
+        | "approved"
+        | "rejected"
+        | "expired"
+        | "suspended"
+      nhed_doc_status: "pending" | "verified" | "rejected"
       patient_status: "active" | "inactive" | "deceased" | "transferred"
     }
     CompositeTypes: {
@@ -3321,6 +3490,16 @@ export const Constants = {
       ],
       facility_type: ["primary", "secondary", "tertiary", "clinic", "hospital"],
       gender_type: ["male", "female", "other"],
+      nhed_app_status: [
+        "draft",
+        "submitted",
+        "under_review",
+        "approved",
+        "rejected",
+        "expired",
+        "suspended",
+      ],
+      nhed_doc_status: ["pending", "verified", "rejected"],
       patient_status: ["active", "inactive", "deceased", "transferred"],
     },
   },
