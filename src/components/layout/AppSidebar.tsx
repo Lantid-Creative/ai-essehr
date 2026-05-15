@@ -46,6 +46,7 @@ const allNavItems: NavItem[] = [
   { label: 'Birth Registration', path: '/births', icon: BabyIcon, roles: ['facility_admin', 'doctor', 'nurse', 'chew', 'data_clerk'] },
   { label: 'Death Registration', path: '/deaths', icon: FileWarning, roles: ['facility_admin', 'doctor', 'data_clerk'] },
   { label: 'NHMIS Registers', path: '/nhmis-registers', icon: ClipboardCheck, roles: ['facility_admin', 'nurse', 'chew', 'data_clerk'] },
+  { label: 'NHMIS 001 Monthly', path: '/nhmis-001', icon: ClipboardCheck, roles: ['facility_admin', 'data_clerk', 'super_admin'] },
   { label: 'Cold Chain', path: '/cold-chain', icon: Thermometer, roles: ['facility_admin', 'nurse', 'pharmacist'] },
   { label: 'Discharge Summaries', path: '/discharge-summaries', icon: FileCheck, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Staff', path: '/staff', icon: Users, roles: ['facility_admin', 'super_admin'] },
