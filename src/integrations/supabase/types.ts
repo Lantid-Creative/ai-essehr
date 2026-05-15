@@ -2081,6 +2081,48 @@ export type Database = {
         }
         Relationships: []
       }
+      nhmis_001_submissions: {
+        Row: {
+          created_at: string
+          facility_id: string
+          id: string
+          indicators: Json
+          remarks: string | null
+          reporting_month: number
+          reporting_year: number
+          status: string
+          submitted_at: string | null
+          submitted_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          facility_id: string
+          id?: string
+          indicators?: Json
+          remarks?: string | null
+          reporting_month: number
+          reporting_year: number
+          status?: string
+          submitted_at?: string | null
+          submitted_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          facility_id?: string
+          id?: string
+          indicators?: Json
+          remarks?: string | null
+          reporting_month?: number
+          reporting_year?: number
+          status?: string
+          submitted_at?: string | null
+          submitted_by?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       nhmis_register_entries: {
         Row: {
           created_at: string
