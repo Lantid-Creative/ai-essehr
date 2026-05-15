@@ -2632,6 +2632,45 @@ export type Database = {
         }
         Relationships: []
       }
+      saved_reports: {
+        Row: {
+          config: Json
+          created_at: string
+          dataset: string
+          description: string | null
+          facility_id: string | null
+          id: string
+          is_shared: boolean
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          dataset: string
+          description?: string | null
+          facility_id?: string | null
+          id?: string
+          is_shared?: boolean
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          dataset?: string
+          description?: string | null
+          facility_id?: string | null
+          id?: string
+          is_shared?: boolean
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sms_outbox: {
         Row: {
           channel: string

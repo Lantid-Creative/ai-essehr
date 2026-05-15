@@ -76,6 +76,7 @@ import NHMISRegistersPage from "@/pages/NHMISRegistersPage";
 import NHMIS001SummaryPage from "@/pages/NHMIS001SummaryPage";
 import ColdChainPage from "@/pages/ColdChainPage";
 import DischargeSummaryPage from "@/pages/DischargeSummaryPage";
+import CustomReportBuilderPage from "@/pages/CustomReportBuilderPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -170,6 +171,7 @@ const App = () => (
             <Route path="/nhmis-001" element={<ProtectedPage><NHMIS001SummaryPage /></ProtectedPage>} />
             <Route path="/cold-chain" element={<ProtectedPage><ColdChainPage /></ProtectedPage>} />
             <Route path="/discharge-summaries" element={<ProtectedPage><DischargeSummaryPage /></ProtectedPage>} />
+            <Route path="/reports/builder" element={<ProtectedPage><CustomReportBuilderPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
