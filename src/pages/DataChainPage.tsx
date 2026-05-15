@@ -24,6 +24,9 @@ interface CaseReport {
   facility_validated_at: string | null;
   lga_validated_at: string | null;
   state_validated_at: string | null;
+  sla_facility_due_at: string | null;
+  sla_lga_due_at: string | null;
+  sla_state_due_at: string | null;
   rejection_reason: string | null;
   created_at: string;
   symptoms: any;
