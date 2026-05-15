@@ -64,6 +64,17 @@ const DISP_BADGE: Record<string, string> = {
   dead_letter: "bg-destructive/15 text-destructive",
 };
 
+function slaInfo(c: CaseReport): { label: string; due: string | null; overdue: boolean } | null {
+  let due: string | null = null;
+  let label = "";
+  if (c.status === "pending_facility") { due = c.sla_facility_due_at; label = "Facility validation"; }
+  else if (c.status === "facility_validated" || c.status === "pending_lga") { due = c.sla_lga_due_at; label = "LGA validation"; }
+  else if (c.status === "lga_validated" || c.status === "pending_state") { due = c.sla_state_due_at; label = "State validation"; }
+  else return null;
+  if (!due) return { label, due: null, overdue: false };
+  return { label, due, overdue: new Date(due) < new Date() };
+}
+
 export default function DataChainPage() {
   const [loading, setLoading] = useState(true);
   const [cases, setCases] = useState<CaseReport[]>([]);
