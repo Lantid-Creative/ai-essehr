@@ -308,6 +308,64 @@ export default function DataChainPage() {
           })}
         </TabsContent>
 
+        <TabsContent value="sla" className="space-y-4">
+          <Alert>
+            <BellRing className="h-4 w-4" />
+            <AlertTitle>Validation SLA targets</AlertTitle>
+            <AlertDescription className="text-sm">
+              Facility tier: <b>24h</b> from report · LGA DSNO: <b>5 days</b> from facility validation · State: <b>10 days</b> from LGA validation. Cases that miss a target are flagged overdue.
+            </AlertDescription>
+          </Alert>
+          <div className="grid md:grid-cols-3 gap-4">
+            {[
+              { tier: "Facility", overdue: overdueCounts.facility, ontime: onTime.facility, done: completed.facility },
+              { tier: "LGA DSNO", overdue: overdueCounts.lga, ontime: onTime.lga, done: completed.lga },
+              { tier: "State", overdue: overdueCounts.state, ontime: onTime.state, done: completed.state },
+            ].map((t) => (
+              <Card key={t.tier}>
+                <CardHeader>
+                  <CardTitle className="text-base">{t.tier}</CardTitle>
+                  <CardDescription>{t.done} validated · {pct(t.ontime, t.done)}% on-time</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> On-time</span>
+                    <span className="font-semibold">{t.ontime}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2"><Timer className="h-4 w-4 text-destructive" /> Currently overdue</span>
+                    <span className={`font-semibold ${t.overdue > 0 ? "text-destructive" : ""}`}>{t.overdue}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-destructive" /> Overdue queue</CardTitle>
+              <CardDescription>Cases that have breached their tier SLA — action required.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {cases.filter((c) => slaInfo(c)?.overdue).length === 0 && (
+                <div className="text-sm text-muted-foreground">No overdue cases. 🎉</div>
+              )}
+              {cases.filter((c) => slaInfo(c)?.overdue).map((c) => {
+                const sla = slaInfo(c)!;
+                return (
+                  <div key={c.id} className="flex items-center justify-between border rounded-md p-3 text-sm">
+                    <div>
+                      <div className="font-medium">{c.disease} <span className="text-xs text-muted-foreground">({c.case_classification})</span></div>
+                      <div className="text-xs text-muted-foreground">{sla.label} overdue by {formatDistanceToNowStrict(new Date(sla.due!))}</div>
+                    </div>
+                    <Badge className="bg-destructive/15 text-destructive">{c.status.replace(/_/g, " ")}</Badge>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="outbox" className="space-y-2">
           {dispatches.length === 0 && (
             <Card><CardContent className="pt-6 text-center text-muted-foreground">No dispatches yet.</CardContent></Card>
