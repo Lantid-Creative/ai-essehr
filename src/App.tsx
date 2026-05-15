@@ -70,6 +70,11 @@ import PrivacyPage from "@/pages/legal/PrivacyPage";
 import TermsPage from "@/pages/legal/TermsPage";
 import SecurityPage from "@/pages/legal/SecurityPage";
 import RegisterCitizenPage from "@/pages/RegisterCitizenPage";
+import BirthRegistrationPage from "@/pages/BirthRegistrationPage";
+import DeathRegistrationPage from "@/pages/DeathRegistrationPage";
+import NHMISRegistersPage from "@/pages/NHMISRegistersPage";
+import ColdChainPage from "@/pages/ColdChainPage";
+import DischargeSummaryPage from "@/pages/DischargeSummaryPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -158,6 +163,11 @@ const App = () => (
             <Route path="/consents" element={<ProtectedPage><ConsentFormsPage /></ProtectedPage>} />
             <Route path="/sync" element={<ProtectedPage><SyncPage /></ProtectedPage>} />
             <Route path="/settings" element={<ProtectedPage><SettingsPage /></ProtectedPage>} />
+            <Route path="/births" element={<ProtectedPage><BirthRegistrationPage /></ProtectedPage>} />
+            <Route path="/deaths" element={<ProtectedPage><DeathRegistrationPage /></ProtectedPage>} />
+            <Route path="/nhmis-registers" element={<ProtectedPage><NHMISRegistersPage /></ProtectedPage>} />
+            <Route path="/cold-chain" element={<ProtectedPage><ColdChainPage /></ProtectedPage>} />
+            <Route path="/discharge-summaries" element={<ProtectedPage><DischargeSummaryPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
