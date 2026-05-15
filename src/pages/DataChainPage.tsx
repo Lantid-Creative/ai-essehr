@@ -133,15 +133,35 @@ export default function DataChainPage() {
 
   const dispatchesFor = (caseId: string) => dispatches.filter((d) => d.case_report_id === caseId);
 
+  const overdueCounts = {
+    facility: cases.filter((c) => c.status === "pending_facility" && c.sla_facility_due_at && new Date(c.sla_facility_due_at) < new Date()).length,
+    lga: cases.filter((c) => (c.status === "facility_validated" || c.status === "pending_lga") && c.sla_lga_due_at && new Date(c.sla_lga_due_at) < new Date()).length,
+    state: cases.filter((c) => (c.status === "lga_validated" || c.status === "pending_state") && c.sla_state_due_at && new Date(c.sla_state_due_at) < new Date()).length,
+  };
+  const onTime = {
+    facility: cases.filter((c) => c.facility_validated_at && c.sla_facility_due_at && new Date(c.facility_validated_at) <= new Date(c.sla_facility_due_at)).length,
+    lga: cases.filter((c) => c.lga_validated_at && c.sla_lga_due_at && new Date(c.lga_validated_at) <= new Date(c.sla_lga_due_at)).length,
+    state: cases.filter((c) => c.state_validated_at && c.sla_state_due_at && new Date(c.state_validated_at) <= new Date(c.sla_state_due_at)).length,
+  };
+  const completed = {
+    facility: cases.filter((c) => c.facility_validated_at).length,
+    lga: cases.filter((c) => c.lga_validated_at).length,
+    state: cases.filter((c) => c.state_validated_at).length,
+  };
+  const totalOverdue = overdueCounts.facility + overdueCounts.lga + overdueCounts.state;
+
   const stats = {
     total: cases.length,
     pending: cases.filter((c) => c.status.startsWith("pending")).length,
     dispatched: cases.filter((c) => c.status === "dispatched").length,
     failed: cases.filter((c) => c.status === "failed" || c.status === "partially_dispatched").length,
+    overdue: totalOverdue,
     sormasOk: dispatches.filter((d) => d.target === "SORMAS" && d.status === "success").length,
     dhis2Ok: dispatches.filter((d) => d.target === "DHIS2" && d.status === "success").length,
     deadLetter: dispatches.filter((d) => d.status === "dead_letter").length,
   };
+
+  const pct = (n: number, d: number) => (d > 0 ? Math.round((n / d) * 100) : 0);
 
   return (
     <div className="container max-w-6xl py-8 space-y-6">
