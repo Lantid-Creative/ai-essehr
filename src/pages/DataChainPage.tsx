@@ -230,15 +230,23 @@ export default function DataChainPage() {
           )}
           {cases.map((c) => {
             const ds = dispatchesFor(c.id);
+            const sla = slaInfo(c);
             return (
-              <Card key={c.id}>
+              <Card key={c.id} className={sla?.overdue ? "border-destructive/50" : ""}>
                 <CardHeader>
                   <div className="flex items-start justify-between flex-wrap gap-3">
                     <div>
-                      <CardTitle className="text-lg flex items-center gap-2">
+                      <CardTitle className="text-lg flex items-center gap-2 flex-wrap">
                         {c.disease}
                         <Badge variant="outline">{c.case_classification}</Badge>
                         <Badge className={STATUS_BADGE[c.status]}>{c.status.replace(/_/g, " ")}</Badge>
+                        {sla && sla.due && (
+                          <Badge className={sla.overdue ? "bg-destructive/15 text-destructive" : "bg-amber-500/15 text-amber-700"}>
+                            <Timer className="h-3 w-3 mr-1" />
+                            {sla.overdue ? "Overdue " : ""}
+                            {sla.label} · {sla.overdue ? `${formatDistanceToNowStrict(new Date(sla.due))} ago` : `due in ${formatDistanceToNowStrict(new Date(sla.due))}`}
+                          </Badge>
+                        )}
                       </CardTitle>
                       <CardDescription className="text-xs mt-1 font-mono">UUID: {c.external_uuid}</CardDescription>
                     </div>
