@@ -199,7 +199,7 @@ interface SavedReport {
 
 export default function CustomReportBuilderPage() {
   const { toast } = useToast();
-  const { user } = useAppContext();
+  const { user, facilityId } = useAppContext();
   const [datasetId, setDatasetId] = useState<string>(DATASETS[0].id);
   const [config, setConfig] = useState<ReportConfig>(DEFAULT_CONFIG);
   const [results, setResults] = useState<any[]>([]);
@@ -337,7 +337,7 @@ export default function CustomReportBuilderPage() {
       config: config as any,
       is_shared: isShared,
       owner_id: user.id,
-      facility_id: (user as any).facility_id ?? null,
+      facility_id: facilityId ?? null,
     };
     const { error } = editingId
       ? await supabase.from("saved_reports").update(payload).eq("id", editingId)
