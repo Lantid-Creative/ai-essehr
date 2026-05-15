@@ -7,7 +7,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { CheckCircle2, Clock, XCircle, Send, RefreshCw, AlertTriangle, Globe2, ShieldCheck, Building2 } from "lucide-react";
+import { CheckCircle2, Clock, XCircle, Send, RefreshCw, AlertTriangle, Globe2, ShieldCheck, Building2, Timer, BellRing } from "lucide-react";
+import { formatDistanceToNowStrict } from "date-fns";
 import { toast } from "sonner";
 
 interface CaseReport {
