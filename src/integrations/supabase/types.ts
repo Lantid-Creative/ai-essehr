@@ -207,6 +207,108 @@ export type Database = {
           },
         ]
       }
+      birth_registrations: {
+        Row: {
+          apgar_1_min: number | null
+          apgar_5_min: number | null
+          attending_clinician: string | null
+          birth_weight_kg: number | null
+          child_first_name: string
+          child_nin: string | null
+          child_sex: string
+          child_surname: string
+          created_at: string
+          created_by: string | null
+          date_of_birth: string
+          facility_id: string
+          father_name: string | null
+          father_nin: string | null
+          id: string
+          mode_of_delivery: string | null
+          mother_name: string
+          mother_nin: string | null
+          mother_patient_id: string | null
+          nimc_request_status: string
+          npopc_certificate_number: string | null
+          npopc_status: string
+          place_of_birth: string | null
+          remarks: string | null
+          time_of_birth: string | null
+          updated_at: string
+        }
+        Insert: {
+          apgar_1_min?: number | null
+          apgar_5_min?: number | null
+          attending_clinician?: string | null
+          birth_weight_kg?: number | null
+          child_first_name: string
+          child_nin?: string | null
+          child_sex: string
+          child_surname: string
+          created_at?: string
+          created_by?: string | null
+          date_of_birth: string
+          facility_id: string
+          father_name?: string | null
+          father_nin?: string | null
+          id?: string
+          mode_of_delivery?: string | null
+          mother_name: string
+          mother_nin?: string | null
+          mother_patient_id?: string | null
+          nimc_request_status?: string
+          npopc_certificate_number?: string | null
+          npopc_status?: string
+          place_of_birth?: string | null
+          remarks?: string | null
+          time_of_birth?: string | null
+          updated_at?: string
+        }
+        Update: {
+          apgar_1_min?: number | null
+          apgar_5_min?: number | null
+          attending_clinician?: string | null
+          birth_weight_kg?: number | null
+          child_first_name?: string
+          child_nin?: string | null
+          child_sex?: string
+          child_surname?: string
+          created_at?: string
+          created_by?: string | null
+          date_of_birth?: string
+          facility_id?: string
+          father_name?: string | null
+          father_nin?: string | null
+          id?: string
+          mode_of_delivery?: string | null
+          mother_name?: string
+          mother_nin?: string | null
+          mother_patient_id?: string | null
+          nimc_request_status?: string
+          npopc_certificate_number?: string | null
+          npopc_status?: string
+          place_of_birth?: string | null
+          remarks?: string | null
+          time_of_birth?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "birth_registrations_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "birth_registrations_mother_patient_id_fkey"
+            columns: ["mother_patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       broadcast_announcements: {
         Row: {
           active: boolean
@@ -569,6 +671,128 @@ export type Database = {
         }
         Relationships: []
       }
+      cold_chain_equipment: {
+        Row: {
+          asset_tag: string | null
+          created_at: string
+          equipment_type: string
+          facility_id: string
+          id: string
+          installed_on: string | null
+          last_serviced_on: string | null
+          location: string | null
+          manufacturer: string | null
+          max_temp_c: number
+          min_temp_c: number
+          model: string | null
+          name: string
+          notes: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          asset_tag?: string | null
+          created_at?: string
+          equipment_type: string
+          facility_id: string
+          id?: string
+          installed_on?: string | null
+          last_serviced_on?: string | null
+          location?: string | null
+          manufacturer?: string | null
+          max_temp_c?: number
+          min_temp_c?: number
+          model?: string | null
+          name: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          asset_tag?: string | null
+          created_at?: string
+          equipment_type?: string
+          facility_id?: string
+          id?: string
+          installed_on?: string | null
+          last_serviced_on?: string | null
+          location?: string | null
+          manufacturer?: string | null
+          max_temp_c?: number
+          min_temp_c?: number
+          model?: string | null
+          name?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cold_chain_equipment_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cold_chain_temperature_logs: {
+        Row: {
+          action_taken: string | null
+          created_at: string
+          equipment_id: string
+          facility_id: string
+          id: string
+          is_excursion: boolean
+          notes: string | null
+          reading_period: string
+          recorded_at: string
+          recorded_by: string | null
+          temp_c: number
+        }
+        Insert: {
+          action_taken?: string | null
+          created_at?: string
+          equipment_id: string
+          facility_id: string
+          id?: string
+          is_excursion?: boolean
+          notes?: string | null
+          reading_period?: string
+          recorded_at?: string
+          recorded_by?: string | null
+          temp_c: number
+        }
+        Update: {
+          action_taken?: string | null
+          created_at?: string
+          equipment_id?: string
+          facility_id?: string
+          id?: string
+          is_excursion?: boolean
+          notes?: string | null
+          reading_period?: string
+          recorded_at?: string
+          recorded_by?: string | null
+          temp_c?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cold_chain_temperature_logs_equipment_id_fkey"
+            columns: ["equipment_id"]
+            isOneToOne: false
+            referencedRelation: "cold_chain_equipment"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cold_chain_temperature_logs_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consent_forms: {
         Row: {
           body: string
@@ -671,6 +895,96 @@ export type Database = {
         }
         Relationships: []
       }
+      death_registrations: {
+        Row: {
+          age_months: number | null
+          age_years: number | null
+          certified_by: string | null
+          contributing_causes: Json
+          created_at: string
+          created_by: string | null
+          date_of_death: string
+          deceased_name: string
+          deceased_nin: string | null
+          facility_id: string
+          id: string
+          manner_of_death: string | null
+          npopc_certificate_number: string | null
+          npopc_status: string
+          patient_id: string | null
+          place_of_death: string
+          primary_cause_icd10_code: string
+          primary_cause_icd10_label: string | null
+          remarks: string | null
+          sex: string
+          time_of_death: string | null
+          updated_at: string
+        }
+        Insert: {
+          age_months?: number | null
+          age_years?: number | null
+          certified_by?: string | null
+          contributing_causes?: Json
+          created_at?: string
+          created_by?: string | null
+          date_of_death: string
+          deceased_name: string
+          deceased_nin?: string | null
+          facility_id: string
+          id?: string
+          manner_of_death?: string | null
+          npopc_certificate_number?: string | null
+          npopc_status?: string
+          patient_id?: string | null
+          place_of_death?: string
+          primary_cause_icd10_code: string
+          primary_cause_icd10_label?: string | null
+          remarks?: string | null
+          sex: string
+          time_of_death?: string | null
+          updated_at?: string
+        }
+        Update: {
+          age_months?: number | null
+          age_years?: number | null
+          certified_by?: string | null
+          contributing_causes?: Json
+          created_at?: string
+          created_by?: string | null
+          date_of_death?: string
+          deceased_name?: string
+          deceased_nin?: string | null
+          facility_id?: string
+          id?: string
+          manner_of_death?: string | null
+          npopc_certificate_number?: string | null
+          npopc_status?: string
+          patient_id?: string | null
+          place_of_death?: string
+          primary_cause_icd10_code?: string
+          primary_cause_icd10_label?: string | null
+          remarks?: string | null
+          sex?: string
+          time_of_death?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "death_registrations_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "death_registrations_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       demo_seed_status: {
         Row: {
           created_at: string
@@ -694,6 +1008,94 @@ export type Database = {
           status?: string
         }
         Relationships: []
+      }
+      discharge_summaries: {
+        Row: {
+          admitted_at: string | null
+          clinician_id: string | null
+          created_at: string
+          discharged_at: string
+          encounter_id: string
+          facility_id: string
+          follow_up_date: string | null
+          id: string
+          investigations_summary: string | null
+          notes: string | null
+          outcome: string
+          patient_id: string
+          primary_icd10_code: string
+          primary_icd10_label: string | null
+          procedures: Json
+          referral_destination: string | null
+          secondary_icd10: Json
+          treatment_summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          admitted_at?: string | null
+          clinician_id?: string | null
+          created_at?: string
+          discharged_at?: string
+          encounter_id: string
+          facility_id: string
+          follow_up_date?: string | null
+          id?: string
+          investigations_summary?: string | null
+          notes?: string | null
+          outcome: string
+          patient_id: string
+          primary_icd10_code: string
+          primary_icd10_label?: string | null
+          procedures?: Json
+          referral_destination?: string | null
+          secondary_icd10?: Json
+          treatment_summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admitted_at?: string | null
+          clinician_id?: string | null
+          created_at?: string
+          discharged_at?: string
+          encounter_id?: string
+          facility_id?: string
+          follow_up_date?: string | null
+          id?: string
+          investigations_summary?: string | null
+          notes?: string | null
+          outcome?: string
+          patient_id?: string
+          primary_icd10_code?: string
+          primary_icd10_label?: string | null
+          procedures?: Json
+          referral_destination?: string | null
+          secondary_icd10?: Json
+          treatment_summary?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discharge_summaries_encounter_id_fkey"
+            columns: ["encounter_id"]
+            isOneToOne: false
+            referencedRelation: "encounters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discharge_summaries_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discharge_summaries_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       drug_inventory: {
         Row: {
@@ -1675,6 +2077,60 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      nhmis_register_entries: {
+        Row: {
+          created_at: string
+          data: Json
+          facility_id: string
+          id: string
+          patient_id: string | null
+          recorded_by: string | null
+          register_type: string
+          serial_number: number | null
+          updated_at: string
+          visit_date: string
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          facility_id: string
+          id?: string
+          patient_id?: string | null
+          recorded_by?: string | null
+          register_type: string
+          serial_number?: number | null
+          updated_at?: string
+          visit_date?: string
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          facility_id?: string
+          id?: string
+          patient_id?: string | null
+          recorded_by?: string | null
+          register_type?: string
+          serial_number?: number | null
+          updated_at?: string
+          visit_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nhmis_register_entries_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "nhmis_register_entries_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       patient_deposits: {
         Row: {

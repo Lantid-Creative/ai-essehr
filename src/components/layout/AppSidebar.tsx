@@ -4,7 +4,8 @@ import {
   LayoutDashboard, UserPlus, Stethoscope, BedDouble, Shield, Syringe,
   FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity,
   CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe, ArrowRightLeft, Building2, Truck, AlertOctagon, ShieldCheck, FileText, TrendingUp, MapPin, Brain, Crown,
-  HeartPulse, Banknote, TestTube, Inbox, FileSignature, FileCheck
+  HeartPulse, Banknote, TestTube, Inbox, FileSignature, FileCheck,
+  Baby as BabyIcon, FileWarning, Thermometer, ClipboardCheck
 } from 'lucide-react';
 
 interface NavItem {
@@ -42,6 +43,11 @@ const allNavItems: NavItem[] = [
   { label: 'Facility Admin', path: '/admin/facilities', icon: Building2, roles: ['super_admin'] },
   { label: 'Facility Audit', path: '/admin/facility-audit', icon: ShieldCheck, roles: ['super_admin'] },
   { label: 'MCH', path: '/mch', icon: Baby, roles: ['facility_admin', 'nurse', 'chew'] },
+  { label: 'Birth Registration', path: '/births', icon: BabyIcon, roles: ['facility_admin', 'doctor', 'nurse', 'chew', 'data_clerk'] },
+  { label: 'Death Registration', path: '/deaths', icon: FileWarning, roles: ['facility_admin', 'doctor', 'data_clerk'] },
+  { label: 'NHMIS Registers', path: '/nhmis-registers', icon: ClipboardCheck, roles: ['facility_admin', 'nurse', 'chew', 'data_clerk'] },
+  { label: 'Cold Chain', path: '/cold-chain', icon: Thermometer, roles: ['facility_admin', 'nurse', 'pharmacist'] },
+  { label: 'Discharge Summaries', path: '/discharge-summaries', icon: FileCheck, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Staff', path: '/staff', icon: Users, roles: ['facility_admin', 'super_admin'] },
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'IDSR Weekly', path: '/reports/idsr', icon: FileText, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
