@@ -193,20 +193,21 @@ export default function DataChainPage() {
         </AlertDescription>
       </Alert>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
         {[
           { label: "Total cases", value: stats.total, icon: Building2 },
           { label: "Pending validation", value: stats.pending, icon: Clock },
+          { label: "Overdue (SLA breach)", value: stats.overdue, icon: Timer, danger: stats.overdue > 0 },
           { label: "Dispatched", value: stats.dispatched, icon: CheckCircle2 },
           { label: "Failed/Partial", value: stats.failed, icon: AlertTriangle },
           { label: "SORMAS ✓", value: stats.sormasOk, icon: Send },
           { label: "DHIS2 ✓", value: stats.dhis2Ok, icon: Send },
           { label: "Dead-letter", value: stats.deadLetter, icon: XCircle },
         ].map((s) => (
-          <Card key={s.label}>
+          <Card key={s.label} className={s.danger ? "border-destructive/40" : ""}>
             <CardContent className="pt-4">
-              <s.icon className="h-4 w-4 text-muted-foreground mb-1" />
-              <div className="text-2xl font-bold">{s.value}</div>
+              <s.icon className={`h-4 w-4 mb-1 ${s.danger ? "text-destructive" : "text-muted-foreground"}`} />
+              <div className={`text-2xl font-bold ${s.danger ? "text-destructive" : ""}`}>{s.value}</div>
               <p className="text-xs text-muted-foreground">{s.label}</p>
             </CardContent>
           </Card>
@@ -216,6 +217,7 @@ export default function DataChainPage() {
       <Tabs defaultValue="cases">
         <TabsList>
           <TabsTrigger value="cases">Case reports ({cases.length})</TabsTrigger>
+          <TabsTrigger value="sla">SLA timeliness {totalOverdue > 0 && <Badge variant="destructive" className="ml-2">{totalOverdue}</Badge>}</TabsTrigger>
           <TabsTrigger value="outbox">Dispatch outbox ({dispatches.length})</TabsTrigger>
         </TabsList>
 
