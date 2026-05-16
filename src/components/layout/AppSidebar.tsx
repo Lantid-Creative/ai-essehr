@@ -51,6 +51,7 @@ const allNavItems: NavItem[] = [
   { label: 'Discharge Summaries', path: '/discharge-summaries', icon: FileCheck, roles: ['facility_admin', 'doctor', 'nurse'] },
   { label: 'Staff', path: '/staff', icon: Users, roles: ['facility_admin', 'super_admin'] },
   { label: 'NHED Empanelment', path: '/nhed', icon: ShieldCheck, roles: ['facility_admin', 'super_admin'] },
+  { label: 'Facility Operations', path: '/operations', icon: Building2, roles: ['facility_admin', 'super_admin'] },
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'Custom Report Builder', path: '/reports/builder', icon: FileText, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'IDSR Weekly', path: '/reports/idsr', icon: FileText, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
