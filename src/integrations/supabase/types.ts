@@ -1431,6 +1431,65 @@ export type Database = {
         }
         Relationships: []
       }
+      facility_microplans: {
+        Row: {
+          budget_ngn: number | null
+          catchment_population: number | null
+          created_at: string
+          created_by: string | null
+          facility_id: string
+          id: string
+          notes: string | null
+          plan_period: string
+          plan_year: number
+          pregnant_women_estimate: number | null
+          status: string
+          strategies: string | null
+          under_5_population: number | null
+          updated_at: string
+        }
+        Insert: {
+          budget_ngn?: number | null
+          catchment_population?: number | null
+          created_at?: string
+          created_by?: string | null
+          facility_id: string
+          id?: string
+          notes?: string | null
+          plan_period?: string
+          plan_year: number
+          pregnant_women_estimate?: number | null
+          status?: string
+          strategies?: string | null
+          under_5_population?: number | null
+          updated_at?: string
+        }
+        Update: {
+          budget_ngn?: number | null
+          catchment_population?: number | null
+          created_at?: string
+          created_by?: string | null
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          plan_period?: string
+          plan_year?: number
+          pregnant_women_estimate?: number | null
+          status?: string
+          strategies?: string | null
+          under_5_population?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "facility_microplans_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       facility_payment_credentials: {
         Row: {
           account_number: string | null
@@ -2261,6 +2320,72 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      microplan_targets: {
+        Row: {
+          achieved_value: number
+          category: string
+          created_at: string
+          created_by: string | null
+          facility_id: string
+          id: string
+          indicator_code: string
+          indicator_name: string
+          microplan_id: string
+          notes: string | null
+          target_month: number | null
+          target_value: number
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          achieved_value?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          facility_id: string
+          id?: string
+          indicator_code: string
+          indicator_name: string
+          microplan_id: string
+          notes?: string | null
+          target_month?: number | null
+          target_value?: number
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          achieved_value?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          facility_id?: string
+          id?: string
+          indicator_code?: string
+          indicator_name?: string
+          microplan_id?: string
+          notes?: string | null
+          target_month?: number | null
+          target_value?: number
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "microplan_targets_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "microplan_targets_microplan_id_fkey"
+            columns: ["microplan_id"]
+            isOneToOne: false
+            referencedRelation: "facility_microplans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       nhed_application_documents: {
         Row: {
