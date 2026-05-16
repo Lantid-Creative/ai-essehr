@@ -79,6 +79,7 @@ import DischargeSummaryPage from "@/pages/DischargeSummaryPage";
 import CustomReportBuilderPage from "@/pages/CustomReportBuilderPage";
 import NHEDEmpanelmentPage from "@/pages/NHEDEmpanelmentPage";
 import FacilityOperationsPage from "@/pages/FacilityOperationsPage";
+import FacilityMicroplanPage from "@/pages/FacilityMicroplanPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
