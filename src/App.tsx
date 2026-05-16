@@ -181,6 +181,7 @@ const App = () => (
             <Route path="/operations" element={<ProtectedPage><FacilityOperationsPage /></ProtectedPage>} />
             <Route path="/microplan" element={<ProtectedPage><FacilityMicroplanPage /></ProtectedPage>} />
             <Route path="/wdc" element={<ProtectedPage><WDCSupervisionPage /></ProtectedPage>} />
+            <Route path="/qi" element={<ProtectedPage><QualityImprovementPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
