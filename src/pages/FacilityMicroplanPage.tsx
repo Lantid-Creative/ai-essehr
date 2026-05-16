@@ -55,7 +55,8 @@ const DEFAULT_INDICATORS = [
 ];
 
 export default function FacilityMicroplanPage() {
-  const { facility, roles, profile } = useAppContext();
+  const { facilityId, roles, profile } = useAppContext();
+  const facility = facilityId ? { id: facilityId } : null;
   const canManage = roles.includes('facility_admin') || roles.includes('super_admin');
 
   const [plans, setPlans] = useState<Microplan[]>([]);
