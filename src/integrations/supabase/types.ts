@@ -3020,6 +3020,140 @@ export type Database = {
           },
         ]
       }
+      qi_pdsa_cycles: {
+        Row: {
+          act_text: string | null
+          created_at: string
+          created_by: string | null
+          cycle_end_date: string | null
+          cycle_number: number
+          cycle_start_date: string | null
+          do_text: string | null
+          facility_id: string
+          id: string
+          measured_value: number | null
+          notes: string | null
+          plan_text: string | null
+          project_id: string
+          status: string
+          study_text: string | null
+          updated_at: string
+        }
+        Insert: {
+          act_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          cycle_end_date?: string | null
+          cycle_number?: number
+          cycle_start_date?: string | null
+          do_text?: string | null
+          facility_id: string
+          id?: string
+          measured_value?: number | null
+          notes?: string | null
+          plan_text?: string | null
+          project_id: string
+          status?: string
+          study_text?: string | null
+          updated_at?: string
+        }
+        Update: {
+          act_text?: string | null
+          created_at?: string
+          created_by?: string | null
+          cycle_end_date?: string | null
+          cycle_number?: number
+          cycle_start_date?: string | null
+          do_text?: string | null
+          facility_id?: string
+          id?: string
+          measured_value?: number | null
+          notes?: string | null
+          plan_text?: string | null
+          project_id?: string
+          status?: string
+          study_text?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qi_pdsa_cycles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "qi_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qi_projects: {
+        Row: {
+          actual_end_date: string | null
+          aim_statement: string | null
+          baseline_value: number | null
+          category: string | null
+          created_at: string
+          created_by: string | null
+          current_value: number | null
+          facility_id: string
+          id: string
+          measure_unit: string | null
+          outcome_summary: string | null
+          problem_statement: string | null
+          start_date: string | null
+          status: string
+          target_end_date: string | null
+          target_value: number | null
+          team_lead: string | null
+          team_members: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          actual_end_date?: string | null
+          aim_statement?: string | null
+          baseline_value?: number | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_value?: number | null
+          facility_id: string
+          id?: string
+          measure_unit?: string | null
+          outcome_summary?: string | null
+          problem_statement?: string | null
+          start_date?: string | null
+          status?: string
+          target_end_date?: string | null
+          target_value?: number | null
+          team_lead?: string | null
+          team_members?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          actual_end_date?: string | null
+          aim_statement?: string | null
+          baseline_value?: number | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          current_value?: number | null
+          facility_id?: string
+          id?: string
+          measure_unit?: string | null
+          outcome_summary?: string | null
+          problem_statement?: string | null
+          start_date?: string | null
+          status?: string
+          target_end_date?: string | null
+          target_value?: number | null
+          team_lead?: string | null
+          team_members?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       rescue_requests: {
         Row: {
           arrived_hospital_at: string | null
