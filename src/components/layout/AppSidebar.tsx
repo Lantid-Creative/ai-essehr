@@ -5,7 +5,7 @@ import {
   FlaskConical, Pill, Baby, Users, BarChart3, Wifi, Settings, X, Activity,
   CalendarPlus, ClipboardList, Package, Receipt, AlertTriangle, Globe, ArrowRightLeft, Building2, Truck, AlertOctagon, ShieldCheck, FileText, TrendingUp, MapPin, Brain, Crown,
   HeartPulse, Banknote, TestTube, Inbox, FileSignature, FileCheck,
-  Baby as BabyIcon, FileWarning, Thermometer, ClipboardCheck
+  Baby as BabyIcon, FileWarning, Thermometer, ClipboardCheck, Target
 } from 'lucide-react';
 
 interface NavItem {
