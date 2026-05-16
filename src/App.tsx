@@ -82,6 +82,7 @@ import FacilityOperationsPage from "@/pages/FacilityOperationsPage";
 import FacilityMicroplanPage from "@/pages/FacilityMicroplanPage";
 import WDCSupervisionPage from "@/pages/WDCSupervisionPage";
 import QualityImprovementPage from "@/pages/QualityImprovementPage";
+import PatientFeedbackPage from "@/pages/PatientFeedbackPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -182,6 +183,7 @@ const App = () => (
             <Route path="/microplan" element={<ProtectedPage><FacilityMicroplanPage /></ProtectedPage>} />
             <Route path="/wdc" element={<ProtectedPage><WDCSupervisionPage /></ProtectedPage>} />
             <Route path="/qi" element={<ProtectedPage><QualityImprovementPage /></ProtectedPage>} />
+            <Route path="/feedback" element={<ProtectedPage><PatientFeedbackPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

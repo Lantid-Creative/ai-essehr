@@ -1532,6 +1532,41 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback_responses: {
+        Row: {
+          created_at: string
+          feedback_id: string
+          id: string
+          is_internal_note: boolean
+          responder_id: string
+          response_text: string
+        }
+        Insert: {
+          created_at?: string
+          feedback_id: string
+          id?: string
+          is_internal_note?: boolean
+          responder_id: string
+          response_text: string
+        }
+        Update: {
+          created_at?: string
+          feedback_id?: string
+          id?: string
+          is_internal_note?: boolean
+          responder_id?: string
+          response_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feedback_responses_feedback_id_fkey"
+            columns: ["feedback_id"]
+            isOneToOne: false
+            referencedRelation: "patient_feedback"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       finance_ledger: {
         Row: {
           amount: number
@@ -2689,6 +2724,84 @@ export type Database = {
             columns: ["shift_id"]
             isOneToOne: false
             referencedRelation: "cashier_shifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_feedback: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          channel: string
+          created_at: string
+          facility_id: string
+          id: string
+          is_anonymous: boolean
+          message: string
+          patient_id: string | null
+          priority: string
+          rating: number | null
+          resolution_notes: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          status: string
+          subject: string
+          submitted_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category?: string
+          channel?: string
+          created_at?: string
+          facility_id: string
+          id?: string
+          is_anonymous?: boolean
+          message: string
+          patient_id?: string | null
+          priority?: string
+          rating?: number | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          subject: string
+          submitted_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          channel?: string
+          created_at?: string
+          facility_id?: string
+          id?: string
+          is_anonymous?: boolean
+          message?: string
+          patient_id?: string | null
+          priority?: string
+          rating?: number | null
+          resolution_notes?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          status?: string
+          subject?: string
+          submitted_by?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_feedback_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_feedback_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
             referencedColumns: ["id"]
           },
         ]
