@@ -55,6 +55,7 @@ const allNavItems: NavItem[] = [
   { label: 'Microplan & Targets', path: '/microplan', icon: Target, roles: ['facility_admin', 'super_admin'] },
   { label: 'WDC & Supervision', path: '/wdc', icon: ClipboardCheck, roles: ['facility_admin', 'super_admin'] },
   { label: 'Quality Improvement', path: '/qi', icon: TrendingUp, roles: ['facility_admin', 'doctor', 'nurse', 'super_admin'] },
+  { label: 'Patient Feedback', path: '/feedback', icon: MessageSquare, roles: ['facility_admin', 'doctor', 'nurse', 'data_clerk', 'super_admin'] },
   { label: 'Reports', path: '/reports', icon: BarChart3, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'Custom Report Builder', path: '/reports/builder', icon: FileText, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
   { label: 'IDSR Weekly', path: '/reports/idsr', icon: FileText, roles: ['facility_admin', 'data_clerk', 'epidemiologist', 'dsno', 'super_admin'] },
