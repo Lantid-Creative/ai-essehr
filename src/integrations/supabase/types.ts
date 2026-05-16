@@ -1291,6 +1291,71 @@ export type Database = {
           },
         ]
       }
+      equipment_register: {
+        Row: {
+          acquired_date: string | null
+          category: string | null
+          condition: string
+          created_at: string
+          created_by: string | null
+          facility_id: string
+          id: string
+          last_service_date: string | null
+          location: string | null
+          manufacturer: string | null
+          name: string
+          next_service_due: string | null
+          notes: string | null
+          serial_number: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          acquired_date?: string | null
+          category?: string | null
+          condition?: string
+          created_at?: string
+          created_by?: string | null
+          facility_id: string
+          id?: string
+          last_service_date?: string | null
+          location?: string | null
+          manufacturer?: string | null
+          name: string
+          next_service_due?: string | null
+          notes?: string | null
+          serial_number?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          acquired_date?: string | null
+          category?: string | null
+          condition?: string
+          created_at?: string
+          created_by?: string | null
+          facility_id?: string
+          id?: string
+          last_service_date?: string | null
+          location?: string | null
+          manufacturer?: string | null
+          name?: string
+          next_service_due?: string | null
+          notes?: string | null
+          serial_number?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "equipment_register_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       facilities: {
         Row: {
           address: string | null
@@ -1407,6 +1472,122 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      finance_ledger: {
+        Row: {
+          amount: number
+          category: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          entry_date: string
+          entry_type: string
+          facility_id: string
+          id: string
+          payment_method: string | null
+          reference: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          entry_date?: string
+          entry_type: string
+          facility_id: string
+          id?: string
+          payment_method?: string | null
+          reference?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          entry_date?: string
+          entry_type?: string
+          facility_id?: string
+          id?: string
+          payment_method?: string | null
+          reference?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "finance_ledger_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hrh_roster: {
+        Row: {
+          attendance_status: string
+          cadre: string | null
+          created_at: string
+          created_by: string | null
+          facility_id: string
+          id: string
+          notes: string | null
+          posting: string | null
+          shift_date: string
+          shift_type: string
+          staff_id: string | null
+          staff_name: string
+          updated_at: string
+        }
+        Insert: {
+          attendance_status?: string
+          cadre?: string | null
+          created_at?: string
+          created_by?: string | null
+          facility_id: string
+          id?: string
+          notes?: string | null
+          posting?: string | null
+          shift_date: string
+          shift_type?: string
+          staff_id?: string | null
+          staff_name: string
+          updated_at?: string
+        }
+        Update: {
+          attendance_status?: string
+          cadre?: string | null
+          created_at?: string
+          created_by?: string | null
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          posting?: string | null
+          shift_date?: string
+          shift_type?: string
+          staff_id?: string | null
+          staff_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hrh_roster_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hrh_roster_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       immunizations: {
         Row: {
@@ -3083,6 +3264,125 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      utilities_log: {
+        Row: {
+          cost: number | null
+          created_at: string
+          created_by: string | null
+          downtime_minutes: number | null
+          facility_id: string
+          id: string
+          log_date: string
+          notes: string | null
+          reading: number | null
+          unit: string | null
+          updated_at: string
+          utility_type: string
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          downtime_minutes?: number | null
+          facility_id: string
+          id?: string
+          log_date?: string
+          notes?: string | null
+          reading?: number | null
+          unit?: string | null
+          updated_at?: string
+          utility_type: string
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          downtime_minutes?: number | null
+          facility_id?: string
+          id?: string
+          log_date?: string
+          notes?: string | null
+          reading?: number | null
+          unit?: string | null
+          updated_at?: string
+          utility_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "utilities_log_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vehicle_maintenance: {
+        Row: {
+          cost: number | null
+          created_at: string
+          created_by: string | null
+          facility_id: string
+          id: string
+          next_service_due: string | null
+          notes: string | null
+          odometer_km: number | null
+          service_date: string
+          service_type: string
+          updated_at: string
+          vehicle_id: string | null
+          vehicle_label: string
+          vendor: string | null
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          facility_id: string
+          id?: string
+          next_service_due?: string | null
+          notes?: string | null
+          odometer_km?: number | null
+          service_date?: string
+          service_type: string
+          updated_at?: string
+          vehicle_id?: string | null
+          vehicle_label: string
+          vendor?: string | null
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string
+          created_by?: string | null
+          facility_id?: string
+          id?: string
+          next_service_due?: string | null
+          notes?: string | null
+          odometer_km?: number | null
+          service_date?: string
+          service_type?: string
+          updated_at?: string
+          vehicle_id?: string | null
+          vehicle_label?: string
+          vendor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_maintenance_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "facilities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vehicle_maintenance_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "ambulances"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       vitals_observations: {
         Row: {

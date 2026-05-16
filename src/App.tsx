@@ -78,6 +78,7 @@ import ColdChainPage from "@/pages/ColdChainPage";
 import DischargeSummaryPage from "@/pages/DischargeSummaryPage";
 import CustomReportBuilderPage from "@/pages/CustomReportBuilderPage";
 import NHEDEmpanelmentPage from "@/pages/NHEDEmpanelmentPage";
+import FacilityOperationsPage from "@/pages/FacilityOperationsPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -174,6 +175,7 @@ const App = () => (
             <Route path="/discharge-summaries" element={<ProtectedPage><DischargeSummaryPage /></ProtectedPage>} />
             <Route path="/reports/builder" element={<ProtectedPage><CustomReportBuilderPage /></ProtectedPage>} />
             <Route path="/nhed" element={<ProtectedPage><NHEDEmpanelmentPage /></ProtectedPage>} />
+            <Route path="/operations" element={<ProtectedPage><FacilityOperationsPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
