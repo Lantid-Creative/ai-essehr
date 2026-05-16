@@ -68,7 +68,7 @@ export default function FacilityOperationsPage() {
     if (!facilityId) return toast.error('No facility');
     const meta = TAB_META[tab];
     const payload = { ...form, facility_id: facilityId, created_by: profile?.id };
-    const { error } = await supabase.from(meta.table).insert(payload);
+    const { error } = await (supabase.from(meta.table) as any).insert(payload);
     if (error) return toast.error(error.message);
     toast.success('Saved');
     setDialogOpen(false);
