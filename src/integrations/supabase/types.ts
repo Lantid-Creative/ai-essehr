@@ -3263,6 +3263,122 @@ export type Database = {
         }
         Relationships: []
       }
+      supervisory_visit_actions: {
+        Row: {
+          action_description: string
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          due_date: string | null
+          facility_id: string
+          id: string
+          notes: string | null
+          responsible_person: string | null
+          status: string
+          updated_at: string
+          visit_id: string
+        }
+        Insert: {
+          action_description: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          facility_id: string
+          id?: string
+          notes?: string | null
+          responsible_person?: string | null
+          status?: string
+          updated_at?: string
+          visit_id: string
+        }
+        Update: {
+          action_description?: string
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          due_date?: string | null
+          facility_id?: string
+          id?: string
+          notes?: string | null
+          responsible_person?: string | null
+          status?: string
+          updated_at?: string
+          visit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supervisory_visit_actions_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "supervisory_visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supervisory_visits: {
+        Row: {
+          areas_assessed: Json
+          created_at: string
+          created_by: string | null
+          facility_id: string
+          findings: string | null
+          gaps: string | null
+          id: string
+          next_visit_date: string | null
+          overall_score: number | null
+          recommendations: string | null
+          status: string
+          strengths: string | null
+          supervisor_cadre: string | null
+          supervisor_name: string
+          supervisor_organization: string | null
+          updated_at: string
+          visit_date: string
+          visit_type: string
+        }
+        Insert: {
+          areas_assessed?: Json
+          created_at?: string
+          created_by?: string | null
+          facility_id: string
+          findings?: string | null
+          gaps?: string | null
+          id?: string
+          next_visit_date?: string | null
+          overall_score?: number | null
+          recommendations?: string | null
+          status?: string
+          strengths?: string | null
+          supervisor_cadre?: string | null
+          supervisor_name: string
+          supervisor_organization?: string | null
+          updated_at?: string
+          visit_date: string
+          visit_type?: string
+        }
+        Update: {
+          areas_assessed?: Json
+          created_at?: string
+          created_by?: string | null
+          facility_id?: string
+          findings?: string | null
+          gaps?: string | null
+          id?: string
+          next_visit_date?: string | null
+          overall_score?: number | null
+          recommendations?: string | null
+          status?: string
+          strengths?: string | null
+          supervisor_cadre?: string | null
+          supervisor_name?: string
+          supervisor_organization?: string | null
+          updated_at?: string
+          visit_date?: string
+          visit_type?: string
+        }
+        Relationships: []
+      }
       surveillance_alerts: {
         Row: {
           assigned_to: string | null
@@ -3628,6 +3744,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      wdc_meetings: {
+        Row: {
+          action_items: string | null
+          agenda: string | null
+          attendance_count: number | null
+          attendees: Json
+          chairperson: string | null
+          created_at: string
+          created_by: string | null
+          decisions: string | null
+          facility_id: string
+          id: string
+          meeting_date: string
+          meeting_type: string
+          notes: string | null
+          secretary: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          action_items?: string | null
+          agenda?: string | null
+          attendance_count?: number | null
+          attendees?: Json
+          chairperson?: string | null
+          created_at?: string
+          created_by?: string | null
+          decisions?: string | null
+          facility_id: string
+          id?: string
+          meeting_date: string
+          meeting_type?: string
+          notes?: string | null
+          secretary?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          action_items?: string | null
+          agenda?: string | null
+          attendance_count?: number | null
+          attendees?: Json
+          chairperson?: string | null
+          created_at?: string
+          created_by?: string | null
+          decisions?: string | null
+          facility_id?: string
+          id?: string
+          meeting_date?: string
+          meeting_type?: string
+          notes?: string | null
+          secretary?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {

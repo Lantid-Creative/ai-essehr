@@ -80,6 +80,7 @@ import CustomReportBuilderPage from "@/pages/CustomReportBuilderPage";
 import NHEDEmpanelmentPage from "@/pages/NHEDEmpanelmentPage";
 import FacilityOperationsPage from "@/pages/FacilityOperationsPage";
 import FacilityMicroplanPage from "@/pages/FacilityMicroplanPage";
+import WDCSupervisionPage from "@/pages/WDCSupervisionPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -178,6 +179,7 @@ const App = () => (
             <Route path="/nhed" element={<ProtectedPage><NHEDEmpanelmentPage /></ProtectedPage>} />
             <Route path="/operations" element={<ProtectedPage><FacilityOperationsPage /></ProtectedPage>} />
             <Route path="/microplan" element={<ProtectedPage><FacilityMicroplanPage /></ProtectedPage>} />
+            <Route path="/wdc" element={<ProtectedPage><WDCSupervisionPage /></ProtectedPage>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
