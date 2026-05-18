@@ -2,7 +2,7 @@ import PageShell from '@/components/public/PageShell';
 import { FileText, Users, AlertTriangle, Ban, Scale, Heart, ShieldOff, RefreshCw } from 'lucide-react';
 
 const sections = [
-  { icon: FileText, title: '1. Acceptance of these terms', body: ['By creating an account, deploying AI-PEWS at a facility, or using any part of the platform, you agree to these Terms of Service. If you do not agree, do not use the platform.'] },
+  { icon: FileText, title: '1. Acceptance of these terms', body: ['By creating an account, deploying Integra+ at a facility, or using any part of the platform, you agree to these Terms of Service. If you do not agree, do not use the platform.'] },
   { icon: Users, title: '2. Eligibility & accounts', body: [
     'Citizen accounts: open to anyone resident in Nigeria with a valid mobile number. Minimum age 18, or 13+ with parental consent.',
     'Facility accounts: open to licensed health facilities recognised by the Federal Ministry of Health, the relevant State Ministry of Health, or the National Primary Health Care Development Agency.',
@@ -10,7 +10,7 @@ const sections = [
     'You are responsible for maintaining the security of your account credentials and for all activities under your account.',
   ] },
   { icon: Heart, title: '3. Acceptable use', body: [
-    'Use AI-PEWS solely for its intended purpose: clinical care, disease surveillance, public health response.',
+    'Use Integra+ solely for its intended purpose: clinical care, disease surveillance, public health response.',
     'Comply with all applicable laws — including the Nigeria Data Protection Act, the National Health Act, and the NCDC Act.',
     'Do not falsify community reports. False or malicious reports may be subject to criminal prosecution under Nigerian law.',
     'Do not attempt to access patient data outside the scope of your role.',
@@ -24,12 +24,12 @@ const sections = [
     'Attempting to circumvent the validated data chain (e.g. publishing alerts without state-level validation).',
   ] },
   { icon: AlertTriangle, title: '5. Clinical disclaimer', body: [
-    'AI-PEWS supports clinical and surveillance decisions; it does not replace clinical judgement.',
+    'Integra+ supports clinical and surveillance decisions; it does not replace clinical judgement.',
     'AI-generated signals (e.g. drug-interaction alerts, syndromic clusters) are advisory. Final clinical decisions remain the responsibility of the licensed clinician.',
     'In any conflict between an AI recommendation and a clinician\'s professional judgement, the clinician\'s judgement takes precedence.',
   ] },
   { icon: ShieldOff, title: '6. Liability & warranties', body: [
-    'AI-PEWS is provided "as is". We make every reasonable effort to ensure accuracy, availability, and security.',
+    'Integra+ is provided "as is". We make every reasonable effort to ensure accuracy, availability, and security.',
     'We are not liable for losses arising from: (a) interruptions in connectivity outside our control, (b) errors in third-party integrations (SORMAS, DHIS2), (c) misuse of the platform by users, (d) clinical decisions made by licensed practitioners.',
     'Our maximum aggregate liability for any claim is limited to the fees paid (if any) by the relevant party in the prior 12 months. For citizens, who pay no fees, liability is limited to demonstrable direct loss.',
   ] },
@@ -45,13 +45,13 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <PageShell title="Terms of Service" description="The terms governing use of AI-PEWS Nigeria for citizens, facilities, and agencies.">
+    <PageShell title="Terms of Service" description="The terms governing use of Integra+ Nigeria for citizens, facilities, and agencies.">
       <section className="py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="mb-12">
             <span className="text-xs uppercase tracking-[0.2em] text-editorial-muted">Legal · Terms</span>
             <h1 className="editorial-display text-ink text-4xl md:text-6xl mt-3 mb-4">Terms of Service.</h1>
-            <p className="text-ink-soft leading-relaxed">Last updated: 28 April 2026. These terms govern your use of AI-PEWS Nigeria — for citizens, facility staff, and agency users alike.</p>
+            <p className="text-ink-soft leading-relaxed">Last updated: 28 April 2026. These terms govern your use of Integra+ Nigeria — for citizens, facility staff, and agency users alike.</p>
           </div>
           <div className="space-y-10">
             {sections.map((s, i) => (

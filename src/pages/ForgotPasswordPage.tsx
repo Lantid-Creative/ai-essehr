@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
             <div className="w-8 h-8 rounded-lg gradient-primary grid place-items-center">
               <Activity className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-heading font-bold text-ink">AI-PEWS</span>
+            <span className="font-heading font-bold text-ink">Integra+</span>
           </div>
 
           {sent ? (

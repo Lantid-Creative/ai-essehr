@@ -256,7 +256,7 @@ export default function IDSRWeeklyReportPage() {
         <Card>
           <CardContent className="pt-4 text-xs text-muted-foreground space-y-1">
             <p className="flex items-center gap-1"><FileText className="w-3 h-3" />This report follows NCDC IDSR Technical Guidelines (3rd edition). Any disease meeting its alert threshold must be reported to the LGA DSNO within 24 hours.</p>
-            <p>Data source: AI-PEWS clinical encounters · facility {facility?.facility_code ?? '—'} · generated {format(new Date(), 'PPpp')}</p>
+            <p>Data source: Integra+ clinical encounters · facility {facility?.facility_code ?? '—'} · generated {format(new Date(), 'PPpp')}</p>
             <div className="grid grid-cols-2 gap-8 mt-6 print:mt-12">
               <div>
                 <div className="border-t pt-1 mt-8">Reported by (DSNO / Records Officer)</div>

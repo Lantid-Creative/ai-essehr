@@ -55,7 +55,7 @@ export default function RegisterCitizenPage() {
     }
 
     toast({
-      title: 'Welcome to AI-PEWS',
+      title: 'Welcome to Integra+',
       description: 'Check your email to confirm your account, then sign in.',
     });
     navigate('/login');
@@ -122,7 +122,7 @@ export default function RegisterCitizenPage() {
                   <div className="w-8 h-8 rounded-lg gradient-primary grid place-items-center">
                     <Activity className="h-4 w-4 text-primary-foreground" />
                   </div>
-                  <span className="font-heading font-bold">AI-PEWS Citizen</span>
+                  <span className="font-heading font-bold">Integra+ Citizen</span>
                 </div>
                 <h2 className="editorial-display text-3xl md:text-4xl mb-4">Be among the first<br /><span className="italic font-light">to know.</span></h2>
                 <p className="text-[hsl(var(--cream))]/70 mb-8 leading-relaxed">

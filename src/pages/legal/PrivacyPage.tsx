@@ -83,7 +83,7 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <PageShell title="Privacy Policy" description="How AI-PEWS Nigeria collects, uses, and protects your personal data, in compliance with the NDPA 2023 and NDPR 2019.">
+    <PageShell title="Privacy Policy" description="How Integra+ Nigeria collects, uses, and protects your personal data, in compliance with the NDPA 2023 and NDPR 2019.">
       <section className="py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="mb-12">
@@ -91,7 +91,7 @@ export default function PrivacyPage() {
             <h1 className="editorial-display text-ink text-4xl md:text-6xl mt-3 mb-4">Privacy Policy.</h1>
             <p className="text-ink-soft leading-relaxed">
               Last updated: 28 April 2026. This policy explains, in plain English, what personal data we collect, how
-              we use it, who can see it, and what your rights are. AI-PEWS is operated by Lantid Creative LTD on behalf of
+              we use it, who can see it, and what your rights are. Integra+ is operated by Lantid Creative LTD on behalf of
               the Nigeria Governors' Forum.
             </p>
           </div>

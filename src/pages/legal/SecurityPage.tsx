@@ -20,7 +20,7 @@ const standards = [
 
 export default function SecurityPage() {
   return (
-    <PageShell title="Security & Compliance" description="How AI-PEWS Nigeria secures patient data, complies with Nigerian and international standards, and approaches AI safety.">
+    <PageShell title="Security & Compliance" description="How Integra+ Nigeria secures patient data, complies with Nigerian and international standards, and approaches AI safety.">
       <section className="py-16 md:py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="mb-12">

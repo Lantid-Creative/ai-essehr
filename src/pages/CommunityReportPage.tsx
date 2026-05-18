@@ -65,7 +65,7 @@ export default function CommunityReportPage() {
               <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
                 <Activity className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="font-heading font-bold text-sidebar-foreground">AI-PEWS</span>
+              <span className="font-heading font-bold text-sidebar-foreground">Integra+</span>
             </Link>
           </div>
         </nav>
@@ -103,7 +103,7 @@ export default function CommunityReportPage() {
             <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
               <Activity className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-heading font-bold text-sidebar-foreground">AI-PEWS</span>
+            <span className="font-heading font-bold text-sidebar-foreground">Integra+</span>
           </Link>
           <Link to="/login">
             <Button variant="ghost" size="sm" className="text-sidebar-foreground hover:bg-sidebar-accent">Staff Login</Button>

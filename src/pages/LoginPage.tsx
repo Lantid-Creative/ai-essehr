@@ -50,7 +50,7 @@ export default function LoginPage() {
               <div className="w-8 h-8 rounded-lg gradient-primary grid place-items-center">
                 <Activity className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="font-heading font-bold text-ink">AI-PEWS</span>
+              <span className="font-heading font-bold text-ink">Integra+</span>
               <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
             </div>
 
@@ -101,7 +101,7 @@ export default function LoginPage() {
                   From 717 days<br />to <span className="italic font-light">24 hours.</span>
                 </h2>
                 <p className="text-[hsl(var(--cream))]/70 mt-5 leading-relaxed max-w-md">
-                  AI-PEWS connects Nigerian health facilities into a single early-warning network. Sign in to keep your facility on the line.
+                  Integra+ connects Nigerian health facilities into a single early-warning network. Sign in to keep your facility on the line.
                 </p>
               </div>
 

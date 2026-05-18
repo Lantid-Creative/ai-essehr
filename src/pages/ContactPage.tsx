@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 
 const channels = [
-  { icon: Building2, title: 'Facilities & Onboarding', desc: 'Deploy AI-PEWS at your hospital, PHC, or clinic.', email: 'facilities@ai-pews.ng' },
+  { icon: Building2, title: 'Facilities & Onboarding', desc: 'Deploy Integra+ at your hospital, PHC, or clinic.', email: 'facilities@ai-pews.ng' },
   { icon: Users, title: 'Government & Partnerships', desc: 'States, LGAs, agencies, donors, multilaterals.', email: 'partners@ai-pews.ng' },
   { icon: Newspaper, title: 'Press & Media', desc: 'Interviews, official statements, press kit.', email: 'press@ai-pews.ng' },
 ];
@@ -27,7 +27,7 @@ export default function ContactPage() {
   };
 
   return (
-    <PageShell title="Contact" description="Get in touch with the AI-PEWS team — for facility onboarding, government partnerships, or media inquiries.">
+    <PageShell title="Contact" description="Get in touch with the Integra+ team — for facility onboarding, government partnerships, or media inquiries.">
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="max-w-3xl mb-14">

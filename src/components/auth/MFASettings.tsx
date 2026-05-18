@@ -35,7 +35,7 @@ export default function MFASettings() {
     try {
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: 'totp',
-        friendlyName: `AI-PEWS ${new Date().toLocaleDateString()}`,
+        friendlyName: `Integra+ ${new Date().toLocaleDateString()}`,
       });
       if (error) throw error;
       setEnrollData({

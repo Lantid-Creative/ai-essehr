@@ -5,7 +5,7 @@ import heroImg from '@/assets/case-citizen.jpg';
 
 export default function CaseFirstTimeCitizenPage() {
   return (
-    <PageShell title="First-Time Citizen — Case Study" description="What a first-time citizen experiences from learning about AI-PEWS to receiving their first life-saving alert.">
+    <PageShell title="First-Time Citizen — Case Study" description="What a first-time citizen experiences from learning about Integra+ to receiving their first life-saving alert.">
       <section className="px-3 sm:px-5 lg:px-6 mt-4">
         <div className="relative rounded-[28px] overflow-hidden min-h-[460px] md:min-h-[540px]">
           <img src={heroImg} alt="Family receiving an alert" className="absolute inset-0 w-full h-full object-cover" width={1280} height={832} />
@@ -16,7 +16,7 @@ export default function CaseFirstTimeCitizenPage() {
               Aisha's first<br /><span className="italic font-light">cholera alert.</span>
             </h1>
             <p className="text-[hsl(var(--cream))]/80 text-base md:text-lg max-w-xl leading-relaxed">
-              How a market trader in Bama discovered AI-PEWS for the first time — and why she now believes
+              How a market trader in Bama discovered Integra+ for the first time — and why she now believes
               every Nigerian household should have it.
             </p>
           </div>
@@ -27,7 +27,7 @@ export default function CaseFirstTimeCitizenPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-10 prose prose-lg">
           <p className="text-xl text-ink-soft leading-relaxed font-medium mb-8">
             Aisha Mohammed runs a small fabric stall in Bama, Borno State. She has three children under ten.
-            In June 2026, she heard about AI-PEWS from a friend at a community meeting — a free system that
+            In June 2026, she heard about Integra+ from a friend at a community meeting — a free system that
             would send her a WhatsApp message if a disease outbreak was detected near her home.
           </p>
 
@@ -49,18 +49,18 @@ export default function CaseFirstTimeCitizenPage() {
           <h2 className="font-heading font-bold text-ink text-3xl mt-12 mb-4">Step 2 — Three weeks of silence</h2>
           <p className="text-ink-soft leading-relaxed">
             For 22 days, Aisha forgot she had even signed up. There were no test messages, no marketing, no
-            unnecessary alerts. AI-PEWS only contacts citizens when there is something they genuinely need to
+            unnecessary alerts. Integra+ only contacts citizens when there is something they genuinely need to
             know — a discipline that earns the trust required for the alert that matters.
           </p>
 
           <h2 className="font-heading font-bold text-ink text-3xl mt-12 mb-4">Step 3 — The alert arrived</h2>
           <p className="text-ink-soft leading-relaxed mb-6">
-            On a Tuesday afternoon, her phone buzzed. A WhatsApp message from "AI-PEWS Borno":
+            On a Tuesday afternoon, her phone buzzed. A WhatsApp message from "Integra+ Borno":
           </p>
 
           <div className="bg-[#075e54] rounded-3xl p-3 my-8 max-w-lg">
             <div className="bg-[#dcf8c6] rounded-2xl p-5 text-sm text-ink leading-relaxed font-mono whitespace-pre-line">
-{`🚨 AI-PEWS Health Alert
+{`🚨 Integra+ Health Alert
 Bama LGA · Borno State
 
 Cluster of acute watery diarrhoea reported across 3 facilities in the past 24 hours.
@@ -106,7 +106,7 @@ NCDC line: 6232`}
           <h2 className="font-heading font-bold text-ink text-3xl mt-12 mb-4">What this case shows</h2>
           <ul className="text-ink-soft leading-relaxed space-y-3 list-disc pl-5">
             <li>Citizen sign-up has to be radically simple. Three fields, one minute, no fees.</li>
-            <li>Trust is built through restraint. AI-PEWS does not message citizens unless it matters.</li>
+            <li>Trust is built through restraint. Integra+ does not message citizens unless it matters.</li>
             <li>Every alert is local, actionable, and ends with a clear next step.</li>
             <li>Citizens become reporters, closing the loop between detection and surveillance.</li>
           </ul>

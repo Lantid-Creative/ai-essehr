@@ -28,7 +28,7 @@ export default function PublicNav({ variant = 'solid' }: PublicNavProps) {
           <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center shrink-0">
             <Activity className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="font-heading font-bold text-ink tracking-tight text-sm sm:text-base truncate">AI-PEWS</span>
+          <span className="font-heading font-bold text-ink tracking-tight text-sm sm:text-base truncate">Integra+</span>
           <span className="hidden sm:inline text-[10px] text-editorial-muted font-medium">NIGERIA</span>
         </Link>
 

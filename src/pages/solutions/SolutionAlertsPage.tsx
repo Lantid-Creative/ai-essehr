@@ -9,7 +9,7 @@ const channels = [
   { icon: Bell, name: 'In-app push', desc: 'Real-time notifications to facility staff and citizen app users.' },
 ];
 
-const exampleAlert = `🚨 AI-PEWS Health Alert
+const exampleAlert = `🚨 Integra+ Health Alert
 Bama LGA · Borno State
 
 Cluster of acute watery diarrhoea reported across 3 facilities in the past 24 hours.

@@ -10,7 +10,7 @@ interface PageShellProps {
 
 export default function PageShell({ title, description, children }: PageShellProps) {
   useEffect(() => {
-    document.title = `${title} · AI-PEWS Nigeria`;
+    document.title = `${title} · Integra+ Nigeria`;
     if (description) {
       let meta = document.querySelector('meta[name="description"]');
       if (!meta) {

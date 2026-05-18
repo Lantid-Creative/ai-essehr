@@ -31,7 +31,7 @@ export default function TopBar() {
       <div className="hidden sm:flex items-center gap-2 min-w-0">
         <Shield className="h-4 w-4 text-primary shrink-0" />
         <div>
-          <p className="text-sm font-heading font-medium truncate">{profile?.full_name || 'AI-PEWS Nigeria'}</p>
+          <p className="text-sm font-heading font-medium truncate">{profile?.full_name || 'Integra+ Nigeria'}</p>
           <p className="text-[11px] opacity-70 truncate">{displayRole}</p>
         </div>
       </div>
