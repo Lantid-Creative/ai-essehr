@@ -24,7 +24,7 @@ export default function PublicNav({ variant = 'solid' }: PublicNavProps) {
 
   return (
     <>
-      <nav className={`relative z-30 flex items-center justify-between px-3 sm:px-5 ${wrapperClass} h-14`}>
+      <nav className={`relative z-30 flex items-center justify-between px-3 sm:px-5 ${wrapperClass} h-20`}>
         <Link to="/" className="flex items-center gap-2 px-1 sm:px-2 min-w-0">
           <Brand size="sm" />
         </Link>
