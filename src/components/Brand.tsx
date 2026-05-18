@@ -4,26 +4,20 @@ import { cn } from '@/lib/utils';
 interface BrandProps {
   className?: string;
   imgClassName?: string;
-  textClassName?: string;
-  showText?: boolean;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 /**
- * Integra+ wordmark with logo image. The "+" is rendered as a true subscript.
+ * Integra+ brand mark — image-only logo.
  */
-export function Brand({ className, imgClassName, textClassName, showText = true, size = 'md' }: BrandProps) {
-  const heights = { sm: 'h-6', md: 'h-8', lg: 'h-10' };
-  const textSize = { sm: 'text-base', md: 'text-lg', lg: 'text-2xl' };
+export function Brand({ className, imgClassName, size = 'md' }: BrandProps) {
+  const heights = { sm: 'h-8', md: 'h-10', lg: 'h-12', xl: 'h-16' };
   return (
-    <span className={cn('inline-flex items-center gap-2', className)}>
-      <img src={logo} alt="Integra+" className={cn(heights[size], 'w-auto object-contain', imgClassName)} />
-      {showText && (
-        <span className={cn('font-heading font-bold text-ink tracking-tight leading-none', textSize[size], textClassName)}>
-          Integra<sub className="text-[0.55em] font-bold align-sub ml-[1px]">+</sub>
-        </span>
-      )}
-    </span>
+    <img
+      src={logo}
+      alt="Integra+"
+      className={cn(heights[size], 'w-auto object-contain', className, imgClassName)}
+    />
   );
 }
 
