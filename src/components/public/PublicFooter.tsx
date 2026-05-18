@@ -10,7 +10,6 @@ export default function PublicFooter() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
               <Brand size="md" />
-              <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
             </div>
             <p className="text-sm text-ink-soft leading-relaxed mb-4 max-w-sm">
               Nigeria's AI-Powered Early Warning System for disease surveillance — built on a

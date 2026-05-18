@@ -122,7 +122,6 @@ export default function LandingPage() {
           <nav className="relative z-20 flex items-center justify-between px-4 sm:px-6 md:px-10 pt-5">
             <Link to="/" className="flex items-center gap-2 glass-chip px-4 h-11">
               <Brand size="sm" />
-              <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
             </Link>
 
             <div className="hidden lg:flex items-center gap-1 glass-chip px-2 h-11">
@@ -591,7 +590,6 @@ export default function LandingPage() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Brand size="md" />
-                <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
               </div>
               <p className="text-sm text-ink-soft leading-relaxed mb-3">
                 AI-Powered Early Warning System. Built on a unified EHR infrastructure.
