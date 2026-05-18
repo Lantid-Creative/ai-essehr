@@ -991,21 +991,18 @@ export type Database = {
       demo_seed_status: {
         Row: {
           created_at: string
-          credentials: Json | null
           id: string
           message: string | null
           status: string
         }
         Insert: {
           created_at?: string
-          credentials?: Json | null
           id?: string
           message?: string | null
           status: string
         }
         Update: {
           created_at?: string
-          credentials?: Json | null
           id?: string
           message?: string | null
           status?: string
