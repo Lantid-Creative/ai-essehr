@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { Brand } from '@/components/Brand';
 import heroHospital from '@/assets/landing-hero-hospital.jpg';
 import chewPhoto from '@/assets/landing-chew.jpg';
 import doctorPhoto from '@/assets/landing-doctor.jpg';
@@ -86,7 +87,7 @@ const partners = [
 
 const testimonials = [
   {
-    quote: 'AI-PEWS turned 15 days of paper triage into the same-day notification. We see clusters before they spread.',
+    quote: 'Integra+ turned 15 days of paper triage into the same-day notification. We see clusters before they spread.',
     name: 'Dr. Adaeze Okafor',
     role: 'State Epidemiologist',
     img: doctorPhoto,
@@ -120,10 +121,7 @@ export default function LandingPage() {
           {/* Top nav */}
           <nav className="relative z-20 flex items-center justify-between px-4 sm:px-6 md:px-10 pt-5">
             <Link to="/" className="flex items-center gap-2 glass-chip px-4 h-11">
-              <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
-                <Activity className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-heading font-bold text-ink tracking-tight">AI-PEWS</span>
+              <Brand size="sm" />
               <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
             </Link>
 
@@ -183,7 +181,7 @@ export default function LandingPage() {
                 <span className="italic font-light text-white/85">Before They Spread.</span>
               </h1>
               <p className="text-white/85 text-base md:text-lg max-w-xl leading-relaxed mb-8">
-                AI-PEWS Nigeria collapses the 717 surveillance timeline — digitising recording at the point of care
+                Integra+ Nigeria collapses the 717 surveillance timeline — digitising recording at the point of care
                 and automating reporting through a validated chain to <strong className="text-white">SORMAS</strong> and <strong className="text-white">DHIS2</strong>.
               </p>
 
@@ -224,7 +222,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <div className="text-xs font-bold text-ink leading-tight">25K+ health workers</div>
-                <div className="text-[10px] text-editorial-muted">trust AI-PEWS daily</div>
+                <div className="text-[10px] text-editorial-muted">trust Integra+ daily</div>
               </div>
             </div>
           </div>
@@ -277,7 +275,7 @@ export default function LandingPage() {
               </h2>
             </div>
             <p className="text-ink-soft md:max-w-md leading-relaxed">
-              AI-PEWS is a unified surveillance and clinical platform connecting frontline facilities, validating
+              Integra+ is a unified surveillance and clinical platform connecting frontline facilities, validating
               authorities, and the public — built for Nigeria, ready for the next outbreak.
             </p>
           </div>
@@ -326,7 +324,7 @@ export default function LandingPage() {
               </h2>
               <p className="text-[hsl(var(--cream))]/70 leading-relaxed mb-8 max-w-lg">
                 The NCDC has confirmed: state ownership remains a major challenge and cases are not being properly traced.
-                AI-PEWS fixes the gap between recording and reporting.
+                Integra+ fixes the gap between recording and reporting.
               </p>
               <div className="grid grid-cols-3 gap-3 max-w-md">
                 <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
@@ -343,7 +341,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="mt-4 text-sm text-[hsl(var(--cream))]/60">
-                Total: <span className="text-destructive font-semibold">15+ days</span> · AI-PEWS target: <span className="text-primary font-semibold">&lt; 24 hrs</span>
+                Total: <span className="text-destructive font-semibold">15+ days</span> · Integra+ target: <span className="text-primary font-semibold">&lt; 24 hrs</span>
               </div>
             </div>
 
@@ -418,7 +416,7 @@ export default function LandingPage() {
                 <span className="italic font-light">clinical language.</span>
               </h3>
               <p className="text-[hsl(var(--cream))]/70 leading-relaxed mb-8 max-w-lg">
-                Health workers document in a mix of English, Pidgin, and local language. The AI-PEWS model extracts
+                Health workers document in a mix of English, Pidgin, and local language. The Integra+ model extracts
                 syndromic signals from this free text — adding ~40% more surveillance signal than structured fields alone.
               </p>
               <div className="grid sm:grid-cols-2 gap-3">
@@ -576,7 +574,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link to="/register/facility" className="pill-light">
-                Deploy AI-PEWS <ArrowUpRight className="h-4 w-4" />
+                Deploy Integra+ <ArrowUpRight className="h-4 w-4" />
               </Link>
               <Link to="/about" className="inline-flex items-center gap-2 rounded-full bg-white/10 text-[hsl(var(--cream))] px-5 h-11 text-sm font-medium hover:bg-white/15 transition">
                 Learn more
@@ -592,10 +590,8 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-4 gap-10 pt-10 border-t border-ink/10">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg gradient-primary grid place-items-center">
-                  <Activity className="h-4 w-4 text-primary-foreground" />
-                </div>
-                <span className="font-heading font-bold text-ink">AI-PEWS Nigeria</span>
+                <Brand size="md" />
+                <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
               </div>
               <p className="text-sm text-ink-soft leading-relaxed mb-3">
                 AI-Powered Early Warning System. Built on a unified EHR infrastructure.

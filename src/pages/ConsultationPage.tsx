@@ -440,7 +440,7 @@ export default function ConsultationPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <BrainCircuit className="h-4 w-4 text-primary" />
-                    <span className="text-sm font-heading font-medium">AI-PEWS NLP Analysis</span>
+                    <span className="text-sm font-heading font-medium">Integra+ NLP Analysis</span>
                     <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium">
                       {nlpResult.source === 'ai_nlp' ? 'AI + Keywords' : 'Keywords Only'}
                     </span>

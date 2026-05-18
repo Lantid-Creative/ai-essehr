@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Brand } from '@/components/Brand';
 
 const highlights = [
   { icon: Bell, title: 'Real-time alerts', desc: '24-hour outbreak detection across LGAs.' },
@@ -47,10 +48,7 @@ export default function LoginPage() {
           {/* Form card */}
           <div className="bg-white rounded-3xl border border-black/5 p-7 sm:p-10 order-2 lg:order-1">
             <div className="flex items-center gap-2 mb-8">
-              <div className="w-8 h-8 rounded-lg gradient-primary grid place-items-center">
-                <Activity className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-heading font-bold text-ink">AI-PEWS</span>
+              <Brand size="md" />
               <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
             </div>
 
@@ -101,7 +99,7 @@ export default function LoginPage() {
                   From 717 days<br />to <span className="italic font-light">24 hours.</span>
                 </h2>
                 <p className="text-[hsl(var(--cream))]/70 mt-5 leading-relaxed max-w-md">
-                  AI-PEWS connects Nigerian health facilities into a single early-warning network. Sign in to keep your facility on the line.
+                  Integra+ connects Nigerian health facilities into a single early-warning network. Sign in to keep your facility on the line.
                 </p>
               </div>
 

@@ -23,7 +23,7 @@ export default function SolutionsIndexPage() {
             <span className="text-xs uppercase tracking-[0.2em] text-editorial-muted">Solutions</span>
             <h1 className="editorial-display text-ink text-4xl md:text-6xl mt-3 mb-4">Four pillars.<br /><span className="italic font-light">One mission.</span></h1>
             <p className="text-ink-soft leading-relaxed text-lg">
-              AI-PEWS is built around four interlocking solutions — each addressing a specific gap in Nigeria's
+              Integra+ is built around four interlocking solutions — each addressing a specific gap in Nigeria's
               disease surveillance value chain.
             </p>
           </div>

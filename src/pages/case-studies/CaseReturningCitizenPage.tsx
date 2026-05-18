@@ -5,10 +5,10 @@ import heroImg from '@/assets/case-returning.jpg';
 
 export default function CaseReturningCitizenPage() {
   return (
-    <PageShell title="Returning Citizen — Case Study" description="How a returning citizen uses AI-PEWS as a daily tool — managing alerts, contributing reports, and protecting their community.">
+    <PageShell title="Returning Citizen — Case Study" description="How a returning citizen uses Integra+ as a daily tool — managing alerts, contributing reports, and protecting their community.">
       <section className="px-3 sm:px-5 lg:px-6 mt-4">
         <div className="relative rounded-[28px] overflow-hidden min-h-[460px] md:min-h-[540px]">
-          <img src={heroImg} alt="Returning citizen using AI-PEWS" className="absolute inset-0 w-full h-full object-cover" width={1280} height={832} />
+          <img src={heroImg} alt="Returning citizen using Integra+" className="absolute inset-0 w-full h-full object-cover" width={1280} height={832} />
           <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/80 to-ink/40" />
           <div className="relative z-10 p-8 md:p-14 max-w-3xl">
             <span className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/70">Case Study · 02</span>
@@ -16,7 +16,7 @@ export default function CaseReturningCitizenPage() {
               Aisha, six months<br /><span className="italic font-light">later.</span>
             </h1>
             <p className="text-[hsl(var(--cream))]/80 text-base md:text-lg max-w-xl leading-relaxed">
-              What it looks like to use AI-PEWS as a daily companion — not just a notification service, but a
+              What it looks like to use Integra+ as a daily companion — not just a notification service, but a
               two-way channel between Nigerian households and the national surveillance network.
             </p>
           </div>
@@ -26,7 +26,7 @@ export default function CaseReturningCitizenPage() {
       <section className="py-16 md:py-24">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-10 prose prose-lg">
           <p className="text-xl text-ink-soft leading-relaxed font-medium mb-8">
-            Six months after her first alert, Aisha is no longer a passive recipient of AI-PEWS messages. She has
+            Six months after her first alert, Aisha is no longer a passive recipient of Integra+ messages. She has
             become a node in the national early-warning network — submitting reports, sharing alerts with her
             neighbours, and using the citizen dashboard to track what's happening in her LGA.
           </p>
@@ -72,7 +72,7 @@ export default function CaseReturningCitizenPage() {
 
           <h2 className="font-heading font-bold text-ink text-3xl mt-12 mb-4">From recipient to reporter</h2>
           <p className="text-ink-soft leading-relaxed">
-            The citizen role in AI-PEWS evolves naturally. The platform never demands more than the user is willing
+            The citizen role in Integra+ evolves naturally. The platform never demands more than the user is willing
             to give. But for those who want to do more, every additional layer of engagement — from receiving alerts,
             to submitting reports, to verifying alerts on the ground — strengthens the national network.
           </p>

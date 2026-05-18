@@ -93,7 +93,7 @@ export default function AppSidebar() {
             <Activity className="h-4 w-4 text-primary-foreground" />
           </div>
           <div className="flex-1 min-w-0">
-            <span className="font-heading font-bold text-sm tracking-tight">AI-PEWS</span>
+            <span className="font-heading font-bold text-sm tracking-tight">Integra+</span>
             <p className="text-[10px] text-sidebar-foreground/60 leading-tight truncate">
               Early Warning System
             </p>

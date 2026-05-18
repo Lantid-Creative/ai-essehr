@@ -85,7 +85,7 @@ export default function FacilityGate({ children }: { children: React.ReactNode }
           {status === 'pending' && (
             <p className="text-sm text-muted-foreground">
               Your facility is awaiting verification by NCDC / NGF. You'll be notified once approved, after which your team
-              can begin using AI-PEWS. Approval typically takes 1–2 business days.
+              can begin using Integra+. Approval typically takes 1–2 business days.
             </p>
           )}
           {status === 'rejected' && (

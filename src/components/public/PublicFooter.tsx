@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Activity, Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin } from 'lucide-react';
+import { Brand } from '@/components/Brand';
 
 export default function PublicFooter() {
   return (
@@ -8,10 +9,8 @@ export default function PublicFooter() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-10 pt-12">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg gradient-primary grid place-items-center">
-                <Activity className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-heading font-bold text-ink">AI-PEWS Nigeria</span>
+              <Brand size="md" />
+              <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
             </div>
             <p className="text-sm text-ink-soft leading-relaxed mb-4 max-w-sm">
               Nigeria's AI-Powered Early Warning System for disease surveillance — built on a

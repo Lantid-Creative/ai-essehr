@@ -69,14 +69,14 @@ const groups = [
 
 export default function FeaturesIndexPage() {
   return (
-    <PageShell title="All Features" description="A complete index of every module in AI-PEWS Nigeria — clinical, surveillance, emergency, operations, and community.">
+    <PageShell title="All Features" description="A complete index of every module in Integra+ Nigeria — clinical, surveillance, emergency, operations, and community.">
       <section className="py-16 md:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="max-w-3xl mb-14">
             <span className="text-xs uppercase tracking-[0.2em] text-editorial-muted">All features</span>
             <h1 className="editorial-display text-ink text-4xl md:text-6xl mt-3 mb-4">Everything inside.<br /><span className="italic font-light">All in one platform.</span></h1>
             <p className="text-ink-soft leading-relaxed text-lg">
-              AI-PEWS is more than surveillance. It's a complete, integrated platform covering clinical care, AI detection,
+              Integra+ is more than surveillance. It's a complete, integrated platform covering clinical care, AI detection,
               emergency response, hospital operations, and citizen engagement.
             </p>
           </div>

@@ -137,7 +137,7 @@ export default function RegisterFacilityPage() {
 
       toast({
         title: 'Facility activated',
-        description: 'Verify your email, then sign in to begin using AI-PEWS.',
+        description: 'Verify your email, then sign in to begin using Integra+.',
       });
       navigate('/login');
     } catch (error: any) {

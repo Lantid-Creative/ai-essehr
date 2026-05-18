@@ -6,7 +6,7 @@ import aerial from '@/assets/landing-aerial.jpg';
 const principles = [
   { icon: Target, title: 'Built for Nigerian reality', desc: 'Designed in Nigeria, by Nigerian engineers and clinicians, for the actual conditions of Nigerian PHCs — not adapted from Western templates.' },
   { icon: Users, title: 'Frontline-first', desc: 'Every feature is co-designed with the CHEWs, nurses, and doctors who use it daily. Their constraints shape our roadmap.' },
-  { icon: Heart, title: 'Free at the point of use', desc: 'AI-PEWS is free for facilities to register and free for citizens. Sustainable through institutional funding, never user fees.' },
+  { icon: Heart, title: 'Free at the point of use', desc: 'Integra+ is free for facilities to register and free for citizens. Sustainable through institutional funding, never user fees.' },
   { icon: Compass, title: 'Open to integration', desc: 'Built on open standards (FHIR, ICD-11, HL7). Native integrations with SORMAS, DHIS2, and NHMIS — never proprietary lock-in.' },
 ];
 
@@ -20,13 +20,13 @@ const partners = [
 
 export default function AboutPage() {
   return (
-    <PageShell title="About" description="AI-PEWS Nigeria is a national early warning system co-designed with frontline workers and endorsed by the NCDC.">
+    <PageShell title="About" description="Integra+ Nigeria is a national early warning system co-designed with frontline workers and endorsed by the NCDC.">
       <section className="px-3 sm:px-5 lg:px-6 mt-4">
         <div className="relative rounded-[28px] overflow-hidden min-h-[440px]">
           <img src={aerial} alt="Aerial of Nigerian community" className="absolute inset-0 w-full h-full object-cover" width={1280} height={832} />
           <div className="absolute inset-0 bg-gradient-to-b from-ink/85 via-ink/75 to-ink/95" />
           <div className="relative z-10 p-8 md:p-14 max-w-3xl text-center mx-auto">
-            <span className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/70">About AI-PEWS</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-[hsl(var(--cream))]/70">About Integra+</span>
             <h1 className="editorial-display text-[hsl(var(--cream))] text-4xl md:text-6xl mt-4">
               A national surveillance system,<br /><span className="italic font-light">built from the ground up.</span>
             </h1>
@@ -37,7 +37,7 @@ export default function AboutPage() {
       <section className="py-16 md:py-24">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-10">
           <p className="text-xl text-ink-soft leading-relaxed mb-6">
-            AI-PEWS Nigeria — the AI-Powered Early Warning System — collapses the gap between when a disease appears
+            Integra+ Nigeria — the AI-Powered Early Warning System — collapses the gap between when a disease appears
             in a Nigerian community and when the country's surveillance authorities can act on it.
           </p>
           <p className="text-ink-soft leading-relaxed mb-6">

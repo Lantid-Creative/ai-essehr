@@ -402,7 +402,7 @@ export default function NHMIS001SummaryPage() {
       </Card>
 
       <p className="text-xs text-center text-muted-foreground print:block hidden">
-        AI-PEWS · NHMIS 001 monthly facility summary · Generated {format(new Date(), "dd MMM yyyy HH:mm")}
+        Integra+ · NHMIS 001 monthly facility summary · Generated {format(new Date(), "dd MMM yyyy HH:mm")}
       </p>
     </div>
   );
