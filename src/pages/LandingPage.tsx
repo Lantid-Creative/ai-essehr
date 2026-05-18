@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { Brand } from '@/components/Brand';
 import heroHospital from '@/assets/landing-hero-hospital.jpg';
 import chewPhoto from '@/assets/landing-chew.jpg';
 import doctorPhoto from '@/assets/landing-doctor.jpg';

@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Brand } from '@/components/Brand';
 
 const highlights = [
   { icon: Bell, title: 'Real-time alerts', desc: '24-hour outbreak detection across LGAs.' },
