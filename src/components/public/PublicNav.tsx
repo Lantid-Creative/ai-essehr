@@ -27,7 +27,6 @@ export default function PublicNav({ variant = 'solid' }: PublicNavProps) {
       <nav className={`relative z-30 flex items-center justify-between px-3 sm:px-5 ${wrapperClass} h-14`}>
         <Link to="/" className="flex items-center gap-2 px-1 sm:px-2 min-w-0">
           <Brand size="sm" />
-          <span className="hidden sm:inline text-[10px] text-editorial-muted font-medium">NIGERIA</span>
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">

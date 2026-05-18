@@ -49,7 +49,6 @@ export default function LoginPage() {
           <div className="bg-white rounded-3xl border border-black/5 p-7 sm:p-10 order-2 lg:order-1">
             <div className="flex items-center gap-2 mb-8">
               <Brand size="md" />
-              <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
             </div>
 
             <span className="text-xs uppercase tracking-[0.2em] text-editorial-muted">Sign in</span>
