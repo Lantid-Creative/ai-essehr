@@ -120,7 +120,7 @@ export default function LandingPage() {
 
           {/* Top nav */}
           <nav className="relative z-20 flex items-center justify-between px-4 sm:px-6 md:px-10 pt-5">
-            <Link to="/" className="flex items-center gap-2 glass-chip px-4 h-16">
+            <Link to="/" className="flex items-center gap-2 glass-chip px-4 h-24">
               <Brand size="sm" />
             </Link>
 

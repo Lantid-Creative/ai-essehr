@@ -11,7 +11,7 @@ interface BrandProps {
  * Integra+ brand mark — image-only logo.
  */
 export function Brand({ className, imgClassName, size = 'md' }: BrandProps) {
-  const heights = { sm: 'h-12', md: 'h-16', lg: 'h-20', xl: 'h-28' };
+  const heights = { sm: 'h-20', md: 'h-28', lg: 'h-36', xl: 'h-48' };
   return (
     <img
       src={logo}
