@@ -47,10 +47,7 @@ export default function LoginPage() {
           {/* Form card */}
           <div className="bg-white rounded-3xl border border-black/5 p-7 sm:p-10 order-2 lg:order-1">
             <div className="flex items-center gap-2 mb-8">
-              <div className="w-8 h-8 rounded-lg gradient-primary grid place-items-center">
-                <Activity className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-heading font-bold text-ink">Integra+</span>
+              <Brand size="md" />
               <span className="text-[10px] text-editorial-muted font-medium">NIGERIA</span>
             </div>
 

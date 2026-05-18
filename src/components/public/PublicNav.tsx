@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Activity, Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
+import { Brand } from '@/components/Brand';
 
 const primaryLinks = [
   { label: 'Solutions', href: '/solutions' },
