@@ -25,10 +25,7 @@ export default function PublicNav({ variant = 'solid' }: PublicNavProps) {
     <>
       <nav className={`relative z-30 flex items-center justify-between px-3 sm:px-5 ${wrapperClass} h-14`}>
         <Link to="/" className="flex items-center gap-2 px-1 sm:px-2 min-w-0">
-          <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center shrink-0">
-            <Activity className="h-4 w-4 text-primary-foreground" />
-          </div>
-          <span className="font-heading font-bold text-ink tracking-tight text-sm sm:text-base truncate">Integra+</span>
+          <Brand size="sm" />
           <span className="hidden sm:inline text-[10px] text-editorial-muted font-medium">NIGERIA</span>
         </Link>
 
